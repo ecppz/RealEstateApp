@@ -1,0 +1,23 @@
+﻿@model SaleTypeListViewModel
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-4">
+    <h2 class="text-danger"><i class="bi bi-trash"></i> Eliminar Tipo de Venta</h2>
+
+    <p>¿Está seguro que desea eliminar el tipo de venta <strong>@Model.Name</strong> y todas las propiedades asociadas?</p>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-check-circle"></i> Aceptar
+            </button>
+        </div>
+    </form>
+</div>

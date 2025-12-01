@@ -1,0 +1,24 @@
+﻿@model ImprovementDeleteViewModel
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<h2>Eliminar Mejora</h2>
+
+<div class="alert alert-warning">
+    <p>¿Está seguro que desea eliminar esta mejora?</p>
+    <p><strong>@Model.Name</strong> - @Model.Description</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Eliminar
+        </button>
+    </div>
+</form>

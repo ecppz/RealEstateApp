@@ -1,10 +1,15 @@
-﻿namespace Application.Dtos.SaleType
+﻿using Application.Dtos.Property;
+
+namespace Application.Dtos.SaleType
 {
     public class SaleTypeDto
     {
         public required int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
+
+        public ICollection<PropertyDto>? Properties { get; set; }
+
     }
 
 }

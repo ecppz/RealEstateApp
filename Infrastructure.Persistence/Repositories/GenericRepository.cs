@@ -7,7 +7,7 @@ namespace Infrastructure.Persistence.Repositories
     public class GenericRepository<Entity> : IGenericRepository<Entity>
         where Entity : class        
     {
-        private readonly RealEstateAppContext context;
+        protected readonly RealEstateAppContext context;
 
         public GenericRepository(RealEstateAppContext context)
         {

@@ -1,10 +1,15 @@
-﻿namespace Application.ViewModels.SaleType
+﻿using Application.Dtos.Property;
+using Application.ViewModels.Property;
+
+namespace Application.ViewModels.SaleType
 {
     public class SaleTypeViewModel
     {
         public required int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
+
+        public ICollection<PropertyViewModel>? Properties { get; set; }
     }
 
 }

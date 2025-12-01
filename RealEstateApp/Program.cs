@@ -27,6 +27,7 @@ namespace RealEstateApp
             builder.Services.AddSharedLayerIoc(builder.Configuration);
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+
             var app = builder.Build();
 
             await app.Services.RunIdentitySeedAsync();

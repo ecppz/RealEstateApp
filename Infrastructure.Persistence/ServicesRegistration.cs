@@ -43,6 +43,7 @@ namespace Infrastructure.Persistence
                 services.AddScoped<IOfferRepository, OfferRepository>();
                 services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
                 services.AddScoped<ISaleTypeRepository, SaleTypeRepository>();
+                services.AddScoped<IPropertyImprovementRepository, PropertyImprovementRepository>();
                 #endregion
             }
         }

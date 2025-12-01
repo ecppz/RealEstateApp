@@ -1,0 +1,30 @@
+﻿@model PropertyTypeEditViewModel
+@{
+    ViewData["Title"] = "Editar Tipo de Propiedad";
+    Layout = "_LayoutAdmin";
+}
+
+<h2><i class="bi bi-pencil-square"></i> Editar Tipo de Propiedad</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"><i class="bi bi-card-text"></i> Nombre</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"><i class="bi bi-info-circle"></i> Descripción</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-save"></i> Guardar cambios
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Volver
+    </a>
+</form>

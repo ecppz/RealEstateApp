@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.Interfaces;
+using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -22,7 +23,7 @@ namespace Application
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
             services.AddScoped<ISaleTypeService, SaleTypeService>();
-
+            services.AddScoped<IPropertyImprovement, PropertyImprovementService>();
             #endregion
         }
     }

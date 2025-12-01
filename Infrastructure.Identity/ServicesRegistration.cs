@@ -66,6 +66,7 @@ namespace Infrastructure.Identity
 
             #region Services
             services.AddScoped<IUserAccountServiceForWebApp, UserAccountServiceForWebApp>();
+            services.AddScoped<IBaseAccountService, BaseAccountService>();
             #endregion
         }
 

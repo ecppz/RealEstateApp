@@ -10,11 +10,11 @@ using System.Text;
 
 namespace Infrastructure.Identity.Services
 {
-    public abstract class BaseAccountService : IBaseAccountService
+    public  class BaseAccountService : IBaseAccountService
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly IEmailService _emailService;
-        protected BaseAccountService(UserManager<UserAccount> userManager, IEmailService emailService)
+        public BaseAccountService(UserManager<UserAccount> userManager, IEmailService emailService)
         {
             _userManager = userManager;
             _emailService = emailService;
