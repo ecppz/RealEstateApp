@@ -3,39 +3,50 @@
     ViewData["Title"] = "Login Page";
     Layout = "_Layout";
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
 }
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
 }
-<div class="d-flex justify-content-center">
 
-    <div class="col-12 col-md-4">
-        <div class="card">
-            <div class="card-header bg-success text-light"><h5 class="text-center">Login user</h5></div>
-            <div class="card-body">
-                @Html.ValidationSummary(false,"",new {@class = "text-danger"})
-                <form asp-controller="Login" asp-action="Index" method="POST">
-                    <div class="mb-3">
-                        <label asp-for="UserName" class="form-label">UserName:</label>
-                        <input class="form-control" asp-for="UserName" />                   
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label">Password:</label>
-                        <input class="form-control" asp-for="Password" />                    
-                    </div>
-                    
-                    <div>
-                        <button type="submit" class="btn btn-outline-primary float-end"><i class="bi bi-door-open"></i> Login</button>
-                        <a asp-controller="Login" asp-action="ForgotPassword" class="btn btn-outline-warning float-end me-2"><i class="bi bi-person-fill-exclamation"></i> Forgot password</a>
-                    </div>
-                </form>
-            </div>
+<div class="login-container d-flex justify-content-center align-items-center">
+
+    <div class="login-card shadow-sm">
+
+        <div class="text-center mb-4">
+            <h2 class="brand-title">RealEstate App</h2> 
+            <p class="text-muted">Bienvenido de nuevo!</p>
         </div>
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger text-center mb-3" })
+
+        <form asp-controller="Login" asp-action="Index" method="POST">
+
+            <div class="form-group mb-3">
+                <label asp-for="UserName" class="form-label fw-semibold">Username</label>
+                <input class="form-control input-custom" asp-for="UserName" />
+            </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Password" class="form-label fw-semibold">Password</label>
+                <input class="form-control input-custom" asp-for="Password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary login-btn w-100 mb-3">
+                <i class="bi bi-door-open"></i> Login
+            </button>
+
+            <div class="text-center">
+                <a asp-controller="Login" asp-action="ForgotPassword" class="forgot-link">
+                    <i class="bi bi-person-fill-exclamation"></i> Forgot password?
+                </a>
+            </div>
+
+        </form>
     </div>
-    
 </div>

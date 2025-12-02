@@ -1,11 +1,29 @@
 /* ===== Estilo corporativo inmobiliaria ===== */
 
 /* Fondo general */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     background: #f5f7fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
+    display: flex;
+    flex-direction: column;
 }
+
+main {
+    flex: 1;
+    width: 100%;
+}
+
+
+footer {
+    flex-shrink: 0; /* evita que el footer suba */
+}
+
 
 /* Encabezados */
 h2 {
@@ -77,7 +95,100 @@ h2 {
         transition: 0.3s;
     }
 
-/* Íconos dentro de botones */
 .btn i {
     margin-right: 4px;
 }
+
+/* ----------- REGISTER ------------ */
+.register-container {
+    padding: 40px 0; /* margen vertical suave */
+}
+
+.register-card {
+    background: #fff;
+    padding: 45px 35px;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 18px;
+}
+
+.brand-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 0;
+}
+
+.input-custom {
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+}
+
+    .input-custom:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 4px rgba(13,110,253,.2);
+    }
+
+.register-btn {
+    border-radius: 10px;
+    height: 45px;
+    font-weight: 600;
+}
+
+.forgot-link {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+/* ----------- LOGIN ------------ */
+
+.login-container {
+    padding: 40px 0;
+}
+
+
+.login-card {
+    background: #fff;
+    padding: 40px 35px;
+    width: 100%;
+    max-width: 380px;
+    border-radius: 16px;
+}
+
+.input-custom {
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    transition: 0.2s;
+}
+
+    .input-custom:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 4px rgba(13,110,253,.2);
+    }
+
+.login-btn {
+    border-radius: 10px;
+    height: 45px;
+    font-weight: 600;
+}
+
+    .login-btn:hover {
+        background-color: #0b5ed7;
+    }
+
+.forgot-link {
+    color: #0d6efd;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
