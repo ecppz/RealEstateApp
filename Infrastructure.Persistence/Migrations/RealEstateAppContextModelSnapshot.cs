@@ -52,6 +52,10 @@ namespace Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -160,7 +164,13 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("PropertyTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PropertyTypeId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("SaleTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SaleTypeId1")
                         .HasColumnType("int");
 
                     b.Property<int>("SizeInMeters")
@@ -173,7 +183,11 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PropertyTypeId");
 
+                    b.HasIndex("PropertyTypeId1");
+
                     b.HasIndex("SaleTypeId");
+
+                    b.HasIndex("SaleTypeId1");
 
                     b.ToTable("Properties", (string)null);
                 });
@@ -211,12 +225,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("ImprovementId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ImprovementId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ImprovementId");
+
+                    b.HasIndex("ImprovementId1");
 
                     b.HasIndex("PropertyId");
 
@@ -310,11 +329,19 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.PropertyType", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("PropertyTypeId1");
+
                     b.HasOne("Domain.Entities.SaleType", "SaleType")
                         .WithMany()
                         .HasForeignKey("SaleTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.SaleType", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("SaleTypeId1");
 
                     b.Navigation("PropertyType");
 
@@ -340,6 +367,10 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Improvement", null)
+                        .WithMany("PropertyImprovements")
+                        .HasForeignKey("ImprovementId1");
+
                     b.HasOne("Domain.Entities.Property", "Property")
                         .WithMany("Improvements")
                         .HasForeignKey("PropertyId")
@@ -351,11 +382,26 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Improvement", b =>
+                {
+                    b.Navigation("PropertyImprovements");
+                });
+
             modelBuilder.Entity("Domain.Entities.Property", b =>
                 {
                     b.Navigation("Images");
 
                     b.Navigation("Improvements");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PropertyType", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Domain.Entities.SaleType", b =>
+                {
+                    b.Navigation("Properties");
                 });
 #pragma warning restore 612, 618
         }

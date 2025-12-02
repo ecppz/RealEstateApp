@@ -1,0 +1,22 @@
+﻿@model PropertyTypeListViewModel
+@{
+    ViewData["Title"] = "Eliminar Tipo de Propiedad";
+    Layout = "_LayoutAdmin";
+}
+
+<h2><i class="bi bi-trash"></i> Eliminar Tipo de Propiedad</h2>
+
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    ¿Está seguro que desea eliminar el tipo de propiedad <strong>@Model.Name</strong> y todas sus propiedades asociadas?
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash"></i> Eliminar
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Cancelar
+    </a>
+</form>

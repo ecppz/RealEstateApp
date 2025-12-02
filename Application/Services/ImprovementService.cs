@@ -17,7 +17,41 @@ namespace Application.Services
             this.mapper = mapper;
         }
 
+        // Crear una mejora
+        public async Task<ImprovementDto?> AddAsync(ImprovementCreateDto dto)
+        {
+            var entity = mapper.Map<Improvement>(dto);
+            var created = await improvementRepository.AddAsync(entity);
+            return mapper.Map<ImprovementDto>(created);
+        }
 
+        // Obtener una mejora por Id
+        public async Task<ImprovementDto?> GetById(int id)
+        {
+            var entity = await improvementRepository.GetById(id);
+            return mapper.Map<ImprovementDto?>(entity);
+        }
+
+        // Listar todas las mejoras
+        public async Task<List<ImprovementListDto>> GetAllList()
+        {
+            var entities = await improvementRepository.GetAllList();
+            return mapper.Map<List<ImprovementListDto>>(entities);
+        }
+
+        // Actualizar una mejora existente
+        public async Task<ImprovementDto?> UpdateAsync(int id, ImprovementUpdateDto dto)
+        {
+            var entity = mapper.Map<Improvement>(dto);
+            var updated = await improvementRepository.UpdateAsync(id, entity);
+            return mapper.Map<ImprovementDto?>(updated);
+        }
+
+        // Eliminar una mejora
+        public async Task DeleteAsync(int id)
+        {
+            await improvementRepository.DeleteAsync(id);
+        }
 
     }
 }

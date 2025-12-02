@@ -297,7 +297,6 @@ namespace RealEstateApp.Controllers
 
         #endregion
 
-
         #region maintenance developer
         public async Task<IActionResult> Developers()
         {

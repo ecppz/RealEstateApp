@@ -14,18 +14,19 @@ using System.Text;
 
 namespace Infrastructure.Identity.Services
 {
-    public abstract class BaseAccountService : IBaseAccountService
+    public class BaseAccountService : IBaseAccountService
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
 
-        protected BaseAccountService(UserManager<UserAccount> userManager, IEmailService emailService, IMapper mapper)
-        {
+        public BaseAccountService(UserManager<UserAccount> userManager, IEmailService emailService, IMapper mapper)
+        { 
             _userManager = userManager;
             _emailService = emailService;
             _mapper = mapper;
         }
+
         public virtual async Task<RegisterResponseDto> RegisterUser(SaveUserDto saveDto, string? origin, string? documentNumber = null, bool ? isApi = false)
         {
             RegisterResponseDto response = new()
