@@ -31,8 +31,9 @@ namespace Application.ViewModels.User
         [DataType(DataType.Password)]
         public required string ConfirmPassword { get; set; }
 
+        [Required(ErrorMessage = "Debes insertar el telefono del usuario")]
         [DataType(DataType.Text)]
-        public string? Phone { get; set; }
+        public required string PhoneNumber { get; set; }
 
         [DataType(DataType.Upload)]
         [Required(ErrorMessage = "Debes insertar la imagen del usuario")]

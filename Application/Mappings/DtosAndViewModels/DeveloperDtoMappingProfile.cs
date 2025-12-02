@@ -29,16 +29,16 @@ namespace Application.Mappings.DtosAndViewModels
             CreateMap<DeveloperDto, DeactivateDeveloperViewModel>().ReverseMap();
 
             CreateMap<DeveloperDto, SaveUserDto>()
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
 
             CreateMap<CreateDeveloperDto, SaveUserDto>()
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
             CreateMap<EditDeveloperDto, SaveUserDto>()
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
 

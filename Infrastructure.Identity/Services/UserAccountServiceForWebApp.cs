@@ -50,7 +50,7 @@ namespace Infrastructure.Identity.Services
                 if (!user.EmailConfirmed)
                 {
                     response.HasError = true;
-                    response.Errors.Add($"Esta cuenta de cliente '{loginDto.UserName}' no está activo, por favor revisa tu email.");
+                    response.Errors.Add($"Esta cuenta de cliente '{loginDto.UserName}' no está activa, por favor revisa tu email.");
                     return response;
                 }
             }
@@ -59,7 +59,7 @@ namespace Infrastructure.Identity.Services
                 if (user.Status != UserStatus.Active)
                 {
                     response.HasError = true;
-                    response.Errors.Add($"Este cuenta de agente '{loginDto.UserName}' no está activo, por favor contacta con un admin.");
+                    response.Errors.Add($"Este cuenta de agente '{loginDto.UserName}' no está activa, por favor contacta con un admin.");
                     return response;
                 }
             }

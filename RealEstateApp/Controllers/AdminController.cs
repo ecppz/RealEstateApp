@@ -61,6 +61,7 @@ namespace RealEstateApp.Controllers
             dto.Status = UserStatus.Active;
 
             var saveDto = mapper.Map<SaveUserDto>(dto);
+
             var result = await userAccountServiceForWebApp.EditUser(saveDto, origin: "Admin");
 
             if (result.HasError)

@@ -63,7 +63,7 @@ namespace Infrastructure.Identity.Services
                 Email = saveDto.Email,
                 UserName = saveDto.UserName,
                 ProfileImage = saveDto.ProfileImage,
-                PhoneNumber = saveDto.Phone,
+                PhoneNumber = saveDto.PhoneNumber,
                 Status = UserStatus.Inactive,
                 EmailConfirmed = false,       
                 DocumentNumber = null   
@@ -186,7 +186,7 @@ namespace Infrastructure.Identity.Services
             user.ProfileImage = string.IsNullOrWhiteSpace(saveDto.ProfileImage) ? user.ProfileImage : saveDto.ProfileImage;
             user.EmailConfirmed = user.EmailConfirmed && user.Email == saveDto.Email;
             user.Email = saveDto.Email;
-            user.PhoneNumber = saveDto.Phone;
+            user.PhoneNumber = saveDto.PhoneNumber;
             user.DocumentNumber = documentNumber;
             user.Status = saveDto.Status;
 
@@ -358,7 +358,7 @@ namespace Infrastructure.Identity.Services
                 Name = user.Name,
                 UserName = user.UserName ?? "",
                 ProfileImage = user.ProfileImage,
-                Phone = user.PhoneNumber,
+                PhoneNumber = user.PhoneNumber,
                 isVerified = user.EmailConfirmed,
                 Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!),
                 Status = user.Status
@@ -412,7 +412,7 @@ namespace Infrastructure.Identity.Services
                 Name = user.Name,
                 UserName = user.UserName ?? "",
                 ProfileImage = user.ProfileImage,
-                Phone = user.PhoneNumber,
+                PhoneNumber = user.PhoneNumber,
                 isVerified = user.EmailConfirmed,
                 Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!),
                 Status = user.Status
@@ -449,7 +449,7 @@ namespace Infrastructure.Identity.Services
                     Name = item.Name,
                     UserName = item.UserName ?? "",
                     ProfileImage = item.ProfileImage,
-                    Phone = item.PhoneNumber,
+                    PhoneNumber = item.PhoneNumber,
                     isVerified = item.EmailConfirmed,
                     Role = Enum.Parse<Roles>(roleName),
                     Status = item.Status

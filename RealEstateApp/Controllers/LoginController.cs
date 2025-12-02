@@ -1,4 +1,5 @@
-﻿using Application.Dtos.User;
+﻿using Application.Dtos.Agent;
+using Application.Dtos.User;
 using Application.Interfaces;
 using Application.ViewModels.User;
 using AutoMapper;
@@ -125,38 +126,61 @@ namespace RealEstateApp.Controllers
                 Name = "",
                 Password = "",
                 UserName = "",
+                PhoneNumber = "",
             });
         }
-
         [HttpPost]
         public async Task<IActionResult> Register(RegisterUserViewModel vm)
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
                 return View(vm);
             }
 
-            SaveUserDto dto = mapper.Map<SaveUserDto>(vm);
             string origin = Request?.Headers?.Origin.ToString() ?? string.Empty;
 
-            RegisterResponseDto? returnUser = await userAccountServiceForWebApp.RegisterUser(dto, origin);
-
-            if (returnUser.HasError)
+            if (vm.Role == Roles.Agent)
             {
-                ViewBag.HasError = true;
-                ViewBag.Errors = returnUser.Errors;
-                return View(vm);
-            }
+                var saveAgentDto = new CreateAgentDto
+                {
+                    Id = string.Empty,
+                    Name = vm.Name,
+                    LastName = vm.LastName,
+                    Email = vm.Email,
+                    UserName = vm.UserName,
+                    PhoneNumber = vm.PhoneNumber,
+                    Password = vm.Password,
+                    Status = UserStatus.Inactive,
+                    Role = Roles.Agent,
+                    ProfileImage = ""
+                };
 
-            if (returnUser != null && !string.IsNullOrWhiteSpace(returnUser.Id))
-            {
-                dto.Id = returnUser.Id;
-                dto.ProfileImage = FileManager.Upload(vm.ProfileImageFile, dto.Id, "Users");
-                await userAccountServiceForWebApp.EditUser(dto, origin, null, true);
-            }
+                var saveUserDto = mapper.Map<SaveUserDto>(saveAgentDto);
+                var returnAgent = await userAccountServiceForWebApp.RegisterUser(saveUserDto, origin);
 
+                if (returnAgent.HasError)
+                {
+                    ViewBag.HasError = true;
+                    ViewBag.Errors = returnAgent.Errors;
+                    return View(vm);
+                }
+
+                if (!string.IsNullOrWhiteSpace(returnAgent.Id))
+                {
+                    saveUserDto.Id = returnAgent.Id;
+                    saveUserDto.ProfileImage = FileManager.Upload(vm.ProfileImageFile, returnAgent.Id, "Agents");
+                    await userAccountServiceForWebApp.EditUser(saveUserDto, origin, null, true);
+                }
+            }
+                TempData["SuccessMessage"] = "Registro exitoso. Contactate con un administrador para activar tu cuenta.";
             return RedirectToRoute(new { controller = "Login", action = "Index" });
         }
+
 
         public async Task<IActionResult> ConfirmEmail(string userId,string token)
         {

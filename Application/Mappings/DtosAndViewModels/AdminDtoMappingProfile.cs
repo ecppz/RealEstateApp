@@ -29,16 +29,16 @@ namespace Application.Mappings.DtosAndViewModels
             CreateMap<AdminDto, DeactivateAdminViewModel>().ReverseMap();
 
             CreateMap<AdminDto, SaveUserDto>()
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
 
             CreateMap<CreateAdminDto, SaveUserDto>()
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
             CreateMap<EditAdminDto, SaveUserDto>()
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
 

@@ -22,26 +22,6 @@ namespace RealEstateApp.Controllers
             this.userAccountServiceForWebApp = userAccountServiceForWebApp;
             this.roleManager = roleManager;
         }
-        //public async Task<IActionResult> Index()
-        //{
-        //    var dtos = await userAccountServiceForWebApp.GetAllUser();
-
-        //    var listEntityVms = dtos.Select(s =>
-        //      new UserViewModel()
-        //      {
-        //          Id = s.Id,
-        //          Name = s.Name,
-        //          Email = s.Email,
-        //          UserName = s.UserName,
-        //          LastName = s.LastName,
-        //          Role = s.Role,
-        //          Phone = s.Phone,
-        //          ProfileImage = s.ProfileImage,
-        //          Status = s.Status
-        //      }).ToList();
-
-        //    return View(listEntityVms);
-        //}
 
         public async Task<IActionResult> Edit(string id)
         {
@@ -67,7 +47,7 @@ namespace RealEstateApp.Controllers
                 LastName = dto.LastName,
                 Password = "",
                 Role = dto.Role,
-                Phone = dto.Phone,
+                PhoneNumber = dto.PhoneNumber,
             };
 
             ViewBag.Roles = await roleManager.Roles.ToListAsync();
@@ -95,7 +75,7 @@ namespace RealEstateApp.Controllers
                 LastName = vm.LastName,
                 Password = vm.Password ?? "",
                 Role = vm.Role,
-                Phone = vm.Phone,
+                PhoneNumber = vm.PhoneNumber,
                 Status = vm.Status
             };
 

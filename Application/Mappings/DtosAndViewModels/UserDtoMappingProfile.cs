@@ -1,6 +1,4 @@
 ﻿using Application.Dtos.User;
-using Application.ViewModels.Admin;
-using Application.ViewModels.Agent;
 using Application.ViewModels.User;
 using AutoMapper;
 
@@ -19,7 +17,7 @@ namespace Application.Mappings.DtosAndViewModels
                 .ReverseMap()          
                 .ForMember(dest => dest.Email, opt => opt.Ignore())
                 .ForMember(dest => dest.UserName, opt => opt.Ignore())
-                .ForMember(dest => dest.Phone, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore())
                 .ForMember(dest => dest.Role, opt => opt.Ignore());
      
@@ -44,13 +42,6 @@ namespace Application.Mappings.DtosAndViewModels
 
             CreateMap<LoginDto, LoginViewModel>()
                 .ReverseMap();
-
-            //CreateMap<UserDto, AgentViewModel>()
-            //    .ForMember(dest => dest.PropertyCount, opt => opt.Ignore());
-
-            //CreateMap<UserDto, AdminViewModel>()
-            //    .ForMember(dest => dest.DocumentNumber, opt => opt.Ignore());
-
         }
 
 
