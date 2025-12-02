@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace RealEstateApp.Controllers
 {
+    [Authorize(Roles = "Agent")]
     public class AgentController : Controller
     {
-        [Authorize(Roles = "Agent")]
         public IActionResult Index()
         {
             return View();

@@ -1,5 +1,7 @@
 ﻿using Application.Dtos.User;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Common.Enums;
 using Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,12 +10,14 @@ namespace Infrastructure.Identity.Services
     public class UserAccountServiceForWebApp : BaseAccountService, IUserAccountServiceForWebApp
     {
         private readonly UserManager<UserAccount> _userManager;
-        private readonly SignInManager<UserAccount> _signInManager;  
-        public UserAccountServiceForWebApp(UserManager<UserAccount> userManager, SignInManager<UserAccount> signInManager, IEmailService emailService)
-            : base(userManager,emailService) 
+        private readonly SignInManager<UserAccount> _signInManager;
+        private readonly IMapper _mapper;
+        public UserAccountServiceForWebApp(UserManager<UserAccount> userManager, SignInManager<UserAccount> signInManager, IEmailService emailService, IMapper mapper)
+            : base(userManager,emailService, mapper) 
         {
             _userManager = userManager;
-            _signInManager = signInManager;          
+            _signInManager = signInManager;
+            _mapper = mapper;
         }
         public async Task<LoginResponseDto> AuthenticateAsync(LoginDto loginDto)
         {
@@ -24,6 +28,7 @@ namespace Infrastructure.Identity.Services
                 LastName = "",
                 Name = "",
                 UserName = "",
+                Status = UserStatus.Inactive,
                 HasError = false,
                 Errors = []
             };
@@ -37,11 +42,26 @@ namespace Infrastructure.Identity.Services
                 return response;
             }
 
-            if (!user.EmailConfirmed)
+            var rolesList = await _userManager.GetRolesAsync(user);
+            var role = rolesList.FirstOrDefault();
+
+            if (role == Roles.Customer.ToString())
             {
-                response.HasError = true;
-                response.Errors.Add($"This account {loginDto.UserName} is not active, you should check your email");
-                return response;
+                if (!user.EmailConfirmed)
+                {
+                    response.HasError = true;
+                    response.Errors.Add($"Esta cuenta de cliente '{loginDto.UserName}' no está activo, por favor revisa tu email.");
+                    return response;
+                }
+            }
+            else if (role == Roles.Agent.ToString())
+            {
+                if (user.Status != UserStatus.Active)
+                {
+                    response.HasError = true;
+                    response.Errors.Add($"Este cuenta de agente '{loginDto.UserName}' no está activo, por favor contacta con un admin.");
+                    return response;
+                }
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName ?? "", loginDto.Password, false, true);
@@ -62,8 +82,6 @@ namespace Infrastructure.Identity.Services
                 return response;
             }
 
-            var rolesList = await _userManager.GetRolesAsync(user);
-
             response.Id = user.Id;
             response.Email = user.Email ?? "";
             response.UserName = user.UserName ?? "";
@@ -71,12 +89,13 @@ namespace Infrastructure.Identity.Services
             response.LastName = user.LastName;
             response.IsVerified = user.EmailConfirmed;
             response.Roles = rolesList.ToList();
-
+            response.Status = user.Status;
             return response;
         }
         public async Task SignOutAsync()
         {
             await _signInManager.SignOutAsync();
         }       
+
     }
 }

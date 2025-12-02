@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Reflection;
 using System.Text;
 
 namespace Infrastructure.Identity
@@ -64,6 +65,10 @@ namespace Infrastructure.Identity
             });
             #endregion
 
+            #region Configurations
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            #endregion
+
             #region Services
             services.AddScoped<IUserAccountServiceForWebApp, UserAccountServiceForWebApp>();
             #endregion
@@ -74,6 +79,7 @@ namespace Infrastructure.Identity
             GeneralConfiguration(services, config);
 
             #region Configurations
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.Configure<JwtSettings>(config.GetSection("JwtSettings"));
             #endregion
 

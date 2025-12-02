@@ -1,0 +1,22 @@
+﻿@model DeactivateDeveloperViewModel
+@{
+    ViewData["Title"] = "Desactivar Desarrollador";
+    Layout = "_LayoutAdmin";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<div class="alert alert-warning mt-4">
+    <h4>¿Está seguro que desea desactivar este desarrollador?</h4>
+    <p><strong>@Model.Name @Model.LastName</strong> - @Model.Email</p>
+</div>
+
+<form asp-action="DeactivateDeveloper" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-warning">Aceptar</button>
+    <a asp-action="Developers" class="btn btn-secondary">Cancelar</a>
+</form>

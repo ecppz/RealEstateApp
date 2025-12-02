@@ -1,4 +1,6 @@
-﻿namespace Application.Dtos.User
+﻿using Domain.Common.Enums;
+
+namespace Application.Dtos.User
 {
     public class LoginResponseDto
     {
@@ -7,6 +9,7 @@
         public required string LastName { get; set; }
         public required string Email { get; set; }
         public required string UserName { get; set; }
+        public required UserStatus Status { get; set; }
         public List<string>? Roles { get; set; }
         public bool IsVerified { get; set; }
         public bool HasError { get; set; }

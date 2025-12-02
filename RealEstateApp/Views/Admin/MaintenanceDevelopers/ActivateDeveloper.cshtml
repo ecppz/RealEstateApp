@@ -1,0 +1,22 @@
+﻿@model ActivateDeveloperViewModel
+@{
+    ViewData["Title"] = "Activar Desarrollador";
+    Layout = "_LayoutAdmin";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<div class="alert alert-info mt-4">
+    <h4>¿Está seguro que desea activar este desarrollador?</h4>
+    <p><strong>@Model.Name @Model.LastName</strong> - @Model.Email</p>
+</div>
+
+<form asp-action="ActivateDeveloper" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-success">Aceptar</button>
+    <a asp-action="Developers" class="btn btn-secondary">Cancelar</a>
+</form>

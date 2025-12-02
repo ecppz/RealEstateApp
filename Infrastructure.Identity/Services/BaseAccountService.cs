@@ -1,6 +1,10 @@
-﻿using Application.Dtos.Email;
+﻿using Application.Dtos.Admin;
+using Application.Dtos.Agent;
+using Application.Dtos.Developer;
+using Application.Dtos.Email;
 using Application.Dtos.User;
 using Application.Interfaces;
+using AutoMapper;
 using Domain.Common.Enums;
 using Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +18,15 @@ namespace Infrastructure.Identity.Services
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly IEmailService _emailService;
-        protected BaseAccountService(UserManager<UserAccount> userManager, IEmailService emailService)
+        private readonly IMapper _mapper;
+
+        protected BaseAccountService(UserManager<UserAccount> userManager, IEmailService emailService, IMapper mapper)
         {
             _userManager = userManager;
             _emailService = emailService;
+            _mapper = mapper;
         }
-
-        public virtual async Task<RegisterResponseDto> RegisterUser(SaveUserDto saveDto, string? origin, bool? isApi = false)
+        public virtual async Task<RegisterResponseDto> RegisterUser(SaveUserDto saveDto, string? origin, string? documentNumber = null, bool ? isApi = false)
         {
             RegisterResponseDto response = new()
             {
@@ -56,33 +62,62 @@ namespace Infrastructure.Identity.Services
                 Email = saveDto.Email,
                 UserName = saveDto.UserName,
                 ProfileImage = saveDto.ProfileImage,
-                EmailConfirmed = false,
-                PhoneNumber = saveDto.Phone
+                PhoneNumber = saveDto.Phone,
+                Status = UserStatus.Inactive,
+                EmailConfirmed = false,       
+                DocumentNumber = null   
             };
 
+            switch (saveDto.Role)
+            {
+                case Roles.Admin:
+                case Roles.Developer:
+                    user.Status = UserStatus.Active;
+                    user.DocumentNumber = documentNumber;
+                    user.EmailConfirmed = true;
+                    break;
+
+                case Roles.Customer:
+                    user.Status = UserStatus.Inactive;
+                    user.EmailConfirmed = false;
+                    user.DocumentNumber = null;
+                    break;
+
+                case Roles.Agent:
+                    user.Status = UserStatus.Inactive;
+                    user.EmailConfirmed = true;
+                    user.DocumentNumber = null;
+                    break;
+            }
+
             var result = await _userManager.CreateAsync(user, saveDto.Password);
+
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, saveDto.Role.ToString());
-                if (isApi != null && !isApi.Value)
+
+                if (saveDto.Role == Roles.Customer)
                 {
-                    string verificationUri = await GetVerificationEmailUri(user, origin ?? "");
-                    await _emailService.SendAsync(new EmailRequestDto()
+                    if (isApi != null && !isApi.Value)
                     {
-                        To = saveDto.Email,
-                        HtmlBody = $"Please confirm your account visiting this URL  <a href='{verificationUri}'> Clic aqui </a>",
-                        Subject = "Confirm registration"
-                    });
-                }
-                else
-                {
-                    string? verificationToken = await GetVerificationEmailToken(user);
-                    await _emailService.SendAsync(new EmailRequestDto()
+                        string verificationUri = await GetVerificationEmailUri(user, origin ?? "");
+                        await _emailService.SendAsync(new EmailRequestDto()
+                        {
+                            To = saveDto.Email,
+                            HtmlBody = $"Por favor confirma tu cuenta visitando esta URL <a href='{verificationUri}'> Clic aqui </a>",
+                            Subject = "Confirm registration"
+                        });
+                    }
+                    else
                     {
-                        To = saveDto.Email,
-                        HtmlBody = $"Please confirm your account use this token {verificationToken}",
-                        Subject = "Confirm registration"
-                    });
+                        string? verificationToken = await GetVerificationEmailToken(user);
+                        await _emailService.SendAsync(new EmailRequestDto()
+                        {
+                            To = saveDto.Email,
+                            HtmlBody = $"Please confirm your account use this token {verificationToken}",
+                            Subject = "Confirm registration"
+                        });
+                    }
                 }
 
                 var rolesList = await _userManager.GetRolesAsync(user);
@@ -104,7 +139,8 @@ namespace Infrastructure.Identity.Services
                 return response;
             }
         }
-        public virtual async Task<EditResponseDto> EditUser(SaveUserDto saveDto, string? origin, bool? isCreated = false, bool? isApi = false)
+
+        public virtual async Task<EditResponseDto> EditUser(SaveUserDto saveDto, string? origin, string? documentNumber = null, bool? isCreated = false, bool? isApi = false)
         {
             bool isNotcreated = !isCreated ?? false;
             EditResponseDto response = new()
@@ -150,6 +186,8 @@ namespace Infrastructure.Identity.Services
             user.EmailConfirmed = user.EmailConfirmed && user.Email == saveDto.Email;
             user.Email = saveDto.Email;
             user.PhoneNumber = saveDto.Phone;
+            user.DocumentNumber = documentNumber;
+            user.Status = saveDto.Status;
 
             if (!string.IsNullOrWhiteSpace(saveDto.Password) && isNotcreated)
             {
@@ -181,8 +219,8 @@ namespace Infrastructure.Identity.Services
                         await _emailService.SendAsync(new EmailRequestDto()
                         {
                             To = saveDto.Email,
-                            HtmlBody = $"Please confirm your account visiting this URL <a href='{verificationUri}'> Clic aqui </a>",
-                            Subject = "Confirm registration"
+                            HtmlBody = $"Por favor confirma tu cuenta visitando esta URL <a href='{verificationUri}'> Clic aqui </a>",
+                            Subject = "Confirmr registro"
                         });
                     }
                     else
@@ -191,8 +229,8 @@ namespace Infrastructure.Identity.Services
                         await _emailService.SendAsync(new EmailRequestDto()
                         {
                             To = saveDto.Email,
-                            HtmlBody = $"Please confirm your account use this token {verificationToken}",
-                            Subject = "Confirm registration"
+                            HtmlBody = $"Por favor confirma tu cuenta usando este token {verificationToken}",
+                            Subject = "Confirmr registro"
                         });
                     }
                 }
@@ -239,7 +277,7 @@ namespace Infrastructure.Identity.Services
                 await _emailService.SendAsync(new EmailRequestDto()
                 {
                     To = user.Email,
-                    HtmlBody = $"Please reset your password account visiting this URL <a href='{resetUri}'> Clic aqui </a>",
+                    HtmlBody = $"Por favor resetea tu password visitango esta URL <a href='{resetUri}'> Clic aqui </a>",
                     Subject = "Reset password"
                 });
             }
@@ -321,15 +359,16 @@ namespace Infrastructure.Identity.Services
                 ProfileImage = user.ProfileImage,
                 Phone = user.PhoneNumber,
                 isVerified = user.EmailConfirmed,
-                Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!)
+                Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!),
+                Status = user.Status
 
             };
 
             return userDto;
         }
-        public virtual async Task<UserDto?> GetUserById(string Id)
+        public virtual async Task<TDto?> GetUserById<TDto>(string id) where TDto : class
         {
-            var user = await _userManager.FindByIdAsync(Id);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
@@ -337,22 +376,22 @@ namespace Infrastructure.Identity.Services
             }
 
             var rolesList = await _userManager.GetRolesAsync(user);
+            var roleName = rolesList.FirstOrDefault();
 
-            var userDto = new UserDto()
-            {
-                Id = user.Id,
-                Email = user.Email ?? "",
-                LastName = user.LastName,
-                Name = user.Name,
-                UserName = user.UserName ?? "",
-                ProfileImage = user.ProfileImage,
-                Phone = user.PhoneNumber,
-                isVerified = user.EmailConfirmed,
-                Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!)
-            };
+            var dto = _mapper.Map<TDto>(user);
 
-            return userDto;
+            if (dto is UserDto userDto)
+                userDto.Role = Enum.Parse<Roles>(roleName!);
+            else if (dto is AdminDto adminDto)
+                adminDto.Role = Enum.Parse<Roles>(roleName!);
+            else if (dto is AgentDto agentDto)
+                agentDto.Role = Enum.Parse<Roles>(roleName!);
+            else if (dto is DeveloperDto developerDto)
+                developerDto.Role = Enum.Parse<Roles>(roleName!);
+
+            return dto;
         }
+
         public virtual async Task<UserDto?> GetUserByUserName(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
@@ -374,20 +413,24 @@ namespace Infrastructure.Identity.Services
                 ProfileImage = user.ProfileImage,
                 Phone = user.PhoneNumber,
                 isVerified = user.EmailConfirmed,
-                Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!)
+                Role = Enum.Parse<Roles>(rolesList.FirstOrDefault()!),
+                Status = user.Status
             };
 
             return userDto;
         }
-        public virtual async Task<List<UserDto>> GetAllUser(bool? isActive = true)
+        public virtual async Task<List<UserDto>> GetAllUser(bool? isActive)
         {
-            List<UserDto> listUsersDtos = [];
+            List<UserDto> listUsersDtos = new();
 
-            var users = _userManager.Users;
+            var users = _userManager.Users.AsQueryable();
 
-            if (isActive != null && isActive == true)
+            if (isActive.HasValue)
             {
-                users = users.Where(w => w.EmailConfirmed);
+                if (isActive.Value)
+                    users = users.Where(u => u.Status == UserStatus.Active);
+                else
+                    users = users.Where(u => u.Status == UserStatus.Inactive);
             }
 
             var listUser = await users.ToListAsync();
@@ -395,6 +438,7 @@ namespace Infrastructure.Identity.Services
             foreach (var item in listUser)
             {
                 var roleList = await _userManager.GetRolesAsync(item);
+                var roleName = roleList.FirstOrDefault() ?? Roles.Customer.ToString();
 
                 listUsersDtos.Add(new UserDto()
                 {
@@ -406,12 +450,34 @@ namespace Infrastructure.Identity.Services
                     ProfileImage = item.ProfileImage,
                     Phone = item.PhoneNumber,
                     isVerified = item.EmailConfirmed,
-                    Role = Enum.Parse<Roles>(roleList.FirstOrDefault()!)
+                    Role = Enum.Parse<Roles>(roleName),
+                    Status = item.Status
                 });
             }
 
             return listUsersDtos;
         }
+
+        public async Task<List<TDto>> GetUsersByRole<TDto>(Roles role) where TDto : class
+        {
+            var users = _userManager.Users.AsQueryable();
+            var filteredUsers = new List<TDto>();
+
+            foreach (var user in await users.ToListAsync())
+            {
+                var roleList = await _userManager.GetRolesAsync(user);
+                var roleName = roleList.FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(roleName) && Enum.Parse<Roles>(roleName) == role)
+                {
+                    var dto = _mapper.Map<TDto>(user);
+                    filteredUsers.Add(dto);
+                }
+            }
+
+            return filteredUsers;
+        }
+
         public virtual async Task<UserResponseDto> ConfirmAccountAsync(string userId, string token)
         {
             UserResponseDto response = new() { HasError = false, Errors = [] };

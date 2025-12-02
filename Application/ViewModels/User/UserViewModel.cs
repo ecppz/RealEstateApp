@@ -11,6 +11,7 @@ namespace Application.ViewModels.User
         public required string UserName { get; set; }
         public string? Phone { get; set; }
         public string? ProfileImage { get; set; }
+        public required UserStatus Status { get; set; }
         public required Roles Role { get; set; }
     }
 }

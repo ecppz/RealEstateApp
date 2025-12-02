@@ -39,5 +39,6 @@ namespace Application.ViewModels.User
 
         [Required(ErrorMessage = "You must enter the valid role of user")]
         public required Roles Role { get; set; }
-    }
+        public UserStatus Status { get; set; }
+}
 }

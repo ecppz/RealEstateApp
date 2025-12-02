@@ -1,5 +1,6 @@
 ﻿using Application.Dtos.User;
 using Application.Interfaces;
+using AutoMapper;
 using Domain.Settings;
 using Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +17,14 @@ namespace Infrastructure.Identity.Services
         private readonly UserManager<UserAccount> _userManager;
         private readonly SignInManager<UserAccount> _signInManager;
         private readonly JwtSettings _jwtSettings;
-        public UserAccountServiceForWebApi(UserManager<UserAccount> userManager, SignInManager<UserAccount> signInManager, IEmailService emailService, IOptions<JwtSettings> jwtSettings)
-            : base(userManager, emailService)
+        private readonly IMapper _mapper;
+        public UserAccountServiceForWebApi(UserManager<UserAccount> userManager, SignInManager<UserAccount> signInManager, IEmailService emailService, IOptions<JwtSettings> jwtSettings, IMapper mapper)
+            : base(userManager, emailService, mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtSettings = jwtSettings.Value;
+            _mapper = mapper;
         }
         public async Task<LoginResponseForApiDto> AuthenticateAsync(LoginDto loginDto)
         {
@@ -76,14 +79,14 @@ namespace Infrastructure.Identity.Services
             return response;
         }
 
-        public override async Task<RegisterResponseDto> RegisterUser(SaveUserDto saveDto, string? origin, bool? isApi = false)
+        public override async Task<RegisterResponseDto> RegisterUser(SaveUserDto saveDto, string? origin, string? documentNumber = null, bool? isApi = false)
         {
-            return await base.RegisterUser(saveDto, null, isApi);
+            return await base.RegisterUser(saveDto, null, documentNumber = null, isApi);
         }
 
-        public override async Task<EditResponseDto> EditUser(SaveUserDto saveDto, string? origin, bool? isCreated = false, bool? isApi = false)
+        public override async Task<EditResponseDto> EditUser(SaveUserDto saveDto, string? origin,  string? documentNumber = null,  bool? isCreated = false, bool? isApi = false)
         {
-            return await base.EditUser(saveDto, null, isCreated, isApi);
+            return await base.EditUser(saveDto, null, null, isCreated, isApi);
         }
 
         public override async Task<UserResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto request, bool? isApi = false)

@@ -1,0 +1,23 @@
+﻿@model DeactivateAdminViewModel
+@{
+    ViewData["Title"] = "Desactivar Administrador";
+    Layout = "_LayoutAdmin";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<div class="alert alert-warning mt-4">
+    <h4>¿Está seguro que desea desactivar este administrador?</h4>
+    <p><strong>@Model.Name @Model.LastName</strong> - @Model.Email</p>
+</div>
+
+<form asp-action="DeactivateAdmin" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-warning">Aceptar</button>
+    <a asp-action="Admins" class="btn btn-secondary">Cancelar</a>
+</form>

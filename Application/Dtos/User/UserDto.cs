@@ -12,6 +12,7 @@ namespace Application.Dtos.User
         public string? Phone { get; set; }
         public string? ProfileImage { get; set; }
         public bool? isVerified { get; set; }
+        public required UserStatus Status { get; set; }
         public required Roles Role { get; set; }
     }
 }

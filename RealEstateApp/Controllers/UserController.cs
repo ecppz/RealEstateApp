@@ -1,6 +1,8 @@
 using Application.Dtos.User;
 using Application.Interfaces;
+using Application.ViewModels.Agent;
 using Application.ViewModels.User;
+using Domain.Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,74 +22,27 @@ namespace RealEstateApp.Controllers
             this.userAccountServiceForWebApp = userAccountServiceForWebApp;
             this.roleManager = roleManager;
         }
-        public async Task<IActionResult> Index()
-        {
-            var dtos = await userAccountServiceForWebApp.GetAllUser(false);
+        //public async Task<IActionResult> Index()
+        //{
+        //    var dtos = await userAccountServiceForWebApp.GetAllUser();
 
-            var listEntityVms = dtos.Select(s =>
-              new UserViewModel()
-              {
-                  Id = s.Id,
-                  Name = s.Name,
-                  Email = s.Email,
-                  UserName = s.UserName,
-                  LastName = s.LastName,
-                  Role = s.Role,
-                  Phone = s.Phone,
-                  ProfileImage = s.ProfileImage
-              }).ToList();
+        //    var listEntityVms = dtos.Select(s =>
+        //      new UserViewModel()
+        //      {
+        //          Id = s.Id,
+        //          Name = s.Name,
+        //          Email = s.Email,
+        //          UserName = s.UserName,
+        //          LastName = s.LastName,
+        //          Role = s.Role,
+        //          Phone = s.Phone,
+        //          ProfileImage = s.ProfileImage,
+        //          Status = s.Status
+        //      }).ToList();
 
-            return View(listEntityVms);
-        }
-        public async Task<IActionResult> Create()
-        {
-            ViewBag.Roles = await roleManager.Roles.ToListAsync();
-            return View(new CreateUserViewModel() { Id = 0, Name = "", Email = "", UserName = "", LastName = "", Password = "", ConfirmPassword = ""});
-        }
+        //    return View(listEntityVms);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateUserViewModel vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Roles = await roleManager.Roles.ToListAsync();
-                return View(vm);
-            }
-
-            string origin = Request?.Headers?.Origin.ToString() ?? string.Empty;
-
-            SaveUserDto dto = new()
-            {
-                Id = "",
-                Name = vm.Name,
-                Email = vm.Email,
-                UserName = vm.UserName,
-                LastName = vm.LastName,
-                Password = vm.Password,
-                Role = vm.Role,
-                Phone = vm.Phone,
-                ProfileImage = ""
-            };
-
-            RegisterResponseDto? returnUser = await userAccountServiceForWebApp.RegisterUser(dto, origin);
-
-            if (returnUser.HasError)
-            {
-                ViewBag.Roles = await roleManager.Roles.ToListAsync();
-                ViewBag.HasError = true;
-                ViewBag.Errors = returnUser.Errors;
-                return View(vm);
-            }
-
-            if (returnUser != null && !string.IsNullOrWhiteSpace(returnUser.Id))
-            {
-                dto.Id = returnUser.Id;
-                dto.ProfileImage = FileManager.Upload(vm.ProfileImageFile, dto.Id, "Users");
-                await userAccountServiceForWebApp.EditUser(dto, origin, true);
-            }
-
-            return RedirectToRoute(new { controller = "User", action = "Index" });
-        }
         public async Task<IActionResult> Edit(string id)
         {
             if (!ModelState.IsValid)
@@ -96,7 +51,7 @@ namespace RealEstateApp.Controllers
             }
 
             ViewBag.EditMode = true;
-            var dto = await userAccountServiceForWebApp.GetUserById(id);
+            var dto = await userAccountServiceForWebApp.GetUserById<UserDto>(id);
 
             if (dto == null)
             {
@@ -141,9 +96,10 @@ namespace RealEstateApp.Controllers
                 Password = vm.Password ?? "",
                 Role = vm.Role,
                 Phone = vm.Phone,
+                Status = vm.Status
             };
 
-            var currentDto = await userAccountServiceForWebApp.GetUserById(vm.Id);
+            var currentDto = await userAccountServiceForWebApp.GetUserById<UserDto>(vm.Id);
             string? currentImagePath = "";
 
             if (currentDto != null)
@@ -171,7 +127,7 @@ namespace RealEstateApp.Controllers
                 return RedirectToRoute(new { controller = "User", action = "Index" });
             }
 
-            var dto = await userAccountServiceForWebApp.GetUserById(id);
+            var dto = await userAccountServiceForWebApp.GetUserById<UserDto>(id);
             if (dto == null)
             {
                 return RedirectToRoute(new { controller = "User", action = "Index" });
@@ -192,5 +148,7 @@ namespace RealEstateApp.Controllers
             FileManager.Delete(vm.Id, "Users");
             return RedirectToRoute(new { controller = "User", action = "Index" });
         }
+
+
     }
 }

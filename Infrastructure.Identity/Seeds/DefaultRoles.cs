@@ -10,6 +10,7 @@ namespace InvestmentApp.Infrastructure.Identity.Seeds
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Agent.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Customer.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.Developer.ToString()));
 
         }
     }

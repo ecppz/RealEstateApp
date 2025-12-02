@@ -1,0 +1,70 @@
+﻿@using System.Security.Claims
+@using Domain.Common.Enums
+@model List<DeveloperViewModel>
+@{
+    ViewData["Title"] = "Mantenimiento de Desarrolladores";
+    Layout = "_LayoutAdmin";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Listado de Desarrolladores</h2>
+    <a asp-action="CreateDeveloper" class="btn btn-primary">+ Crear Desarrollador</a>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Usuario</th>
+            <th>Cédula</th>
+            <th>Correo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dev in Model)
+        {
+            <tr>
+                <td>@dev.Name</td>
+                <td>@dev.LastName</td>
+                <td>@dev.UserName</td>
+                <td>@dev.DocumentNumber</td>
+                <td>@dev.Email</td>
+                <td>
+                    @if (dev.Status == UserStatus.Active)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </td>
+                <td>
+                    @if (dev.Id != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        @if (dev.Status == UserStatus.Active)
+                        {
+                            <a asp-action="DeactivateDeveloper" asp-route-id="@dev.Id" class="btn btn-warning btn-sm">Desactivar</a>
+                        }
+                        else
+                        {
+                            <a asp-action="ActivateDeveloper" asp-route-id="@dev.Id" class="btn btn-success btn-sm">Activar</a>
+                        }
+
+                        <a asp-action="EditDeveloper" asp-route-id="@dev.Id" class="btn btn-info btn-sm">Editar</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

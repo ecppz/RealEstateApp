@@ -152,7 +152,7 @@ namespace RealEstateApp.Controllers
             {
                 dto.Id = returnUser.Id;
                 dto.ProfileImage = FileManager.Upload(vm.ProfileImageFile, dto.Id, "Users");
-                await userAccountServiceForWebApp.EditUser(dto, origin, true);
+                await userAccountServiceForWebApp.EditUser(dto, origin, null, true);
             }
 
             return RedirectToRoute(new { controller = "Login", action = "Index" });

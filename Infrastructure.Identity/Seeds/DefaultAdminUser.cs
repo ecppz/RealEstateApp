@@ -16,7 +16,8 @@ namespace InvestmentApp.Infrastructure.Identity.Seeds
                 Email = "addmin@email.com",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                UserName = "admin"
+                UserName = "admin",
+                Status = UserStatus.Active
             };
 
             if (await userManager.Users.AllAsync(u => u.Id != user.Id))

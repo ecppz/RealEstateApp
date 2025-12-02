@@ -1,0 +1,16 @@
+﻿@model DeleteAgentViewModel
+@{
+    ViewData["Title"] = "Eliminar Agente";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="alert alert-danger mt-4">
+    <h4>¿Está seguro que desea eliminar este agente y todas sus propiedades?</h4>
+    <p><strong>@Model.Name @Model.LastName</strong> - @Model.Email</p>
+    <p>Cantidad de propiedades: @Model.PropertyCount</p>
+</div>
+
+<form asp-action="DeleteAgent" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-danger">Aceptar</button>
+    <a asp-action="Agents" class="btn btn-secondary">Cancelar</a>
+</form>

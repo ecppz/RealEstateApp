@@ -5,5 +5,6 @@
         Admin = 1,
         Agent,
         Customer,
+        Developer
     }
 }

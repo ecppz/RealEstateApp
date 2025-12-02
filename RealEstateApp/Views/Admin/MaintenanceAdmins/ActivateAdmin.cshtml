@@ -1,0 +1,23 @@
+﻿@model ActivateAdminViewModel
+@{
+    ViewData["Title"] = "Activar Administrador";
+    Layout = "_LayoutAdmin";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<div class="alert alert-info mt-4">
+    <h4>¿Está seguro que desea activar este administrador?</h4>
+    <p><strong>@Model.Name @Model.LastName</strong> - @Model.Email</p>
+</div>
+
+<form asp-action="ActivateAdmin" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-success">Aceptar</button>
+    <a asp-action="Admins" class="btn btn-secondary">Cancelar</a>
+</form>
