@@ -5,6 +5,7 @@
         public required int Id { get; set; }
         public required int PropertyId { get; set; }
         public required int ImprovementId { get; set; }
+        //nav property
         public Improvement? Improvement { get; set; }
         public Property? Property { get; set; }
     }

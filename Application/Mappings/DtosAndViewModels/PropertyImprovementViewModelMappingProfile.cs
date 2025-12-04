@@ -19,6 +19,8 @@ namespace Application.Mappings.DtosAndViewModels
 
             // List
             CreateMap<PropertyImprovementListViewModel, PropertyImprovementListDto>().ReverseMap();
+
+            CreateMap<PropertyImprovementDto, PropertyImprovementViewModel>().ReverseMap();
         }
     }
 }

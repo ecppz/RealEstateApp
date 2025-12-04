@@ -4,6 +4,7 @@ using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(RealEstateAppContext))]
-    partial class RealEstateAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251203221713_DeleteOnCascade")]
+    partial class DeleteOnCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,7 +167,13 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("PropertyTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PropertyTypeId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("SaleTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SaleTypeId1")
                         .HasColumnType("int");
 
                     b.Property<int>("SizeInMeters")
@@ -177,7 +186,11 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PropertyTypeId");
 
+                    b.HasIndex("PropertyTypeId1");
+
                     b.HasIndex("SaleTypeId");
+
+                    b.HasIndex("SaleTypeId1");
 
                     b.ToTable("Properties", (string)null);
                 });
@@ -215,12 +228,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("ImprovementId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ImprovementId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ImprovementId");
+
+                    b.HasIndex("ImprovementId1");
 
                     b.HasIndex("PropertyId");
 
@@ -309,16 +327,24 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Property", b =>
                 {
                     b.HasOne("Domain.Entities.PropertyType", "PropertyType")
-                        .WithMany("Properties")
+                        .WithMany()
                         .HasForeignKey("PropertyTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.SaleType", "SaleType")
+                    b.HasOne("Domain.Entities.PropertyType", null)
                         .WithMany("Properties")
+                        .HasForeignKey("PropertyTypeId1");
+
+                    b.HasOne("Domain.Entities.SaleType", "SaleType")
+                        .WithMany()
                         .HasForeignKey("SaleTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.SaleType", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("SaleTypeId1");
 
                     b.Navigation("PropertyType");
 
@@ -339,10 +365,14 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.PropertyImprovement", b =>
                 {
                     b.HasOne("Domain.Entities.Improvement", "Improvement")
-                        .WithMany("PropertyImprovements")
+                        .WithMany()
                         .HasForeignKey("ImprovementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.Improvement", null)
+                        .WithMany("PropertyImprovements")
+                        .HasForeignKey("ImprovementId1");
 
                     b.HasOne("Domain.Entities.Property", "Property")
                         .WithMany("Improvements")

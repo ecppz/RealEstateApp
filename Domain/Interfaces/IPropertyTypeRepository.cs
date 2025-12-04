@@ -4,11 +4,10 @@ namespace Domain.Interfaces
 {
     public interface IPropertyTypeRepository : IGenericRepository<PropertyType>
     {
-
-        Task<PropertyType?> AddAsync(PropertyType entity);
-        Task<PropertyType?> GetById(int id);
-        Task<List<PropertyType>> GetAllList();
-        Task<PropertyType?> UpdateAsync(int id, PropertyType entity);
-        Task DeleteAsync(int id);
+        Task<PropertyType?> AddPropertyAsync(PropertyType entity);
+        Task<PropertyType?> GetPropertyById(int id);
+        Task<List<PropertyType>> GetAllPropertyList();
+        Task<PropertyType?> UpdatePropertyAsync(int id, PropertyType entity);
+        Task DeletePropertyAsync(int id);
     }
 }

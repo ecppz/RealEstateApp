@@ -9,16 +9,16 @@ namespace Application.Services
     public class SaleTypeService : GenericService<SaleType, SaleTypeDto>, ISaleTypeService
     {
         private readonly ISaleTypeRepository saleTypeRepository;
-        private readonly IPropertyRepository propertyRepository;
+       // private readonly IPropertyRepository propertyRepository;
         private readonly IMapper mapper;
         private readonly IBaseAccountService accountService;
 
-        public SaleTypeService(ISaleTypeRepository saleTypeRepository, IMapper mapper, IPropertyRepository propertyRepository, IBaseAccountService accountService)
+        public SaleTypeService(ISaleTypeRepository saleTypeRepository, IMapper mapper, IBaseAccountService accountService)
             : base(saleTypeRepository, mapper)
         {
             this.saleTypeRepository = saleTypeRepository;
             this.mapper = mapper;
-            this.propertyRepository = propertyRepository;
+      //      this.propertyRepository = propertyRepository;
             this.accountService = accountService;
         }
 
@@ -57,22 +57,22 @@ namespace Application.Services
             return mapper.Map<SaleTypeDto>(updated);
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            //Eliminar propiedades asociadas antes de borrar el tipo de venta
-            var properties = await propertyRepository.GetAllList();
-            var toDelete = properties.Where(p => p.SaleTypeId == id).ToList();
+      //  public async Task DeleteAsync(int id)
+      //  {
+      //      //Eliminar propiedades asociadas antes de borrar el tipo de venta
+      ////      var properties = await propertyRepository.GetAllList();
+      //  //    var toDelete = properties.Where(p => p.SaleTypeId == id).ToList();
 
-            if (toDelete.Any())
-            {
-                foreach (var property in toDelete)
-                {
-                    await propertyRepository.DeleteAsync(property.Id);
-                }
-            }
+      //      if (toDelete.Any())
+      //      {
+      //          foreach (var property in toDelete)
+      //          {
+      //     //         await propertyRepository.DeleteAsync(property.Id);
+      //          }
+      //      }
 
-            await saleTypeRepository.DeleteAsync(id);
-        }
+      //      await saleTypeRepository.DeleteAsync(id);
+      //  }
 
 
     }

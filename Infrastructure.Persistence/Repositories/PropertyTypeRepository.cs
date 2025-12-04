@@ -9,28 +9,28 @@ namespace Infrastructure.Persistence.Repositories
     {
         public PropertyTypeRepository(RealEstateAppContext context) : base(context) { }
 
-        public override async Task<List<PropertyType>> GetAllList()
-        {
-            return await context.PropertyTypes
-                .Include(pt => pt.Properties)
-                .ToListAsync();
-        }
-
-        public override async Task<PropertyType?> GetById(int id)
-        {
-            return await context.PropertyTypes
-                .Include(pt => pt.Properties)
-                .FirstOrDefaultAsync(pt => pt.Id == id);
-        }
-
-        public override async Task<PropertyType?> AddAsync(PropertyType entity)
+        public async Task<PropertyType?> AddPropertyAsync(PropertyType entity)
         {
             await context.PropertyTypes.AddAsync(entity);
             await context.SaveChangesAsync();
             return entity;
         }
 
-        public override async Task<PropertyType?> UpdateAsync(int id, PropertyType entity)
+        public async Task<List<PropertyType>> GetAllPropertyList()
+        {
+            return await context.PropertyTypes
+                .Include(pt => pt.Properties)
+                .ToListAsync();
+        }
+
+        public async Task<PropertyType?> GetPropertyById(int id)
+        {
+            return await context.PropertyTypes
+                .Include(pt => pt.Properties)
+                .FirstOrDefaultAsync(pt => pt.Id == id);
+        }
+
+        public async Task<PropertyType?> UpdatePropertyAsync(int id, PropertyType entity)
         {
             var entry = await context.PropertyTypes.FindAsync(id);
             if (entry != null)
@@ -42,7 +42,7 @@ namespace Infrastructure.Persistence.Repositories
             return null;
         }
 
-        public override async Task DeleteAsync(int id)
+        public async Task DeletePropertyAsync(int id)
         {
             var entity = await context.PropertyTypes
                 .Include(pt => pt.Properties)

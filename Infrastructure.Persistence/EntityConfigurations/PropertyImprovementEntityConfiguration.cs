@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
                    .HasForeignKey(pi => pi.PropertyId);
 
             builder.HasOne(pi => pi.Improvement)
-                   .WithMany()
+                   .WithMany(i => i.PropertyImprovements)
                    .HasForeignKey(pi => pi.ImprovementId);
             #endregion
         }

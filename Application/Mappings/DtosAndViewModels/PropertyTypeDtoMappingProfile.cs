@@ -4,14 +4,16 @@ using AutoMapper;
 
 namespace Application.Mappings.DtosAndViewModels
 {
-    public class PropertyTypeMappingProfile : Profile
+    public class PropertyTypeDtoMappingProfile : Profile
     {
-        public PropertyTypeMappingProfile()
+        public PropertyTypeDtoMappingProfile()
         {
             // DTO ↔ ViewModels
             CreateMap<PropertyTypeDto, PropertyTypeListViewModel>()
                 .ForMember(dest => dest.PropertyCount, opt => opt.MapFrom(src => src.Properties != null ? src.Properties.Count : 0))
                 .ReverseMap();
+
+            CreateMap<PropertyTypeDto, PropertyTypeViewModel>().ReverseMap();
 
             CreateMap<PropertyTypeListDto, PropertyTypeListViewModel>().ReverseMap();
 

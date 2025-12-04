@@ -1,11 +1,6 @@
 ﻿using Application.Dtos.SaleType;
 using Application.ViewModels.SaleType;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappings.DtosAndViewModels
 {
@@ -29,7 +24,7 @@ namespace Application.Mappings.DtosAndViewModels
 
             CreateMap<SaleTypeDto, SaleTypeListViewModel>().ReverseMap();
 
-
+            CreateMap<SaleTypeDto, SaleTypeViewModel>().ReverseMap();
         }
     }
 }

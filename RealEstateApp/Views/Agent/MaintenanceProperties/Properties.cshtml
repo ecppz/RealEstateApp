@@ -1,0 +1,85 @@
+﻿@using Domain.Common.Enums
+@model List<PropertyViewModel>
+@{
+    ViewData["Title"] = "Listado de Propiedades";
+    Layout = "_LayoutAgent";
+}
+
+<h2 class="mb-4">Listado de Propiedades</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Imagen</th>
+            <th>Código</th>
+            <th>Tipo</th>
+            <th>Venta</th>
+            <th>Precio</th>
+            <th>Tamaño (m²)</th>
+            <th>Habitaciones</th>
+            <th>Baños</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var property in Model)
+        {
+            <tr>
+                <td>
+                    <p> EN DESARROLLO, las imagenes.......</p>
+                    @if (property.Images != null && property.Images.Any())
+                    {
+                        <img src="@property.Images.First().ImageUrl"
+                             alt="Imagen propiedad"
+                             style="width:100px;height:auto;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin imagen</span>
+                    }
+                </td>
+                <td>@property.Code</td>
+                <td>@property.PropertyType?.Name</td>
+                <td>@property.SaleType?.Name</td>
+                <td>@property.Price.ToString("C")</td>
+                <td>@property.SizeInMeters</td>
+                <td>@property.Bedrooms</td>
+                <td>@property.Bathrooms</td>
+                <td>
+                    @if (property.Status == PropertyStatus.Available)
+                    {
+                        <span class="badge bg-success">Disponible</span>
+                    }
+                    else if (property.Status == PropertyStatus.Sold)
+                    {
+                        <span class="badge bg-danger">Vendida</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactiva</span>
+                    }
+                </td>
+                <td>
+                    <p> EN DESARROLLO, el editar!! (ya sirve eliminar)</p>
+                    <a asp-action="EditProperty" asp-route-id="@property.Id" class="btn btn-primary btn-sm">Editar</a>
+                    <a asp-action="DeleteProperty" asp-route-id="@property.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateProperty" class="btn btn-success mt-3">
+    <i class="bi bi-plus-circle"></i> Crear Propiedad
+</a>

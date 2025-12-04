@@ -1,0 +1,73 @@
+﻿@model EditPropertyViewModel
+@{
+    ViewData["Title"] = "Editar Propiedad";
+    Layout = "_LayoutAgent";
+}
+
+<h2><i class="bi bi-pencil-square"></i> Editar Propiedad</h2>
+
+<form asp-action="EditProperty" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label">Código</label>
+        <input asp-for="Code" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PropertyTypeId" class="form-label">Tipo de Propiedad</label>
+        <select asp-for="PropertyTypeId" class="form-select" asp-items="ViewBag.PropertyTypes"></select>
+        <span asp-validation-for="PropertyTypeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SaleTypeId" class="form-label">Tipo de Venta</label>
+        <select asp-for="SaleTypeId" class="form-select" asp-items="ViewBag.SaleTypes"></select>
+        <span asp-validation-for="SaleTypeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">Precio</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Descripción</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SizeInMeters" class="form-label">Tamaño (m²)</label>
+        <input asp-for="SizeInMeters" class="form-control" />
+        <span asp-validation-for="SizeInMeters" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Bedrooms" class="form-label">Habitaciones</label>
+        <input asp-for="Bedrooms" class="form-control" />
+        <span asp-validation-for="Bedrooms" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Bathrooms" class="form-label">Baños</label>
+        <input asp-for="Bathrooms" class="form-control" />
+        <span asp-validation-for="Bathrooms" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ImprovementsIds" class="form-label">Mejoras</label>
+        <select asp-for="ImprovementsIds" class="form-select" asp-items="ViewBag.Improvements" multiple></select>
+        <span asp-validation-for="ImprovementsIds" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Images" class="form-label">Imágenes (opcional)</label>
+        <input asp-for="Images" type="file" class="form-control" multiple />
+        <span asp-validation-for="Images" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="Properties" class="btn btn-secondary">Volver</a>
+</form>

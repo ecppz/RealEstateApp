@@ -13,15 +13,15 @@ namespace RealEstateApp.Controllers
     public class PropertyTypeMaintenanceController : Controller
     {
 
-        private readonly IPropertyService PropertyService;
+      //  private readonly IPropertyService PropertyService;
         private readonly IPropertyTypeService PropertyTypeService;
         private readonly IMapper mapper;
         private readonly UserManager<UserAccount> userManager;
         private readonly IUserAccountServiceForWebApp userAccountServiceForWebApp;
 
-        public PropertyTypeMaintenanceController(IPropertyService propertyService, IPropertyTypeService propertyTypeService, IMapper mapper, UserManager<UserAccount> userManager, IUserAccountServiceForWebApp userAccountServiceForWebApp)
+        public PropertyTypeMaintenanceController(IPropertyTypeService propertyTypeService, IMapper mapper, UserManager<UserAccount> userManager, IUserAccountServiceForWebApp userAccountServiceForWebApp)
         {
-            PropertyService = propertyService;
+          //  PropertyService = propertyService;
             PropertyTypeService = propertyTypeService;
             this.mapper = mapper;
             this.userManager = userManager;
@@ -32,7 +32,7 @@ namespace RealEstateApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var types = await PropertyTypeService.GetAll();
+            var types = await PropertyTypeService.GetAllPropertyList();
             var viewModel = mapper.Map<List<PropertyTypeListViewModel>>(types);
             return View(viewModel);
         }
@@ -51,7 +51,7 @@ namespace RealEstateApp.Controllers
                 return View(model);
 
             var dto = mapper.Map<PropertyTypeCreateDto>(model);
-            await PropertyTypeService.AddAsync(dto);
+            await PropertyTypeService.AddPropertyAsync(dto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -59,7 +59,7 @@ namespace RealEstateApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var dto = await PropertyTypeService.GetById(id);
+            var dto = await PropertyTypeService.GetPropertyById(id);
             if (dto == null)
                 return NotFound();
 
@@ -75,7 +75,7 @@ namespace RealEstateApp.Controllers
                 return View(model);
 
             var dto = mapper.Map<PropertyTypeUpdateDto>(model);
-            await PropertyTypeService.UpdateAsync(dto, model.Id);
+            await PropertyTypeService.UpdatePropertyAsync(dto, model.Id);
 
             return RedirectToAction(nameof(Index));
         }
@@ -83,7 +83,7 @@ namespace RealEstateApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var dto = await PropertyTypeService.GetById(id);
+            var dto = await PropertyTypeService.GetPropertyById(id);
             if (dto == null)
                 return NotFound();
 
@@ -95,7 +95,7 @@ namespace RealEstateApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await PropertyTypeService.DeleteAsync(id);
+            await PropertyTypeService.DeletePropertyAsync(id);
             return RedirectToAction(nameof(Index));
         }
 

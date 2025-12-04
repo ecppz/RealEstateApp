@@ -3,21 +3,16 @@ using Application.ViewModels.PropertyImprovement;
 using Application.ViewModels.PropertyType;
 using Application.ViewModels.SaleType;
 using Domain.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.ViewModels.Property
 {
     public class PropertyViewModel
     {
         public required int Id { get; set; }
-        public required string Code { get; set; }
         public required int PropertyTypeId { get; set; }
-        public required string AgentId { get; set; }
         public required int SaleTypeId { get; set; }
+        public required string AgentId { get; set; }
+        public required string Code { get; set; }
         public required decimal Price { get; set; }
         public required string Description { get; set; }
         public required int SizeInMeters { get; set; }

@@ -1,88 +1,89 @@
 ﻿using Application.Dtos.Property;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Common.Enums;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services
 {
     public class PropertyService : GenericService<Property, PropertyDto>, IPropertyService
     {
-        private readonly IPropertyRepository propertyRepository;
         private readonly IMapper mapper;
+        private readonly IPropertyRepository propertyRepository;
         private readonly IBaseAccountService accountService;
-        public PropertyService(IPropertyRepository propertyRepository, IMapper mapper, IBaseAccountService accountService) : base(propertyRepository, mapper)
+        public PropertyService(IPropertyRepository propertyRepository, IBaseAccountService accountService, IMapper mapper) : base(propertyRepository, mapper)
         {
             this.propertyRepository = propertyRepository;
-            this.mapper = mapper;
             this.accountService = accountService;
+            this.mapper = mapper;
         }
 
-        public async Task<PropertyDto?> AddAsync(PropertyDto dto)
+        public async Task<List<PropertyDto>> GetProperties(string agentId, bool onlyAvailable)
         {
-            // Validar campos requeridos
-            if (string.IsNullOrWhiteSpace(dto.Code) || dto.Price <= 0 || dto.SizeInMeters <= 0)
-                throw new ArgumentException("Código, precio y tamaño en metros son requeridos y deben ser válidos.");
-
-            // Validar duplicado de código
-            var allProperties = await propertyRepository.GetAllList();
-            if (allProperties.Any(p => p.Code == dto.Code))
-                throw new InvalidOperationException("Ya existe una propiedad con ese código.");
-
-            // Mapear y guardar
-            var entity = mapper.Map<Property>(dto);
-            var created = await propertyRepository.AddAsync(entity);
-
-            return mapper.Map<PropertyDto>(created);
+            var entities = await propertyRepository.GetPropertiesByAgentAsync(agentId, onlyAvailable);
+            return mapper.Map<List<PropertyDto>>(entities);
         }
 
-
-        public async Task<PropertyDto?> UpdateAsync(PropertyDto dto, int id)
+        public async Task<PropertyDto?> GetPropertyById(int id)
         {
-            // Validar existencia
-            var existing = await propertyRepository.GetById(id);
-            if (existing == null)
-                throw new KeyNotFoundException("La propiedad no existe.");
-
-            // Validar duplicado de código (excepto el mismo registro)
-            var allProperties = await propertyRepository.GetAllList();
-            if (allProperties.Any(p => p.Code == dto.Code && p.Id != id))
-                throw new InvalidOperationException("Ya existe otra propiedad con ese código.");
-
-            // Mapear y actualizar
-            var entity = mapper.Map<Property>(dto);
-            var updated = await propertyRepository.UpdateAsync(id, entity);
-
-            return mapper.Map<PropertyDto>(updated);
-        }
-
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            // Validar existencia
-            var existing = await propertyRepository.GetById(id);
-            if (existing == null)
-                throw new KeyNotFoundException("La propiedad no existe.");
-
-            await propertyRepository.DeleteAsync(id);
-            return true;
-        }
-
-
-        public async Task<PropertyDto?> GetById(int id)
-        {
-            var entity = await propertyRepository.GetById(id);
+            var entity = await propertyRepository.GetPropertyByIdAsync(id);
             if (entity == null)
-                throw new KeyNotFoundException("La propiedad no existe.");
+                return null;
 
             return mapper.Map<PropertyDto>(entity);
         }
 
-
-        public async Task<List<PropertyDto>> GetAll()
+        public async Task<PropertyDto?> AddPropertyAsync(CreatePropertyDto dto)
         {
-            var entities = await propertyRepository.GetAllList();
-            return mapper.Map<List<PropertyDto>>(entities);
+            dto.Code = await GenerateUniqueCodeAsync();
+
+            var entity = mapper.Map<Property>(dto);
+
+            if (dto.ImprovementsIds.Any())
+            {
+                entity.Improvements = dto.ImprovementsIds
+                    .Select(id => new PropertyImprovement
+                    {
+                        Id = 0,
+                        PropertyId = entity.Id,
+                        ImprovementId = id
+                    })
+                    .ToList();
+            }
+
+            if (dto.Images.Any())
+            {
+                entity.Images = dto.Images
+                    .Select(img => new PropertyImage
+                    {
+                        Id = 0,
+                        PropertyId = entity.Id,
+                        ImageUrl = img.ImageUrl
+                    })
+                    .ToList();
+            }
+
+            await propertyRepository.AddAsync(entity);
+            return mapper.Map<PropertyDto>(entity);
+        }
+
+
+        //private methods
+        private async Task<string> GenerateUniqueCodeAsync()
+        {
+            string code;
+            bool exists;
+
+            do
+            {
+                code = new Random().Next(0, 999999).ToString("D6");
+                exists = await propertyRepository.ExistsByCodeAsync(code);
+
+            } while (exists);
+
+            return code;
         }
 
 

@@ -1,0 +1,17 @@
+﻿@model DeletePropertyViewModel
+@{
+    ViewData["Title"] = "Eliminar Propiedad";
+    Layout = "_LayoutAgent";
+}
+
+<div class="alert alert-danger mt-4">
+    <h4>¿Está seguro que desea eliminar esta propiedad?</h4>
+    <p><strong>Código:</strong> @Model.Code</p>
+    <p><strong>Descripción:</strong> @Model.Description</p>
+    <p><strong>Precio:</strong> @Model.Price.ToString("C")</p>
+</div>
+
+<form asp-action="DeleteProperty" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-danger">Aceptar</button>
+    <a asp-action="Properties" class="btn btn-secondary">Cancelar</a>
+</form>

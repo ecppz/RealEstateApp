@@ -11,16 +11,16 @@ namespace RealEstateApp.Controllers
 {
     public class SalesTypeMaintenanceController : Controller
     {
-        private readonly IPropertyService PropertyService;
+     //   private readonly IPropertyService PropertyService;
         private readonly IMapper mapper;
         private readonly UserManager<UserAccount> userManager;
         private readonly IUserAccountServiceForWebApp userAccountServiceForWebApp;
         private readonly ISaleTypeService saleTypeService;
 
 
-        public SalesTypeMaintenanceController(IPropertyService propertyService, IMapper mapper, UserManager<UserAccount> userManager, IUserAccountServiceForWebApp userAccountServiceForWebApp, ISaleTypeService saleTypeService)
+        public SalesTypeMaintenanceController(IMapper mapper, UserManager<UserAccount> userManager, IUserAccountServiceForWebApp userAccountServiceForWebApp, ISaleTypeService saleTypeService)
         {
-            PropertyService = propertyService;
+       //     PropertyService = propertyService;
             this.mapper = mapper;
             this.userManager = userManager;
             this.userAccountServiceForWebApp = userAccountServiceForWebApp;

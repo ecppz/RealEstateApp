@@ -23,14 +23,14 @@ namespace Infrastructure.Persistence.EntityConfigurations
 
             #region Relationships
             builder.HasOne(p => p.PropertyType)
-                   .WithMany()
+                   .WithMany(pt => pt.Properties)
                    .HasForeignKey(p => p.PropertyTypeId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.SaleType)
-                   .WithMany()
+                   .WithMany(st => st.Properties)
                    .HasForeignKey(p => p.SaleTypeId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(p => p.Images)
                    .WithOne(pi => pi.Property)

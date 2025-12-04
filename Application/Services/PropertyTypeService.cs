@@ -21,75 +21,59 @@ namespace Application.Services
             this.accountService = accountService;
         }
 
-        public async Task<PropertyTypeDto?> AddAsync(PropertyTypeCreateDto dto)
+        public async Task<PropertyTypeDto?> AddPropertyAsync(PropertyTypeCreateDto dto)
         {
-            // Validar campos requeridos
             if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Description))
-                throw new ArgumentException("El nombre y la descripción son requeridos.");
+                return null; // campos inválidos
 
-            // Validar duplicados
-            var existingTypes = await propertyTypeRepository.GetAllList();
+            var existingTypes = await propertyTypeRepository.GetAllPropertyList();
             if (existingTypes.Any(t => t.Name.ToLower() == dto.Name.ToLower()))
-                throw new InvalidOperationException("Ya existe un tipo de propiedad con ese nombre.");
+                return null; // duplicado
 
-            // Mapear y guardar
             var entity = mapper.Map<PropertyType>(dto);
             var created = await propertyTypeRepository.AddAsync(entity);
-
             return mapper.Map<PropertyTypeDto>(created);
         }
 
-
-        public async Task<PropertyTypeDto?> UpdateAsync(PropertyTypeUpdateDto dto, int id)
+        public async Task<PropertyTypeDto?> UpdatePropertyAsync(PropertyTypeUpdateDto dto, int id)
         {
-            // Validar existencia
-            var existing = await propertyTypeRepository.GetById(id);
+            var existing = await propertyTypeRepository.GetPropertyById(id);
             if (existing == null)
-                throw new KeyNotFoundException("El tipo de propiedad no existe.");
+                return null; // no existe
 
-            // Validar duplicados (excepto el mismo registro)
             var allTypes = await propertyTypeRepository.GetAllList();
             if (allTypes.Any(t => t.Name.ToLower() == dto.Name.ToLower() && t.Id != id))
-                throw new InvalidOperationException("Ya existe otro tipo de propiedad con ese nombre.");
+                return null; // duplicado
 
-            // Mapear y actualizar
             var entity = mapper.Map<PropertyType>(dto);
-            var updated = await propertyTypeRepository.UpdateAsync(id, entity);
-
+            var updated = await propertyTypeRepository.UpdatePropertyAsync(id, entity);
             return mapper.Map<PropertyTypeDto>(updated);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeletePropertyAsync(int id)
         {
-            // Validar existencia
-            var existing = await propertyTypeRepository.GetById(id);
-            if (existing == null)
-                throw new KeyNotFoundException("El tipo de propiedad no existe.");
+            var existing = await propertyTypeRepository.GetPropertyById(id);
+            if (existing == null) return false; // no existe
 
-            // Validar si tiene propiedades asociadas
             if (existing.Properties != null && existing.Properties.Any())
-                throw new InvalidOperationException("No se puede eliminar un tipo de propiedad con propiedades asociadas.");
+                return false; // tiene propiedades asociadas
 
-            await propertyTypeRepository.DeleteAsync(id);
+            await propertyTypeRepository.DeletePropertyAsync(id);
             return true;
         }
 
-
-        public async Task<PropertyTypeDto?> GetById(int id)
+        public async Task<PropertyTypeDto?> GetPropertyById(int id)
         {
-            var entity = await propertyTypeRepository.GetById(id);
-            if (entity == null)
-                throw new KeyNotFoundException("El tipo de propiedad no existe.");
+            var entity = await propertyTypeRepository.GetPropertyById(id);
+            if (entity == null) return null; // no existe
 
             return mapper.Map<PropertyTypeDto>(entity);
         }
 
-
-        public async Task<List<PropertyTypeListDto>> GetAll()
+        public async Task<List<PropertyTypeListDto>> GetAllPropertyList()
         {
             var entities = await propertyTypeRepository.GetAllList();
 
-            // Mapear a listado con conteo
             var result = mapper.Map<List<PropertyTypeListDto>>(entities);
             return result;
         }
