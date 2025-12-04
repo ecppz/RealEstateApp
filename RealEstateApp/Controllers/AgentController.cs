@@ -1,11 +1,14 @@
 using Application.Dtos.Agent;
 using Application.Dtos.Property;
 using Application.Dtos.PropertyImage;
+using Application.Dtos.PropertyImprovement;
 using Application.Dtos.User;
 using Application.Interfaces;
 using Application.Services;
 using Application.ViewModels.Agent;
 using Application.ViewModels.Property;
+using Application.ViewModels.PropertyImage;
+using Application.ViewModels.PropertyImprovement;
 using AutoMapper;
 using Domain.Common.Enums;
 using Infrastructure.Identity.Entities;
@@ -131,7 +134,7 @@ namespace RealEstateApp.Controllers
                 SizeInMeters = 0,
                 Bedrooms = 0,
                 Bathrooms = 0,
-                ImprovementsIds = new List<int>(),
+                Improvements = new List<int>(), 
                 Images = new List<IFormFile>()
             });
         }
@@ -170,20 +173,19 @@ namespace RealEstateApp.Controllers
                 Bedrooms = vm.Bedrooms,
                 Bathrooms = vm.Bathrooms,
                 Status = PropertyStatus.Available,
-                ImprovementsIds = vm.ImprovementsIds ?? new List<int>(),
-                Images = new List<PropertyImageDto>()
+                Improvements = vm.Improvements
+                    .Select(id => new PropertyImprovementDto { ImprovementId = id, PropertyId = vm.Id })
+                    .ToList(),
+                Images = vm.Images
+                    .Select(file => { var path = FileManager.Upload(file, vm.Id.ToString(), "Properties");
+                        return new PropertyImageDto
+                        {
+                            Id = 0,
+                            PropertyId = vm.Id,
+                            ImageUrl = path
+                        };
+                    }).ToList()
             };
-
-            foreach (var file in vm.Images)
-            {
-                var path = FileManager.Upload(file, dto.Id.ToString(), "Properties");
-                dto.Images.Add(new PropertyImageDto
-                {
-                    Id = dto.Id,
-                    PropertyId = dto.Id,
-                    ImageUrl = path
-                });
-            }
 
             var created = await propertyService.AddPropertyAsync(dto);
 
@@ -208,40 +210,80 @@ namespace RealEstateApp.Controllers
             }
 
             var vm = mapper.Map<EditPropertyViewModel>(dto);
+
+            var propertyTypes = await propertyTypeService.GetAllPropertyList();
+            ViewBag.PropertyTypes = new SelectList(propertyTypes, "Id", "Name", vm.PropertyTypeId);
+
+            var saleTypes = await saleTypeService.GetAllList();
+            ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name", vm.SaleTypeId);
+
+            var improvements = await improvementService.GetAllList();
+            ViewBag.Improvements = new SelectList(improvements, "Id", "Name", vm.Improvements);
+
             return View("MaintenanceProperties/EditProperty", vm);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> EditProperty(EditPropertyViewModel vm)
         {
             if (!ModelState.IsValid)
             {
+                var propertyTypes = await propertyTypeService.GetAllPropertyList();
+                ViewBag.PropertyTypes = new SelectList(propertyTypes, "Id", "Name", vm.PropertyTypeId);
+
+                var saleTypes = await saleTypeService.GetAllList();
+                ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name", vm.SaleTypeId);
+
+                var improvements = await improvementService.GetAllList();
+                ViewBag.Improvements = new SelectList(improvements, "Id", "Name", vm.Improvements);
+
                 TempData["ErrorMessage"] = "Datos inválidos al editar propiedad.";
                 return View("MaintenanceProperties/EditProperty", vm);
+            }
+
+            var currentDto = await propertyService.GetPropertyById(vm.Id);
+
+            if (currentDto == null)
+            {
+                TempData["ErrorMessage"] = "Propiedad no encontrada.";
+                return RedirectToAction("Properties");
             }
 
             var editDto = new EditPropertyDto
             {
                 Id = vm.Id,
                 Code = vm.Code,
-                PropertyTypeId = vm.PropertyTypeId,
-                SaleTypeId = vm.SaleTypeId,
+                PropertyTypeId = currentDto.PropertyTypeId,
+                SaleTypeId = currentDto.SaleTypeId,
                 Price = vm.Price,
                 Description = vm.Description,
                 SizeInMeters = vm.SizeInMeters,
                 Bedrooms = vm.Bedrooms,
                 Bathrooms = vm.Bathrooms,
-                ImprovementsIds = vm.ImprovementsIds,
-                Images = vm.Images
+                Improvements = currentDto.Improvements,
+                Images = currentDto.Images
             };
 
-            var propertyDto = mapper.Map<PropertyDto>(editDto);
+            if (vm.NewImages != null && vm.NewImages.Any())
+            {
+                editDto.Images = new List<PropertyImageDto>();
+                foreach (var file in vm.NewImages)
+                {
+                    var url = FileManager.Upload(file, vm.Id.ToString(), "Properties");
+                    editDto.Images.Add(new PropertyImageDto { Id = 0, PropertyId = 0, ImageUrl = url });
+                }
+            }
 
-            var result = await propertyService.UpdateAsync(propertyDto, vm.Id);
+            var propertyDto = mapper.Map<PropertyDto>(editDto);
+            await propertyService.UpdateAsync(propertyDto, vm.Id);
 
             TempData["SuccessMessage"] = "Propiedad editada correctamente.";
             return RedirectToAction("Properties");
         }
+
+
+
         public async Task<IActionResult> DeleteProperty(int id)
         {
             var dto = await propertyService.GetById(id);
@@ -259,7 +301,7 @@ namespace RealEstateApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteProperty(DeletePropertyViewModel vm)
         {
-            var deleted = await propertyService.DeleteAsync(vm.Id);
+            var deleted = await propertyService.DeletePropertyAsync(vm.Id); 
 
             TempData["SuccessMessage"] = "Propiedad eliminada correctamente.";
             return RedirectToAction("Properties");

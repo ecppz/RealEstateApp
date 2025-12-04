@@ -19,13 +19,10 @@ namespace Application.Mappings.DtosAndViewModels
             CreateMap<ImprovementEditViewModel, ImprovementUpdateDto>().ReverseMap();
             CreateMap<ImprovementEditViewModel, ImprovementDto>().ReverseMap();
 
-            // List
-            CreateMap<ImprovementListViewModel, ImprovementListDto>().ReverseMap();
 
             // Delete
             CreateMap<ImprovementDeleteViewModel, ImprovementDeleteDto>().ReverseMap();
             CreateMap<ImprovementDeleteViewModel, ImprovementDto>().ReverseMap();
-            CreateMap<ImprovementListViewModel, ImprovementDto>().ReverseMap();
         }
     }
 }

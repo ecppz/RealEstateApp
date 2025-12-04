@@ -41,14 +41,14 @@ namespace Application.Services
 
             var entity = mapper.Map<Property>(dto);
 
-            if (dto.ImprovementsIds.Any())
+            if (dto.Improvements.Any())
             {
-                entity.Improvements = dto.ImprovementsIds
-                    .Select(id => new PropertyImprovement
+                entity.Improvements = dto.Improvements
+                    .Select(i => new PropertyImprovement
                     {
                         Id = 0,
                         PropertyId = entity.Id,
-                        ImprovementId = id
+                        ImprovementId = i.ImprovementId
                     })
                     .ToList();
             }
@@ -67,6 +67,11 @@ namespace Application.Services
 
             await propertyRepository.AddAsync(entity);
             return mapper.Map<PropertyDto>(entity);
+        }
+
+        public async Task<bool> DeletePropertyAsync(int id)
+        {
+            return await propertyRepository.DeletePropertyAsync(id);
         }
 
 

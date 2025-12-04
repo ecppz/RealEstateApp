@@ -1,4 +1,5 @@
-﻿using Domain.Common.Enums;
+﻿using Application.ViewModels.PropertyImprovement;
+using Domain.Common.Enums;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -39,12 +40,12 @@ namespace Application.ViewModels.Property
 
         [Required(ErrorMessage = "Debes seleccionar al menos una mejora")]
         [MinLength(1, ErrorMessage = "Debes seleccionar al menos una mejora")]
-        public List<int> ImprovementsIds { get; set; } = new();
+        public required ICollection<int> Improvements { get; set; } = new List<int>();
 
         [Required(ErrorMessage = "Debes subir al menos una imagen")]
         [MinLength(1, ErrorMessage = "Debes subir al menos una imagen")]
         [MaxLength(4, ErrorMessage = "No puedes subir más de 4 imágenes")]
-        public List<IFormFile> Images { get; set; } = new();
+        public required ICollection<IFormFile> Images { get; set; }
         public PropertyStatus Status { get; set; } = PropertyStatus.Available;
     }
 }

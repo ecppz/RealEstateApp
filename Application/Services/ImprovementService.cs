@@ -33,10 +33,10 @@ namespace Application.Services
         }
 
         // Listar todas las mejoras
-        public async Task<List<ImprovementListDto>> GetAllList()
+        public async Task<List<ImprovementDto>> GetAllList()
         {
             var entities = await improvementRepository.GetAllList();
-            return mapper.Map<List<ImprovementListDto>>(entities);
+            return mapper.Map<List<ImprovementDto>>(entities);
         }
 
         // Actualizar una mejora existente

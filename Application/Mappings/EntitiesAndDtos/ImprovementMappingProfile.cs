@@ -12,7 +12,6 @@ namespace Application.Mappings.EntitiesAndDtos
             CreateMap<Improvement, ImprovementDto>().ReverseMap();
             CreateMap<Improvement, ImprovementCreateDto>().ReverseMap();
             CreateMap<Improvement, ImprovementUpdateDto>().ReverseMap();
-            CreateMap<Improvement, ImprovementListDto>().ReverseMap();
         }
     }
 }

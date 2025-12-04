@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-
+﻿using Application.Dtos.PropertyImage;
+using Application.Dtos.PropertyImprovement;
 namespace Application.Dtos.Property
 {
     public class EditPropertyDto
@@ -13,7 +13,7 @@ namespace Application.Dtos.Property
         public required int SizeInMeters { get; set; }
         public required int Bedrooms { get; set; }
         public required int Bathrooms { get; set; }
-        public List<int> ImprovementsIds { get; set; } = new();
-        public List<IFormFile>? Images { get; set; } = new();
+        public ICollection<PropertyImprovementDto>? Improvements { get; set; }
+        public ICollection<PropertyImageDto>? Images { get; set; }
     }
 }

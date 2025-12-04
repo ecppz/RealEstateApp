@@ -7,7 +7,7 @@ namespace Application.Services
     {
         Task<ImprovementDto?> AddAsync(ImprovementCreateDto dto);
         Task<ImprovementDto?> GetById(int id);
-        Task<List<ImprovementListDto>> GetAllList();
+        Task<List<ImprovementDto>> GetAllList();
         Task<ImprovementDto?> UpdateAsync(int id, ImprovementUpdateDto dto);
         Task DeleteAsync(int id);
 

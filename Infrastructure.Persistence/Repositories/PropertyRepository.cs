@@ -17,7 +17,9 @@ namespace Infrastructure.Persistence.Repositories
                 .Include(p => p.SaleType)
                 .Include(p => p.Images)
                 .Include(p => p.Improvements)
+                    .ThenInclude(pi => pi.Improvement) 
                 .AsQueryable();
+
 
             query = query.Where(p => p.AgentId == agentId);
 
@@ -43,5 +45,34 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await context.Properties.AnyAsync(p => p.Code == code);
         }
+
+        public async Task<bool> DeletePropertyAsync(int id)
+        {
+            var property = await context.Properties
+                .Include(p => p.Images)
+                .Include(p => p.Improvements)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (property == null)
+            {
+                return false;
+            }
+
+            if (property.Images != null && property.Images.Any())
+            {
+                context.PropertyImages.RemoveRange(property.Images);
+            }
+
+            if (property.Improvements != null && property.Improvements.Any())
+            {
+                context.PropertyImprovements.RemoveRange(property.Improvements);
+            }
+
+            context.Properties.Remove(property);
+
+            await context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

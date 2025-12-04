@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Application.ViewModels.PropertyImage;
+using Application.ViewModels.PropertyImprovement;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.ViewModels.Property
 {
@@ -41,9 +43,10 @@ namespace Application.ViewModels.Property
 
         [Required(ErrorMessage = "Debes seleccionar al menos una mejora")]
         [MinLength(1, ErrorMessage = "Debes seleccionar al menos una mejora")]
-        public List<int> ImprovementsIds { get; set; } = new();
+        public required ICollection<int> Improvements { get; set; } = new List<int>();
 
         [MaxLength(4, ErrorMessage = "No puedes subir más de 4 imágenes")]
-        public List<IFormFile>? Images { get; set; } = new();
+        public List<IFormFile> NewImages { get; set; } = new(); 
+        public ICollection<PropertyImageViewModel>? ExistingImages { get; set; }
     }
 }

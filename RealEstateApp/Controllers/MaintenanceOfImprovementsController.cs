@@ -35,7 +35,7 @@ namespace RealEstateApp.Controllers
         public async Task<IActionResult> Index()
         {
             var dtoList = await improvementService.GetAllList();
-            var viewModelList = mapper.Map<List<ImprovementListViewModel>>(dtoList);
+            var viewModelList = mapper.Map<List<ImprovementViewModel>>(dtoList);
             return View(viewModelList);
         }
 

@@ -23,7 +23,7 @@ namespace Application.ViewModels.Property
         //nav property
         public PropertyTypeViewModel? PropertyType { get; set; }
         public SaleTypeViewModel? SaleType { get; set; }
-        public ICollection<PropertyImageViewModel>? Images { get; set; }
-        public ICollection<PropertyImprovementViewModel>? Improvements { get; set; }
+        public required ICollection<PropertyImageViewModel> Images { get; set; }
+        public required ICollection<PropertyImprovementViewModel> Improvements { get; set; }
     }
 }

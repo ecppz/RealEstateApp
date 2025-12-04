@@ -76,7 +76,7 @@ namespace RealEstateApp.Controllers
                 Password = vm.Password ?? "",
                 Role = vm.Role,
                 PhoneNumber = vm.PhoneNumber,
-                Status = vm.Status
+                Status = vm.Status,
             };
 
             var currentDto = await userAccountServiceForWebApp.GetUserById<UserDto>(vm.Id);

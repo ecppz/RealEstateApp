@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.PropertyImage;
+using Application.Dtos.PropertyImprovement;
 using Domain.Common.Enums;
 namespace Application.Dtos.Property
 {
@@ -15,7 +16,7 @@ namespace Application.Dtos.Property
         public required int Bedrooms { get; set; }
         public required int Bathrooms { get; set; }
         public PropertyStatus Status { get; set; } = PropertyStatus.Available;
-        public required List<int> ImprovementsIds { get; set; } = new();
-        public List<PropertyImageDto> Images { get; set; } = new();
+        public required ICollection<PropertyImageDto> Images { get; set; }
+        public required ICollection<PropertyImprovementDto> Improvements { get; set; }
     }
 }

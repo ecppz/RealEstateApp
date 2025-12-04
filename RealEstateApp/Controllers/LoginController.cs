@@ -134,53 +134,64 @@ namespace RealEstateApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
                 return View(vm);
             }
 
             string origin = Request?.Headers?.Origin.ToString() ?? string.Empty;
 
-            if (vm.Role == Roles.Agent)
+            var baseDto = new SaveUserDto
             {
-                var saveAgentDto = new CreateAgentDto
+                Id = string.Empty,
+                Name = vm.Name,
+                LastName = vm.LastName,
+                Email = vm.Email,
+                UserName = vm.UserName,
+                PhoneNumber = vm.PhoneNumber,
+                Password = vm.Password,
+                Status = UserStatus.Inactive,
+                Role = vm.Role,
+                ProfileImage = ""
+            };
+
+            SaveUserDto saveUserDto = vm.Role == Roles.Agent
+                ? mapper.Map<SaveUserDto>(new CreateAgentDto
                 {
-                    Id = string.Empty,
-                    Name = vm.Name,
-                    LastName = vm.LastName,
-                    Email = vm.Email,
-                    UserName = vm.UserName,
-                    PhoneNumber = vm.PhoneNumber,
-                    Password = vm.Password,
-                    Status = UserStatus.Inactive,
+                    Id = baseDto.Id,
+                    Name = baseDto.Name,
+                    LastName = baseDto.LastName,
+                    Email = baseDto.Email,
+                    UserName = baseDto.UserName,
+                    PhoneNumber = baseDto.PhoneNumber,
+                    Password = baseDto.Password,
+                    Status = baseDto.Status,
                     Role = Roles.Agent,
-                    ProfileImage = ""
-                };
+                    ProfileImage = baseDto.ProfileImage
+                })
+                : baseDto;
 
-                var saveUserDto = mapper.Map<SaveUserDto>(saveAgentDto);
-                var returnAgent = await userAccountServiceForWebApp.RegisterUser(saveUserDto, origin);
+            var result = await userAccountServiceForWebApp.RegisterUser(saveUserDto, origin);
 
-                if (returnAgent.HasError)
-                {
-                    ViewBag.HasError = true;
-                    ViewBag.Errors = returnAgent.Errors;
-                    return View(vm);
-                }
-
-                if (!string.IsNullOrWhiteSpace(returnAgent.Id))
-                {
-                    saveUserDto.Id = returnAgent.Id;
-                    saveUserDto.ProfileImage = FileManager.Upload(vm.ProfileImageFile, returnAgent.Id, "Agents");
-                    await userAccountServiceForWebApp.EditUser(saveUserDto, origin, null, true);
-                }
+            if (result.HasError)
+            {
+                ViewBag.HasError = true;
+                ViewBag.Errors = result.Errors;
+                return View(vm);
             }
-                TempData["SuccessMessage"] = "Registro exitoso. Contactate con un administrador para activar tu cuenta.";
+
+            if (!string.IsNullOrWhiteSpace(result.Id))
+            {
+                saveUserDto.Id = result.Id;
+                string folder = vm.Role == Roles.Agent ? "Agents" : "Customers";
+                saveUserDto.ProfileImage = FileManager.Upload(vm.ProfileImageFile, result.Id, folder);
+                await userAccountServiceForWebApp.EditUser(saveUserDto, origin, null, true);
+            }
+
+            TempData["SuccessMessage"] = vm.Role == Roles.Agent
+                ? "Registro exitoso. Contactate con un administrador para activar tu cuenta."
+                : "Registro exitoso. Revisa tu email para activar tu cuenta.";
+
             return RedirectToRoute(new { controller = "Login", action = "Index" });
         }
-
 
         public async Task<IActionResult> ConfirmEmail(string userId,string token)
         {

@@ -23,8 +23,8 @@ namespace Application.Dtos.Property
         //nav property
         public PropertyTypeDto? PropertyType { get; set; }
         public SaleTypeDto? SaleType { get; set; }
-        public ICollection<PropertyImageDto>? Images { get; set; }
-        public ICollection<PropertyImprovementDto>? Improvements { get; set; }
+        public required ICollection<PropertyImageDto> Images { get; set; }
+        public required ICollection<PropertyImprovementDto> Improvements { get; set; }
 
 
     }

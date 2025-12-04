@@ -6,8 +6,8 @@ namespace Application.ViewModels.Improvement
     {
         public required int Id { get; set; }
         public required string Name { get; set; }
-
-           public ICollection<PropertyImprovementViewModel>? PropertyImprovements { get; set; }
+        public required string Description { get; set; }
+        public ICollection<PropertyImprovementViewModel>? PropertyImprovements { get; set; }
     }
 
 }
