@@ -17,11 +17,12 @@ namespace Infrastructure.Persistence.Repositories
                 .Include(p => p.SaleType)
                 .Include(p => p.Images)
                 .Include(p => p.Improvements)
-                    .ThenInclude(pi => pi.Improvement) 
+                    .ThenInclude(pi => pi.Improvement)
                 .AsQueryable();
 
-
-            query = query.Where(p => p.AgentId == agentId);
+            // 🔹 Solo filtrar por agente si viene un Id válido
+            if (!string.IsNullOrEmpty(agentId))
+                query = query.Where(p => p.AgentId == agentId);
 
             if (onlyAvailable)
                 query = query.Where(p => p.Status == PropertyStatus.Available);

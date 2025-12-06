@@ -1,0 +1,117 @@
+﻿@using Domain.Common.Enums
+@model List<OfferViewModel>
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = "Mis ofertas";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-cash-stack me-2"></i> Mis ofertas en la propiedad</h2>
+    <hr />
+
+    <!-- Botón para nueva oferta -->
+    <div class="mb-3">
+        @{
+            // Validar si hay oferta aceptada o pendiente
+            bool hasAccepted = Model.Any(o => o.Status == OfferStatus.Accepted);
+            bool hasPending = Model.Any(o => o.Status == OfferStatus.Pending);
+            bool canSendOffer = !hasAccepted && !hasPending;
+        }
+
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newOfferModal"
+                @(canSendOffer ? "" : "disabled")>
+            <i class="bi bi-plus-circle"></i> Nueva oferta
+        </button>
+
+        @if (!canSendOffer)
+        {
+            <span class="text-muted ms-2">
+                <i class="bi bi-info-circle"></i> No puedes enviar una nueva oferta mientras exista una pendiente o aceptada.
+            </span>
+        }
+    </div>
+
+    <!-- Listado de ofertas -->
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th><i class="bi bi-currency-dollar"></i> Monto</th>
+                <th><i class="bi bi-calendar-event"></i> Fecha</th>
+                <th><i class="bi bi-flag"></i> Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var offer in Model)
+                {
+                    <tr>
+                        <td>@offer.Amount.ToString("C")</td>
+                        <td>@offer.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            @if (offer.Status == OfferStatus.Pending)
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-hourglass-split"></i> Pendiente
+                                </span>
+                            }
+                            else if (offer.Status == OfferStatus.Accepted)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Aceptada
+                                </span>
+                            }
+                            else if (offer.Status == OfferStatus.Rejected)
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Rechazada
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-muted">
+                        <i class="bi bi-info-circle"></i> No has realizado ninguna oferta todavía.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para nueva oferta -->
+<div class="modal fade" id="newOfferModal" tabindex="-1" aria-labelledby="newOfferModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="CreateOffer" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newOfferModalLabel">
+                        <i class="bi bi-plus-circle"></i> Nueva oferta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="PropertyId" value="@ViewBag.PropertyId" />
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">
+                            <i class="bi bi-currency-dollar"></i> Monto de la oferta
+                        </label>
+                        <input type="number" step="0.01" min="1" class="form-control" id="Amount" name="Amount" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-send"></i> Enviar oferta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

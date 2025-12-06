@@ -1,0 +1,85 @@
+﻿@using Application.Dtos.Property
+@{
+    Layout = "_LayoutAgent";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-house-door me-2"></i> Detalle de la Propiedad</h2>
+    <hr />
+
+
+    <!-- Botón para volver al listado -->
+    <div class="mb-3">
+        <a asp-controller="Property" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Volver al listado
+        </a>
+    </div>
+
+
+    <!-- Información principal de la propiedad -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Code</h5>
+            <p class="card-text">
+                <strong>Precio:</strong> @Model.Price.ToString("C") <br />
+                <strong>Descripción:</strong> @Model.Description <br />
+                <strong>Tamaño:</strong> @Model.SizeInMeters m² <br />
+                <strong>Habitaciones:</strong> @Model.Bedrooms <br />
+                <strong>Baños:</strong> @Model.Bathrooms <br />
+                <strong>Estado:</strong> @Model.Status
+            </p>
+        </div>
+    </div>
+
+    <!-- Panel dividido en dos columnas -->
+    <div class="row">
+        <!-- Chat con clientes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-chat-dots me-2"></i> Conversaciones con clientes
+                </div>
+                <div class="card-body">
+                    <p>Seleccione un cliente para abrir el chat:</p>
+                    <ul class="list-group">
+                        @foreach (var client in Model.ClientsWithMessages)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-person-circle me-2"></i>@client.Name</span>
+                                <a asp-controller="Message" asp-action="Conversation"
+                                   asp-route-propertyId="@Model.Id"
+                                   asp-route-clientId="@client.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-chat-text"></i> Abrir Chat
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ofertas de clientes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-cash-stack me-2"></i> Ofertas recibidas
+                </div>
+                <div class="card-body">
+                    <p>Seleccione un cliente para ver sus ofertas:</p>
+                    <ul class="list-group">
+                        @foreach (var client in Model.ClientsWithOffers)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-person-badge me-2"></i>@client.Name</span>
+                                <a asp-controller="Offer" asp-action="PropertyOffersByClient" asp-route-propertyId="@Model.Id" asp-route-clientId="@client.Id" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-eye"></i> Ver Ofertas
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

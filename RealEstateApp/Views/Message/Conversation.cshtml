@@ -1,0 +1,35 @@
+﻿@model ConversationViewModel
+@{
+    Layout = "_LayoutAgent";
+    ViewData["Title"] = "Conversación con " + Model.ClientName;
+}
+
+<h2>Conversación con @Model.ClientName</h2>
+
+<div class="chat-box border rounded p-3" style="max-height:500px; overflow-y:auto;">
+    @foreach (var msg in Model.Messages)
+    {
+        @await Html.PartialAsync("_MessageBubble", msg)
+    }
+</div>
+
+<hr />
+
+<form asp-action="SendMessage" method="post" class="mt-3">
+    <input type="hidden" name="PropertyId" value="@Model.PropertyId" />
+    <input type="hidden" name="ReceiverId" value="@Model.ClientId" />
+
+    <div class="input-group">
+        <input type="text" name="Content" class="form-control" placeholder="Escribe tu mensaje..." required />
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-send"></i> Enviar
+        </button>
+    </div>
+</form>
+
+<div class="mt-3">
+    <a asp-controller="Offer" asp-action="PropertyDetailAgent" asp-route-propertyId="@Model.PropertyId"
+       class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Volver al detalle de la propiedad
+    </a>
+</div>

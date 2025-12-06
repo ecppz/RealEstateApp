@@ -1,0 +1,19 @@
+﻿@model MessageViewModel
+
+<div class="mb-3">
+    <div class="d-flex @(Model.IsFromAgent ? "justify-content-start" : "justify-content-end")">
+        <div class="p-2 rounded shadow-sm"
+             style="max-width:70%; background-color:@(Model.IsFromAgent ? "#f1f5f9" : "#e8f5e9");">
+            <div class="d-flex align-items-center mb-1">
+                <span class="badge @(Model.IsFromAgent ? "bg-primary" : "bg-success") me-2">
+                    <i class="bi @(Model.IsFromAgent ? "bi-person-badge" : "bi-person")"></i>
+                    @(Model.IsFromAgent ? "Agente" : "Tú")
+                </span>
+                <small class="text-muted">
+                    <i class="bi bi-clock"></i> @Model.SentAt.ToString("dd/MM/yyyy HH:mm")
+                </small>
+            </div>
+            <p class="mb-0">@Model.Content</p>
+        </div>
+    </div>
+</div>

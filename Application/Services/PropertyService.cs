@@ -91,6 +91,16 @@ namespace Application.Services
             return code;
         }
 
+        // 🔹Nuevo método para clientes
+        public async Task<List<PropertyDto>> GetAvailablePropertiesAsync()
+        {
+           
+            var properties = await propertyRepository.GetPropertiesByAgentAsync(agentId: null, onlyAvailable: true);
+
+            return mapper.Map<List<PropertyDto>>(properties);
+        }
+
+
 
     }
 }

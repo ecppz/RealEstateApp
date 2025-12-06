@@ -1,0 +1,60 @@
+﻿@using Domain.Common.Enums
+@model IEnumerable<PropertyDto>
+
+@{
+    Layout = "_LayoutAgent";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+        <i class="bi bi-building me-2"></i>
+        <span>Listado de Propiedades</span>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th><i class="bi bi-upc-scan me-1"></i> Código</th>
+                    <th><i class="bi bi-cash-stack me-1"></i> Precio</th>
+                    <th><i class="bi bi-info-circle me-1"></i> Estado</th>
+                    <th><i class="bi bi-eye me-1"></i> Ver Más</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var property in Model)
+                {
+                    <tr>
+                        <td>@property.Code</td>
+                        <td>@property.Price.ToString("C")</td>
+                        <td>
+                            @if (property.Status == PropertyStatus.Available)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Disponible
+                                </span>
+                            }
+                            else if (property.Status == PropertyStatus.Sold)
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Vendida
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-hourglass-split"></i> Pendiente
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Offer" asp-action="PropertyDetailAgent" asp-route-propertyId="@property.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-house-door"></i> Detalle
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
