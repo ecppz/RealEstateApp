@@ -3,6 +3,7 @@ using Application.Dtos.Agent;
 using Application.Dtos.Developer;
 using Application.Dtos.User;
 using Application.Interfaces;
+using Application.Services;
 using Application.ViewModels.Admin;
 using Application.ViewModels.Agent;
 using Application.ViewModels.Developer;
@@ -16,16 +17,47 @@ namespace RealEstateApp.Controllers
     public class AdminController : Controller
     {
         private readonly IUserAccountServiceForWebApp userAccountServiceForWebApp;
+        private readonly IPropertyService propertyService;
         private readonly IMapper mapper;
 
-        public AdminController(IUserAccountServiceForWebApp userAccountServiceForWebApp, IMapper mapper)
+        public AdminController(IUserAccountServiceForWebApp userAccountServiceForWebApp, IPropertyService propertyService, IMapper mapper)
         {
             this.userAccountServiceForWebApp = userAccountServiceForWebApp;
+            this.propertyService = propertyService;
             this.mapper = mapper;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var allProperties = await propertyService.GetAllProperties(onlyAvailable: false);
+            int availableProperties = allProperties.Count(p => p.Status == PropertyStatus.Available);
+            int soldProperties = allProperties.Count(p => p.Status == PropertyStatus.Sold);
+
+
+            var agents = await userAccountServiceForWebApp.GetUsersByRole<AgentDto>(Roles.Agent);
+            int activeAgents = agents.Count(a => a.Status == UserStatus.Active);
+            int inactiveAgents = agents.Count(a => a.Status == UserStatus.Inactive);
+
+            var clients = await userAccountServiceForWebApp.GetUsersByRole<UserDto>(Roles.Customer);
+            int activeClients = clients.Count(c => c.Status == UserStatus.Active);
+            int inactiveClients = clients.Count(c => c.Status == UserStatus.Inactive);
+
+            var developers = await userAccountServiceForWebApp.GetUsersByRole<DeveloperDto>(Roles.Developer);
+            int activeDevelopers = developers.Count(d => d.Status == UserStatus.Active);
+            int inactiveDevelopers = developers.Count(d => d.Status == UserStatus.Inactive);
+
+            var vm = new AdminHomeViewModel
+            {
+                AvailableProperties = availableProperties,
+                SoldProperties = soldProperties,
+                ActiveAgents = activeAgents,
+                InactiveAgents = inactiveAgents,
+                ActiveClients = activeClients,
+                InactiveClients = inactiveClients,
+                ActiveDevelopers = activeDevelopers,
+                InactiveDevelopers = inactiveDevelopers
+            };
+
+            return View(vm);
         }
 
         #region maintenance agents
@@ -33,8 +65,16 @@ namespace RealEstateApp.Controllers
         {
             var agents = await userAccountServiceForWebApp.GetUsersByRole<AgentDto>(Roles.Agent);
             var vm = mapper.Map<List<AgentViewModel>>(agents);
+
+            foreach (var agent in vm)
+            {
+                var properties = await propertyService.GetProperties(agent.Id, onlyAvailable: false);
+                agent.PropertyCount = properties.Count;
+            }
+
             return View("MaintenanceAgents/Agents", vm);
         }
+
 
         public async Task<IActionResult> ActivateAgent(string id)
         {

@@ -15,7 +15,8 @@ namespace Domain.Entities
         public required int Bedrooms { get; set; }
         public required int Bathrooms { get; set; }
         public PropertyStatus Status { get; set; }
-        
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
         //nav property
         public PropertyType? PropertyType { get; set; }
         public SaleType? SaleType { get; set; }

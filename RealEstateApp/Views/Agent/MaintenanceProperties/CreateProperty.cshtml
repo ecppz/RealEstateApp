@@ -35,12 +35,14 @@
         @foreach (var imp in (IEnumerable<SelectListItem>)ViewBag.Improvements)
         {
             <div class="form-check">
+                <label class="form-check-label">
                 <input type="checkbox"
                        class="form-check-input"
                        name="Improvements"
                        value="@imp.Value"
                        @(imp.Selected ? "checked" : "") />
-                <label class="form-check-label">@imp.Text</label>
+                    @imp.Text
+               </label>
             </div>
         }
         <span asp-validation-for="Improvements" class="text-danger"></span>

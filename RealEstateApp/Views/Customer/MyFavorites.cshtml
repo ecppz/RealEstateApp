@@ -1,12 +1,11 @@
-﻿@using Domain.Common.Enums
-@model List<PropertyViewModel>
+﻿@model List<PropertyDisplayViewModel>
 
 @{
-    ViewData["Title"] = "Home del Agente";
-    Layout = "_LayoutAgent";
+    ViewData["Title"] = "Mis Favoritos";
+    Layout = "_LayoutCustomer";
 }
 
-<h2 class="mb-4">Mis Propiedades Registradas</h2>
+<h2 class="mb-4">Mis Propiedades Favoritas</h2>
 
 @if (Model != null && Model.Any())
 {
@@ -26,25 +25,6 @@
                         {
                             <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
                         }
-
-                        @if (property.Status == PropertyStatus.Sold)
-                        {
-                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
-                                Vendida
-                            </span>
-                        }
-                        else if (property.Status == PropertyStatus.Available)
-                        {
-                            <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                Disponible
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary position-absolute top-0 start-0 m-2">
-                                No disponible
-                            </span>
-                        }
                     </div>
 
                     <div class="card-body">
@@ -56,6 +36,15 @@
                         <p><strong>Baños:</strong> @property.Bathrooms</p>
                         <p><strong>Tamaño:</strong> @property.SizeInMeters m²</p>
                     </div>
+
+                    <div class="card-footer text-center">
+                        <form asp-action="ToggleFavorite" method="post">
+                            <input type="hidden" name="propertyId" value="@property.Id" />
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                ★ Quitar de favoritos
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         }
@@ -63,5 +52,5 @@
 }
 else
 {
-    <h4 class="text-center text-muted">No tienes propiedades registradas</h4>
+    <h4 class="text-center text-muted">No tienes propiedades favoritas</h4>
 }

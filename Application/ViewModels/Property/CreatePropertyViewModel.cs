@@ -45,7 +45,7 @@ namespace Application.ViewModels.Property
         [Required(ErrorMessage = "Debes subir al menos una imagen")]
         [MinLength(1, ErrorMessage = "Debes subir al menos una imagen")]
         [MaxLength(4, ErrorMessage = "No puedes subir más de 4 imágenes")]
-        public required ICollection<IFormFile> Images { get; set; }
+        public ICollection<IFormFile>? Images { get; set; }
         public PropertyStatus Status { get; set; } = PropertyStatus.Available;
     }
 }

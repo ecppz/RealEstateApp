@@ -72,7 +72,7 @@ namespace Application.Services
 
         public async Task<List<PropertyTypeListDto>> GetAllPropertyList()
         {
-            var entities = await propertyTypeRepository.GetAllList();
+            var entities = await propertyTypeRepository.GetAllPropertyList();
 
             var result = mapper.Map<List<PropertyTypeListDto>>(entities);
             return result;

@@ -16,7 +16,7 @@ namespace Application.Dtos.Property
         public required int Bedrooms { get; set; }
         public required int Bathrooms { get; set; }
         public PropertyStatus Status { get; set; } = PropertyStatus.Available;
-        public required ICollection<PropertyImageDto> Images { get; set; }
         public required ICollection<PropertyImprovementDto> Improvements { get; set; }
+        public ICollection<PropertyImageDto>? Images { get; set; }
     }
 }

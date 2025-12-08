@@ -1,9 +1,89 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Domain.Common.Enums
+@model List<PropertyViewModel>
+
+@{
+    ViewData["Title"] = "Home";
     Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2 class="mb-4">Propiedades Disponibles</h2>
+
+<form method="get" asp-action="Index" class="mb-3 row">
+    <div class="col-md-4">
+        <input type="text" name="code" value="@ViewData["Code"]" class="form-control" placeholder="Buscar por código..." />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Buscar</button>
+    </div>
+</form>
+
+<form method="get" asp-action="Index" class="row mb-4">
+    <div class="col-md-3">
+        <select name="propertyTypeId" class="form-select">
+            <option value="">Tipo de propiedad</option>
+            <option value="1" selected="@(ViewData["PropertyTypeId"]?.ToString() == "1")">Casa</option>
+            <option value="2" selected="@(ViewData["PropertyTypeId"]?.ToString() == "2")">Apartamento</option>
+
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="minPrice" value="@ViewData["MinPrice"]" class="form-control" placeholder="Precio mínimo" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="maxPrice" value="@ViewData["MaxPrice"]" class="form-control" placeholder="Precio máximo" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="bedrooms" value="@ViewData["Bedrooms"]" class="form-control" placeholder="Habitaciones" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="bathrooms" value="@ViewData["Bathrooms"]" class="form-control" placeholder="Baños" />
+    </div>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-success w-100">Filtrar</button>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var property in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="position-relative">
+                        @if (property.Images != null && property.Images.Any())
+                        {
+                            <img src="@Url.Content("~/" + property.Images.First().ImageUrl)"
+                                 alt="Imagen de la propiedad"
+                                 class="card-img-top" />
+                        }
+                        else
+                        {
+                            <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
+                        }
+                    </div>
+
+                    <div class="card-body">
+                        <h5>@property.PropertyType?.Name</h5>
+                        <p><strong>Código:</strong> @property.Code</p>
+                        <p><strong>Venta:</strong> @property.SaleType?.Name</p>
+                        <p class="text-danger fw-bold">@property.Price.ToString("C")</p>
+                        <p><strong>Habitaciones:</strong> @property.Bedrooms</p>
+                        <p><strong>Baños:</strong> @property.Bathrooms</p>
+                        <p><strong>Tamaño:</strong> @property.SizeInMeters m²</p>
+                    </div>
+
+                    <div class="card-footer text-center">
+                        <a asp-action="PropertyDetail" asp-route-id="@property.Id" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye"></i> Ver Detalle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h4 class="text-center text-muted">No hay propiedades disponibles</h4>
+}

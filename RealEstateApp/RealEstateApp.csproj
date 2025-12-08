@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Infrastructure.Shared\Infrastructure.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\Properties\" />
+  </ItemGroup>
+
 </Project>

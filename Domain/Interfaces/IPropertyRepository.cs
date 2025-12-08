@@ -6,6 +6,8 @@ namespace Domain.Interfaces
     {
         Task<List<Property>> GetPropertiesByAgentAsync(string agentId, bool onlyAvailable);
         Task<Property?> GetPropertyByIdAsync(int id);
+        Task<List<Property>> GetAllProperties(bool onlyAvailable);
+        Task<Property?> UpdatePropertyAsync(int id, Property entity);
         Task<bool> ExistsByCodeAsync(string code);
         Task<bool> DeletePropertyAsync(int id);
     }

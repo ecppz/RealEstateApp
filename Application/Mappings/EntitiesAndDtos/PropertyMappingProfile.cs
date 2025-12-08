@@ -13,9 +13,7 @@ namespace Application.Mappings.EntitiesAndDtos
                 .ForMember(dest => dest.Improvements, opt => opt.MapFrom(src => src.Improvements))
                 .ReverseMap();
 
-            CreateMap<Property, CreatePropertyDto>()
-                .ForMember(dest => dest.Images, opt => opt.Ignore()) 
-                .ReverseMap();
+            CreateMap<Property, CreatePropertyDto>().ReverseMap();
 
             CreateMap<Property, EditPropertyDto>()
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))

@@ -6,7 +6,7 @@ using Domain.Common.Enums;
 
 namespace Application.ViewModels.Property
 {
-    public class PropertyViewModel
+    public class PropertyDisplayViewModel
     {
         public required int Id { get; set; }
         public required int PropertyTypeId { get; set; }
@@ -19,9 +19,9 @@ namespace Application.ViewModels.Property
         public required int Bedrooms { get; set; }
         public required int Bathrooms { get; set; }
         public PropertyStatus Status { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool IsFavorite { get; set; }
 
-        //nav property
+        // nav properties
         public PropertyTypeViewModel? PropertyType { get; set; }
         public SaleTypeViewModel? SaleType { get; set; }
         public required ICollection<PropertyImageViewModel> Images { get; set; }

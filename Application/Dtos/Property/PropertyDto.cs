@@ -19,11 +19,12 @@ namespace Application.Dtos.Property
         public required int Bedrooms { get; set; }
         public required int Bathrooms { get; set; }
         public PropertyStatus Status { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         //nav property
         public PropertyTypeDto? PropertyType { get; set; }
         public SaleTypeDto? SaleType { get; set; }
-        public required ICollection<PropertyImageDto> Images { get; set; }
+        public ICollection<PropertyImageDto>? Images { get; set; }
         public required ICollection<PropertyImprovementDto> Improvements { get; set; }
 
 

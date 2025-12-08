@@ -8,20 +8,14 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/RealEstateApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/agent.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
 <body>
-    <div class="d-flex">
+    <div class="page-wrapper">
         <nav class="sidebar d-flex flex-column">
-            <a class="navbar-brand d-block mb-4 text-center fw-bold fs-4"
-               asp-area=""
-               asp-controller="Agent"
-               asp-action="Index">
-                RealEstateApp
-            </a>
-
+            <a class="navbar-brand d-block mb-4 text-center fw-bold fs-4" asp-area=" asp-controller="Agent" asp-action="Index"> RealEstateApp </a>
             <ul class="nav flex-column flex-grow-1">
                 <li class="nav-item mb-2">
                     <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg"
@@ -52,20 +46,25 @@
                 </li>
             </ul>
         </nav>
-        <div class="main-content">
-            @RenderBody()
-        </div>
-    </div>
 
-    <footer class="border-top footer text-muted main-content">
-        <div class="container">
-            &copy; @DateTime.Now.Year - Eric Pineda | Yohansel Mieses - ITLA RealEstateApp
-        </div>
-    </footer>
+        <div class="content-wrapper flex-grow-1 d-flex flex-column">
+        <main class="main-content">
+            <div class="container">
+                @RenderBody()
+            </div>
+        </main>
+            <footer class="footer-custom">
+                <div class="container">
+                    &copy; @DateTime.Now.Year - Eric Pineda | Yohansel Mieses - ITLA RealEstateApp
+                </div>
+            </footer>
+         </div>
+
+</div>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>

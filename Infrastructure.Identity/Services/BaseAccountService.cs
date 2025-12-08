@@ -420,44 +420,41 @@ namespace Infrastructure.Identity.Services
 
             return userDto;
         }
-        public virtual async Task<List<UserDto>> GetAllUser(bool? isActive)
+        public virtual async Task<List<TDto>> GetAllUsers<TDto>(
+            bool? isActive = null,
+            Roles? role = null) where TDto : class
         {
-            List<UserDto> listUsersDtos = new();
-
-            var users = _userManager.Users.AsQueryable();
+            var query = _userManager.Users.AsQueryable();
 
             if (isActive.HasValue)
             {
-                if (isActive.Value)
-                    users = users.Where(u => u.Status == UserStatus.Active);
-                else
-                    users = users.Where(u => u.Status == UserStatus.Inactive);
+                query = isActive.Value
+                    ? query.Where(u => u.Status == UserStatus.Active)
+                    : query.Where(u => u.Status == UserStatus.Inactive);
             }
 
-            var listUser = await users.ToListAsync();
+            query = query.OrderBy(u => u.Name);
 
-            foreach (var item in listUser)
+            var users = await query.ToListAsync();
+            var result = new List<TDto>();
+
+            foreach (var user in users)
             {
-                var roleList = await _userManager.GetRolesAsync(item);
+                var roleList = await _userManager.GetRolesAsync(user);
                 var roleName = roleList.FirstOrDefault() ?? Roles.Customer.ToString();
+                var parsedRole = Enum.Parse<Roles>(roleName);
 
-                listUsersDtos.Add(new UserDto()
+                if (!role.HasValue || parsedRole == role.Value)
                 {
-                    Id = item.Id,
-                    Email = item.Email ?? "",
-                    LastName = item.LastName,
-                    Name = item.Name,
-                    UserName = item.UserName ?? "",
-                    ProfileImage = item.ProfileImage,
-                    PhoneNumber = item.PhoneNumber,
-                    isVerified = item.EmailConfirmed,
-                    Role = Enum.Parse<Roles>(roleName),
-                    Status = item.Status
-                });
+                    var dto = _mapper.Map<TDto>(user);
+                    result.Add(dto);
+                }
             }
 
-            return listUsersDtos;
+            return result;
         }
+
+
 
         public async Task<List<TDto>> GetUsersByRole<TDto>(Roles role) where TDto : class
         {

@@ -1,0 +1,32 @@
+﻿@model List<AgentViewModel>
+@{
+    ViewData["Title"] = "Listado de Agentes";
+}
+
+<h2 class="mb-4">Agentes</h2>
+
+<form method="get" asp-action="ListAgents" class="mb-3">
+    <input type="text" name="search" class="form-control" placeholder="Buscar agente por nombre..." />
+</form>
+
+<div class="row">
+    @foreach (var agent in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm text-center">
+                <img src="@Url.Content("~/" + agent.ProfileImage)"
+                     alt="@agent.Name"
+                     class="card-img-top property-image">
+                <div class="card-body">
+                    <h5 class="card-title">@agent.Name</h5>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="AgentProperties" asp-route-id="@agent.Id"
+                       class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-house-door"></i> Ver Propiedades
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

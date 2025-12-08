@@ -1,9 +1,65 @@
-﻿@{
-    ViewData["Title"] = "Customer Home Page";
+﻿@model List<PropertyDisplayViewModel>
+
+@{
+    ViewData["Title"] = "Home del Cliente";
     Layout = "_LayoutCustomer";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome Customer</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2 class="mb-4">Propiedades Disponibles</h2>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var property in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="position-relative">
+                        @if (property.Images != null && property.Images.Any())
+                        {
+                            <img src="@Url.Content("~/" + property.Images.First().ImageUrl)"
+                                 alt="Imagen de la propiedad"
+                                 class="card-img-top" />
+                        }
+                        else
+                        {
+                            <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
+                        }
+                    </div>
+
+                    <div class="card-body">
+                        <h5>@property.PropertyType?.Name</h5>
+                        <p><strong>Código:</strong> @property.Code</p>
+                        <p><strong>Venta:</strong> @property.SaleType?.Name</p>
+                        <p class="text-danger fw-bold">@property.Price.ToString("C")</p>
+                        <p><strong>Habitaciones:</strong> @property.Bedrooms</p>
+                        <p><strong>Baños:</strong> @property.Bathrooms</p>
+                        <p><strong>Tamaño:</strong> @property.SizeInMeters m²</p>
+                    </div>
+
+                    <div class="card-footer text-center">
+                        <form asp-action="ToggleFavorite" method="post">
+                            <input type="hidden" name="propertyId" value="@property.Id" />
+                            @if (property.IsFavorite)
+                            {
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    ★ Quitar de favoritos
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-outline-warning btn-sm">
+                                    ☆ Marcar como favorito
+                                </button>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h4 class="text-center text-muted">No hay propiedades disponibles</h4>
+}

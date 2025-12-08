@@ -1,11 +1,8 @@
 ﻿using Application.Dtos.Property;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Common.Enums;
 using Domain.Entities;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
-
 namespace Application.Services
 {
     public class PropertyService : GenericService<Property, PropertyDto>, IPropertyService
@@ -35,39 +32,61 @@ namespace Application.Services
             return mapper.Map<PropertyDto>(entity);
         }
 
+        public async Task<List<PropertyDto>> GetAllProperties(bool onlyAvailable)
+        {
+            var properties = await propertyRepository.GetAllProperties(onlyAvailable);
+            return mapper.Map<List<PropertyDto>>(properties);
+        }
+
         public async Task<PropertyDto?> AddPropertyAsync(CreatePropertyDto dto)
         {
             dto.Code = await GenerateUniqueCodeAsync();
 
             var entity = mapper.Map<Property>(dto);
 
-            if (dto.Improvements.Any())
+            if (dto.Improvements != null && dto.Improvements.Any())
             {
                 entity.Improvements = dto.Improvements
                     .Select(i => new PropertyImprovement
                     {
                         Id = 0,
-                        PropertyId = entity.Id,
-                        ImprovementId = i.ImprovementId
-                    })
-                    .ToList();
+                        ImprovementId = i.ImprovementId,
+                        PropertyId = entity.Id 
+                    }).ToList();
+            }
+            else
+            {
+                entity.Improvements = new List<PropertyImprovement>();
             }
 
-            if (dto.Images.Any())
+            entity.Images = new List<PropertyImage>();
+
+            var created = await propertyRepository.AddAsync(entity);
+
+            return mapper.Map<PropertyDto>(created);
+        }
+
+
+        public async Task<PropertyDto?> UpdatePropertyAsync(int id, PropertyDto dto)
+        {
+            var entity = mapper.Map<Property>(dto);
+
+            if (dto.Images != null && dto.Images.Any())
             {
                 entity.Images = dto.Images
                     .Select(img => new PropertyImage
                     {
                         Id = 0,
-                        PropertyId = entity.Id,
-                        ImageUrl = img.ImageUrl
-                    })
-                    .ToList();
+                        PropertyId = id,
+                        ImageUrl = img.ImageUrl 
+                    }).ToList();
             }
 
-            await propertyRepository.AddAsync(entity);
-            return mapper.Map<PropertyDto>(entity);
+            var updated = await propertyRepository.UpdatePropertyAsync(id, entity);
+
+            return mapper.Map<PropertyDto>(updated);
         }
+
 
         public async Task<bool> DeletePropertyAsync(int id)
         {

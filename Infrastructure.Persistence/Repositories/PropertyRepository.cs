@@ -39,12 +39,60 @@ namespace Infrastructure.Persistence.Repositories
                     .ThenInclude(pi => pi.Improvement) 
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+        public async Task<List<Property>> GetAllProperties(bool onlyAvailable)
+        {
+            var query = context.Properties
+                .Include(p => p.PropertyType)
+                .Include(p => p.SaleType)
+                .Include(p => p.Images)
+                .Include(p => p.Improvements)
+                .AsQueryable();
+
+            if (onlyAvailable)
+                query = query.Where(p => p.Status == PropertyStatus.Available);
+
+            return await query
+                .OrderByDescending(p => p.CreatedAt) 
+                .ToListAsync();
+        }
+
+
 
 
         public async Task<bool> ExistsByCodeAsync(string code)
         {
             return await context.Properties.AnyAsync(p => p.Code == code);
         }
+
+        public async Task<Property?> UpdatePropertyAsync(int id, Property entity)
+        {
+            var existing = await context.Properties
+                .Include(p => p.Images)
+                .Include(p => p.Improvements)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (existing == null) return null;
+
+            context.Entry(existing).CurrentValues.SetValues(entity);
+
+            if (entity.Images != null && entity.Images.Any())
+            {
+                context.PropertyImages.RemoveRange(existing.Images);
+                existing.Images = entity.Images;
+            }
+
+            if (entity.Improvements != null && entity.Improvements.Any())
+            {
+                context.PropertyImprovements.RemoveRange(existing.Improvements);
+                existing.Improvements = entity.Improvements;
+            }
+
+            await context.SaveChangesAsync();
+            return existing;
+
+        }
+
+
 
         public async Task<bool> DeletePropertyAsync(int id)
         {

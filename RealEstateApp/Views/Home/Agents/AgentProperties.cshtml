@@ -1,25 +1,15 @@
 ﻿@using Domain.Common.Enums
 @model List<PropertyViewModel>
 @{
-    ViewData["Title"] = "Listado de Propiedades";
-    Layout = "_LayoutAgent";
+    ViewData["Title"] = "Propiedades del Agente";
 }
 
-<h2 class="mb-4">Listado de Propiedades</h2>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-<a asp-action="CreateProperty" class="btn btn-success mt-3">
-    <i class="bi bi-plus-circle"></i> Crear Propiedad
-</a>
-
+<h2 class="mb-4">Propiedades disponibles</h2>
+<div class="text-center mt-4">
+    <a asp-action="ListAgents" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Volver a Agentes
+    </a>
+</div>
 @if (Model != null && Model.Any())
 {
     <div class="row mt-4">
@@ -85,11 +75,9 @@
                     </div>
 
                     <div class="property-footer text-center">
-                        <a asp-action="EditProperty" asp-route-id="@property.Id" class="btn btn-outline-primary btn-sm me-2">
-                            <i class="bi bi-pencil-square"></i> Editar
-                        </a>
-                        <a asp-action="DeleteProperty" asp-route-id="@property.Id" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-trash"></i> Eliminar
+                        <a asp-action="PropertyDetail" asp-route-id="@property.Id"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye"></i> Ver Detalle
                         </a>
                     </div>
                 </div>
@@ -99,5 +87,5 @@
 }
 else
 {
-    <h2 class="text-center text-muted mt-4">No hay propiedades creadas</h2>
+    <h2 class="text-center text-muted mt-4">Este agente no tiene propiedades disponibles</h2>
 }

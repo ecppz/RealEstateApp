@@ -1,0 +1,71 @@
+﻿@using Domain.Common.Enums
+@model PropertyViewModel
+@{
+    ViewData["Title"] = "Detalle de Propiedad";
+}
+
+<h2 class="mb-4">Detalle de la Propiedad</h2>
+<div class="text-center mt-4">
+    <a asp-action="AgentProperties" asp-route-id="@Model.AgentId"
+       class="btn btn-outline-secondary btn-sm me-2">
+        <i class="bi bi-arrow-left"></i> Volver a Propiedades del Agente
+    </a>
+</div>
+<div class="card shadow-sm">
+    <div class="position-relative">
+        @if (Model.Images != null && Model.Images.Any())
+        {
+            <img src="@Url.Content("~/" + Model.Images.First().ImageUrl)"
+                 alt="Imagen de la propiedad"
+                 class="property-image">
+        }
+        else
+        {
+            <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
+        }
+    </div>
+
+    <div class="card-body property-details">
+        <div class="property-code">
+            <i class="bi bi-hash"></i> Código: @Model.Code
+        </div>
+
+        <p><i class="bi bi-building"></i> <strong>Descripcion:</strong> @Model.Description</p>
+        <p><i class="bi bi-geo-alt"></i> <strong>Tipo:</strong> @Model.PropertyType?.Name</p>
+        <p><i class="bi bi-currency-dollar"></i> <strong>Venta:</strong> @Model.SaleType?.Name</p>
+        <p class="text-danger fw-bold"><i class="bi bi-tag"></i> @Model.Price.ToString("C")</p>
+
+        <hr />
+
+        <p>
+            <i class="bi bi-stars"></i> <strong>Mejoras:</strong>
+            @if (Model.Improvements != null && Model.Improvements.Any())
+            {
+                @string.Join(", ", Model.Improvements.Select(i => i.Improvement?.Name))
+            }
+            else
+            {
+                <span class="text-muted">Sin mejoras</span>
+            }
+        </p>
+        <p><i class="bi bi-aspect-ratio"></i> <strong>Tamaño:</strong> @Model.SizeInMeters m²</p>
+        <p><i class="bi bi-door-open"></i> <strong>Habitaciones:</strong> @Model.Bedrooms</p>
+        <p><i class="bi bi-badge-wc"></i> <strong>Baños:</strong> @Model.Bathrooms</p>
+
+        <p>
+            <i class="bi bi-check-circle"></i> <strong>Estado:</strong>
+            @if (Model.Status == PropertyStatus.Available)
+            {
+                <span class="badge bg-success">Disponible</span>
+            }
+            else if (Model.Status == PropertyStatus.Sold)
+            {
+                <span class="badge bg-danger">Vendida</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Inactiva</span>
+            }
+        </p>
+    </div>
+</div>

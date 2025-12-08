@@ -7,7 +7,9 @@ namespace Application.Services
     {
         Task<PropertyDto?> AddPropertyAsync(CreatePropertyDto dto);
         Task<List<PropertyDto>> GetProperties(string agentId, bool onlyAvailable);
+        Task<List<PropertyDto>> GetAllProperties(bool onlyAvailable);
         Task<PropertyDto?> GetPropertyById(int id);
+        Task<PropertyDto?> UpdatePropertyAsync(int id, PropertyDto dto);
         Task<bool> DeletePropertyAsync(int id);
 
     }

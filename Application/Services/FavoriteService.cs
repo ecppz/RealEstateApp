@@ -16,5 +16,45 @@ namespace Application.Services
             this.favoriteRepository = favoriteRepository;
             this.mapper = mapper;
         }
+
+        public async Task<List<FavoriteDto>> GetFavoritesByUser(string clientId)
+        {
+            var favorites = await favoriteRepository.GetFavoritesByUser(clientId);
+            return mapper.Map<List<FavoriteDto>>(favorites);
+        }
+
+        public async Task<bool> IsFavorite(string clientId, int propertyId)
+        {
+            return await favoriteRepository.IsFavorite(clientId, propertyId);
+        }
+
+
+
+        public async Task AddFavorite(string clientId, int propertyId)
+        {
+            // Evitar duplicados
+            var exists = await favoriteRepository.IsFavorite(clientId, propertyId);
+            if (!exists)
+            {
+                var favorite = new Favorite
+                {
+                    Id = 0,
+                    ClientId = clientId,
+                    PropertyId = propertyId
+                };
+                await favoriteRepository.AddAsync(favorite);
+            }
+        }
+
+        public async Task RemoveFavorite(string clientId, int propertyId)
+        {
+            var favorites = await favoriteRepository.GetFavoritesByUser(clientId);
+            var fav = favorites.FirstOrDefault(f => f.PropertyId == propertyId);
+            if (fav != null)
+            {
+                await favoriteRepository.DeleteAsync(fav.Id);
+            }
+        }
+
     }
 }

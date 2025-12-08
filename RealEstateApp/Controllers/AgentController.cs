@@ -7,8 +7,6 @@ using Application.Interfaces;
 using Application.Services;
 using Application.ViewModels.Agent;
 using Application.ViewModels.Property;
-using Application.ViewModels.PropertyImage;
-using Application.ViewModels.PropertyImprovement;
 using AutoMapper;
 using Domain.Common.Enums;
 using Infrastructure.Identity.Entities;
@@ -43,12 +41,23 @@ namespace RealEstateApp.Controllers
         }
 
         #region agent home
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            UserAccount? userSession = await userManager.GetUserAsync(User);
 
+            if (userSession == null)
+            {
+                return RedirectToRoute(new { controller = "Login", action = "Index" });
+            }
+
+            var propertiesDto = await propertyService.GetProperties(userSession.Id, onlyAvailable: false);
+
+            var propertiesVm = mapper.Map<List<PropertyViewModel>>(propertiesDto);
+
+            return View(propertiesVm);
+        }
         #endregion
+
 
         #region MyProfile
         public async Task<IActionResult> Profile()
@@ -157,13 +166,12 @@ namespace RealEstateApp.Controllers
 
                 return View("MaintenanceProperties/CreateProperty", vm);
             }
-
             UserAccount? userSession = await userManager.GetUserAsync(User);
 
             var dto = new CreatePropertyDto
             {
+                Id = 0,
                 Code = "",
-                Id = vm.Id,
                 PropertyTypeId = vm.PropertyTypeId,
                 SaleTypeId = vm.SaleTypeId,
                 AgentId = userSession.Id,
@@ -174,17 +182,8 @@ namespace RealEstateApp.Controllers
                 Bathrooms = vm.Bathrooms,
                 Status = PropertyStatus.Available,
                 Improvements = vm.Improvements
-                    .Select(id => new PropertyImprovementDto { ImprovementId = id, PropertyId = vm.Id })
-                    .ToList(),
-                Images = vm.Images
-                    .Select(file => { var path = FileManager.Upload(file, vm.Id.ToString(), "Properties");
-                        return new PropertyImageDto
-                        {
-                            Id = 0,
-                            PropertyId = vm.Id,
-                            ImageUrl = path
-                        };
-                    }).ToList()
+                    .Select(id => new PropertyImprovementDto { ImprovementId = id })
+                    .ToList()
             };
 
             var created = await propertyService.AddPropertyAsync(dto);
@@ -193,6 +192,22 @@ namespace RealEstateApp.Controllers
             {
                 TempData["ErrorMessage"] = "Propiedad no encontrada.";
                 return RedirectToAction("Properties");
+            }
+
+            if (vm.Images != null && vm.Images.Any())
+            {
+                created.Images = vm.Images.Select(file =>
+                {
+                    var path = FileManager.Upload(file, created.Id.ToString(), "Properties");
+                    return new PropertyImageDto
+                    {
+                        Id = 0,
+                        PropertyId = created.Id,
+                        ImageUrl = path
+                    };
+                }).ToList();
+
+                await propertyService.UpdatePropertyAsync(created.Id, created);
             }
 
             TempData["SuccessMessage"] = "Propiedad creada correctamente.";
@@ -276,7 +291,7 @@ namespace RealEstateApp.Controllers
             }
 
             var propertyDto = mapper.Map<PropertyDto>(editDto);
-            await propertyService.UpdateAsync(propertyDto, vm.Id);
+            await propertyService.UpdatePropertyAsync(vm.Id, propertyDto);
 
             TempData["SuccessMessage"] = "Propiedad editada correctamente.";
             return RedirectToAction("Properties");

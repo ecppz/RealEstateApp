@@ -1,9 +1,57 @@
-﻿@{
-    ViewData["Title"] = "Admin Home Page";
+﻿@model AdminHomeViewModel
+
+@{
+    ViewData["Title"] = "Dashboard Admin";
     Layout = "_LayoutAdmin";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome Admin</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2 class="mb-4">Dashboard del Administrador</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Propiedades Disponibles</h5>
+                <p class="display-6 text-success">@Model.AvailableProperties</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Propiedades Vendidas</h5>
+                <p class="display-6 text-danger">@Model.SoldProperties</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Agentes Activos</h5>
+                <p class="display-6 text-success">@Model.ActiveAgents</p>
+                <small class="text-muted">Inactivos: @Model.InactiveAgents</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Clientes Activos</h5>
+                <p class="display-6 text-success">@Model.ActiveClients</p>
+                <small class="text-muted">Inactivos: @Model.InactiveClients</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Desarrolladores Activos</h5>
+                <p class="display-6 text-success">@Model.ActiveDevelopers</p>
+                <small class="text-muted">Inactivos: @Model.InactiveDevelopers</small>
+            </div>
+        </div>
+    </div>
 </div>
