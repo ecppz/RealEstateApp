@@ -18,13 +18,7 @@ namespace Application.Mappings.DtosAndViewModels
 
 
 
-            CreateMap<EditPropertyDto, PropertyDto>()
-                .ForMember(dest => dest.AgentId, opt => opt.Ignore())
-                .ForMember(dest => dest.Status, opt => opt.Ignore())
-                .ForMember(dest => dest.PropertyType, opt => opt.Ignore())
-                .ForMember(dest => dest.SaleType, opt => opt.Ignore())
-                .ForMember(dest => dest.Improvements, opt => opt.Ignore())
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
+            CreateMap<EditPropertyDto, PropertyDto>();
 
             CreateMap<EditPropertyDto, EditPropertyViewModel>().ReverseMap();
 

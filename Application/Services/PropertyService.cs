@@ -71,19 +71,15 @@ namespace Application.Services
         {
             var entity = mapper.Map<Property>(dto);
 
-            if (dto.Images != null && dto.Images.Any())
-            {
-                entity.Images = dto.Images
-                    .Select(img => new PropertyImage
-                    {
-                        Id = 0,
-                        PropertyId = id,
-                        ImageUrl = img.ImageUrl 
-                    }).ToList();
-            }
+            entity.Images = dto.Images?
+                .Select(img => new PropertyImage
+                {
+                    Id = 0,
+                    PropertyId = id,
+                    ImageUrl = img.ImageUrl
+                }).ToList() ?? new List<PropertyImage>();
 
             var updated = await propertyRepository.UpdatePropertyAsync(id, entity);
-
             return mapper.Map<PropertyDto>(updated);
         }
 
@@ -109,6 +105,16 @@ namespace Application.Services
 
             return code;
         }
+
+        // 🔹Nuevo método para clientes
+        public async Task<List<PropertyDto>> GetAvailablePropertiesAsync()
+        {
+           
+            var properties = await propertyRepository.GetPropertiesByAgentAsync(agentId: null, onlyAvailable: true);
+
+            return mapper.Map<List<PropertyDto>>(properties);
+        }
+
 
 
     }

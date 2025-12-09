@@ -1,5 +1,6 @@
 ﻿@using Domain.Common.Enums
 @model List<PropertyViewModel>
+
 @{
     ViewData["Title"] = "Listado de Propiedades";
     Layout = "_LayoutAgent";
@@ -16,6 +17,7 @@
 {
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
+
 <a asp-action="CreateProperty" class="btn btn-success mt-3">
     <i class="bi bi-plus-circle"></i> Crear Propiedad
 </a>
@@ -26,33 +28,67 @@
         @foreach (var property in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="card property-card shadow-sm">
+                <div class="app-card property-card shadow-sm">
                     <div class="position-relative">
                         @if (property.Images != null && property.Images.Any())
                         {
-                            <img src="@Url.Content("~/" + property.Images.First().ImageUrl)"
-                                 alt="Imagen de la propiedad"
-                                 class="property-image">
+                            <div id="carousel-@property.Id" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    @{
+                                        int index = 0;
+                                    }
+                                    @foreach (var img in property.Images)
+                                    {
+                                        <div class="carousel-item @(index == 0 ? "active" : "")">
+                                            <img src="@Url.Content("~/" + img.ImageUrl)"
+                                                 alt="Imagen de la propiedad"
+                                                 class="d-block w-100 app-card-image" />
+                                        </div>
+                                        index++;
+                                    }
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@property.Id" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Anterior</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carousel-@property.Id" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Siguiente</span>
+                                </button>
+                            </div>
                         }
                         else
                         {
                             <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
                         }
+
                     </div>
 
-                    <div class="card-body property-details">
-                        <div class="property-code">
+                    <div class="app-card-body">
+
+                        <div class="app-card-title mb-2">
                             <i class="bi bi-hash"></i> Código: @property.Code
                         </div>
 
-                        <p><i class="bi bi-building"></i> <strong>Descripcion:</strong> @property.Description</p>
-                        <p><i class="bi bi-geo-alt"></i> <strong>Tipo:</strong> @property.PropertyType?.Name</p>
-                        <p><i class="bi bi-currency-dollar"></i> <strong>Venta:</strong> @property.SaleType?.Name</p>
-                        <p class="text-danger fw-bold"><i class="bi bi-tag"></i> @property.Price.ToString("C")</p>
+                        <p class="app-card-text">
+                            <i class="bi bi-building"></i> <strong>Descripción:</strong> @property.Description
+                        </p>
+
+                        <p class="app-card-text">
+                            <i class="bi bi-geo-alt"></i> <strong>Tipo:</strong> @property.PropertyType?.Name
+                        </p>
+
+                        <p class="app-card-text">
+                            <i class="bi bi-currency-dollar"></i> <strong>Venta:</strong> @property.SaleType?.Name
+                        </p>
+
+                        <p class="text-danger fw-bold">
+                            <i class="bi bi-tag"></i> @property.Price.ToString("C")
+                        </p>
 
                         <hr />
 
-                        <p>
+                        <p class="app-card-text">
                             <i class="bi bi-stars"></i> <strong>Mejoras:</strong>
                             @if (property.Improvements != null && property.Improvements.Any())
                             {
@@ -63,11 +99,20 @@
                                 <span class="text-muted">Sin mejoras</span>
                             }
                         </p>
-                        <p><i class="bi bi-aspect-ratio"></i> <strong>Tamaño:</strong> @property.SizeInMeters m²</p>
-                        <p><i class="bi bi-door-open"></i> <strong>Habitaciones:</strong> @property.Bedrooms</p>
-                        <p><i class="bi bi-badge-wc"></i> <strong>Baños:</strong> @property.Bathrooms</p>
 
-                        <p>
+                        <p class="app-card-text">
+                            <i class="bi bi-aspect-ratio"></i> <strong>Tamaño:</strong> @property.SizeInMeters m²
+                        </p>
+
+                        <p class="app-card-text">
+                            <i class="bi bi-door-open"></i> <strong>Habitaciones:</strong> @property.Bedrooms
+                        </p>
+
+                        <p class="app-card-text">
+                            <i class="bi bi-badge-wc"></i> <strong>Baños:</strong> @property.Bathrooms
+                        </p>
+
+                        <p class="app-card-text">
                             <i class="bi bi-check-circle"></i> <strong>Estado:</strong>
                             @if (property.Status == PropertyStatus.Available)
                             {
@@ -84,14 +129,18 @@
                         </p>
                     </div>
 
-                    <div class="property-footer text-center">
-                        <a asp-action="EditProperty" asp-route-id="@property.Id" class="btn btn-outline-primary btn-sm me-2">
+                    <div class="app-card-footer">
+                        <a asp-action="EditProperty" asp-route-id="@property.Id"
+                           class="btn btn-outline-primary btn-sm me-2">
                             <i class="bi bi-pencil-square"></i> Editar
                         </a>
-                        <a asp-action="DeleteProperty" asp-route-id="@property.Id" class="btn btn-outline-danger btn-sm">
+
+                        <a asp-action="DeleteProperty" asp-route-id="@property.Id"
+                           class="btn btn-outline-danger btn-sm">
                             <i class="bi bi-trash"></i> Eliminar
                         </a>
                     </div>
+
                 </div>
             </div>
         }

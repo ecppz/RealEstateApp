@@ -221,7 +221,7 @@ namespace Infrastructure.Identity.Services
                         {
                             To = saveDto.Email,
                             HtmlBody = $"Por favor confirma tu cuenta visitando esta URL <a href='{verificationUri}'> Clic aqui </a>",
-                            Subject = "Confirmr registro"
+                            Subject = "Confirmar registro"
                         });
                     }
                     else
@@ -231,7 +231,7 @@ namespace Infrastructure.Identity.Services
                         {
                             To = saveDto.Email,
                             HtmlBody = $"Por favor confirma tu cuenta usando este token {verificationToken}",
-                            Subject = "Confirmr registro"
+                            Subject = "Confirmar registro"
                         });
                     }
                 }
@@ -492,10 +492,28 @@ namespace Infrastructure.Identity.Services
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
             {
+
+                var saveDto = new SaveUserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    ProfileImage = user.ProfileImage,
+                    Password = "",
+                    Role = Roles.Customer,
+                    Status = UserStatus.Active
+                };
+
+                var editResponse = await EditUser(saveDto, origin: null, isCreated: true);
+
                 response.Message = $"Account confirmed for {user.Email}. You can now use the app";
                 response.HasError = false;
-                return response;                
+                return response;
             }
+
             else
             {
                 response.Message = $"An error occurred while confirming this email {user.Email}";

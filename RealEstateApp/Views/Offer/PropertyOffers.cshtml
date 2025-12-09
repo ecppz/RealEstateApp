@@ -1,0 +1,87 @@
+﻿@using Domain.Common.Enums
+@model List<OfferViewModel>
+@{
+    Layout = "_LayoutAgent";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-cash-stack me-2"></i> Ofertas de la propiedad</h2>
+    <hr />
+
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th><i class="bi bi-person"></i> Cliente</th>
+                <th><i class="bi bi-currency-dollar"></i> Monto</th>
+                <th><i class="bi bi-calendar-event"></i> Fecha</th>
+                <th><i class="bi bi-flag"></i> Estado</th>
+                <th><i class="bi bi-gear"></i> Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var offer in Model)
+            {
+                <tr>
+                    <td>
+                        <i class="bi bi-person-circle me-1"></i>
+                        @offer.ClientId
+                    </td>
+                    <td>@offer.Amount.ToString("C")</td>
+                    <td>@offer.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (offer.Status == OfferStatus.Pending)
+                        {
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-hourglass-split"></i> Pendiente
+                            </span>
+                        }
+                        else if (offer.Status == OfferStatus.Accepted)
+                        {
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> Aceptada
+                            </span>
+                        }
+                        else if (offer.Status == OfferStatus.Rejected)
+                        {
+                            <span class="badge bg-danger">
+                                <i class="bi bi-x-circle"></i> Rechazada
+                            </span>
+                        }
+                    </td>
+                    <td>
+                        @if (offer.Status == OfferStatus.Pending)
+                        {
+                            <form asp-action="Accept" method="post" class="d-inline">
+                                <input type="hidden" name="offerId" value="@offer.Id" />
+                                <input type="hidden" name="propertyId" value="@offer.PropertyId" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-check-lg"></i> Aceptar
+                                </button>
+                            </form>
+
+                            <form asp-action="Reject" method="post" class="d-inline">
+                                <input type="hidden" name="offerId" value="@offer.Id" />
+                                <input type="hidden" name="propertyId" value="@offer.PropertyId" />
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-x-lg"></i> Rechazar
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted"><i class="bi bi-lock"></i> Bloqueado</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Botón para volver atrás -->
+    <div class="mt-3 text-center">
+        <a asp-controller="Offer" asp-action="PropertyDetailAgent" asp-route-propertyId="@Model.FirstOrDefault()?.PropertyId"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Volver al detalle de la propiedad
+        </a>
+    </div>
+</div>

@@ -3,7 +3,7 @@ using Application.Interfaces;
 
 namespace Application.Services
 {
-    public interface IPropertyService : IGenericService<PropertyDto> 
+    public interface IPropertyService : IGenericService<PropertyDto>
     {
         Task<PropertyDto?> AddPropertyAsync(CreatePropertyDto dto);
         Task<List<PropertyDto>> GetProperties(string agentId, bool onlyAvailable);
@@ -11,6 +11,8 @@ namespace Application.Services
         Task<PropertyDto?> GetPropertyById(int id);
         Task<PropertyDto?> UpdatePropertyAsync(int id, PropertyDto dto);
         Task<bool> DeletePropertyAsync(int id);
+
+        Task<List<PropertyDto>> GetAvailablePropertiesAsync();
 
     }
 }

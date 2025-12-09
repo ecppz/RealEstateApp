@@ -1,0 +1,185 @@
+﻿@using Domain.Common.Enums
+@model PropertyDetailClientViewModel
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = "Detalle de la Propiedad";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-house-door me-2"></i> Detalle de la Propiedad</h2>
+    <hr />
+
+    <!-- Botón para volver al listado -->
+    <div class="mb-3">
+        <a asp-controller="Property" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Volver al listado
+        </a>
+    </div>
+
+
+    <!-- Información principal de la propiedad -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Code</h5>
+            <p class="card-text">
+                <strong>Precio:</strong> @Model.Price.ToString("C") <br />
+                <strong>Descripción:</strong> @Model.Description <br />
+                <strong>Tamaño:</strong> @Model.SizeInMeters m² <br />
+                <strong>Habitaciones:</strong> @Model.Bedrooms <br />
+                <strong>Baños:</strong> @Model.Bathrooms <br />
+                <strong>Estado:</strong> @Model.Status
+            </p>
+        </div>
+    </div>
+
+    <!-- Panel dividido en dos columnas -->
+    <div class="row">
+        <!-- Chat con agente -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-chat-dots me-2"></i> Conversación con el agente
+                </div>
+                <div class="card-body" style="max-height:400px; overflow-y:auto;">
+                    @if (Model.Messages.Any())
+                    {
+                        @foreach (var msg in Model.Messages)
+                        {
+                           @await Html.PartialAsync("~/Views/Message/_MessageBubbleClient.cshtml", msg)
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-muted">
+                            <i class="bi bi-info-circle"></i> No hay mensajes aún. Escribe al agente para iniciar la conversación.
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <form asp-controller="Message" asp-action="SendMessageClient" method="post">
+                        <input type="hidden" name="PropertyId" value="@Model.Id" />
+                        <input type="hidden" name="ReceiverId" value="@Model.AgentId" />
+                        <div class="input-group">
+                            <input type="text" name="Content" class="form-control" placeholder="Escribe tu mensaje..." required />
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Enviar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ofertas del cliente -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-cash-stack me-2"></i> Mis ofertas
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="bi bi-currency-dollar"></i> Monto</th>
+                                <th><i class="bi bi-calendar-event"></i> Fecha</th>
+                                <th><i class="bi bi-flag"></i> Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Offers.Any())
+                            {
+                                @foreach (var offer in Model.Offers)
+                                {
+                                    <tr>
+                                        <td>@offer.Amount.ToString("C")</td>
+                                        <td>@offer.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            @if (offer.Status == OfferStatus.Pending)
+                                            {
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="bi bi-hourglass-split"></i> Pendiente
+                                                </span>
+                                            }
+                                            else if (offer.Status == OfferStatus.Accepted)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle"></i> Aceptada
+                                                </span>
+                                            }
+                                            else if (offer.Status == OfferStatus.Rejected)
+                                            {
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-circle"></i> Rechazada
+                                                </span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">
+                                        <i class="bi bi-info-circle"></i> No has realizado ninguna oferta todavía.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    @{
+                        bool hasAccepted = Model.Offers.Any(o => o.Status == OfferStatus.Accepted);
+                        bool hasPending = Model.Offers.Any(o => o.Status == OfferStatus.Pending);
+                        bool canSendOffer = !hasAccepted && !hasPending;
+                    }
+
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newOfferModal"
+                            @(canSendOffer ? "" : "disabled")>
+                        <i class="bi bi-plus-circle"></i> Nueva oferta
+                    </button>
+
+                    @if (!canSendOffer)
+                    {
+                        <span class="text-muted ms-2">
+                            <i class="bi bi-info-circle"></i> No puedes enviar una nueva oferta mientras exista una pendiente o aceptada.
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para nueva oferta -->
+<div class="modal fade" id="newOfferModal" tabindex="-1" aria-labelledby="newOfferModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Offer" asp-action="CreateOffer" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newOfferModalLabel">
+                        <i class="bi bi-plus-circle"></i> Nueva oferta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="PropertyId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">
+                            <i class="bi bi-currency-dollar"></i> Monto de la oferta
+                        </label>
+                        <input type="number" step="0.01" min="1" class="form-control" id="Amount" name="Amount" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-send"></i> Enviar oferta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

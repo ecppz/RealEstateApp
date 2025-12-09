@@ -20,7 +20,7 @@ namespace RealEstateApp.Controllers
     [Authorize(Roles = "Agent")]
     public class AgentController : Controller
     {
-        private readonly IBaseAccountService baseAccountService;
+        private readonly IUserAccountServiceForWebApp userAccountServiceForWebApp;
         private readonly IPropertyService propertyService;
         private readonly IPropertyTypeService propertyTypeService;
         private readonly IImprovementService improvementService;
@@ -28,10 +28,10 @@ namespace RealEstateApp.Controllers
         private readonly IMapper mapper;
         private readonly UserManager<UserAccount> userManager;
 
-        public AgentController(IBaseAccountService baseAccountService, IPropertyService propertyService, IPropertyTypeService propertyTypeService,
+        public AgentController(IUserAccountServiceForWebApp userAccountServiceForWebApp, IPropertyService propertyService, IPropertyTypeService propertyTypeService,
                 ISaleTypeService saleTypeService, IImprovementService improvementService, IMapper mapper, UserManager<UserAccount> userManager)
         {
-            this.baseAccountService = baseAccountService;
+            this.userAccountServiceForWebApp = userAccountServiceForWebApp;
             this.propertyService = propertyService;
             this.propertyTypeService = propertyTypeService;
             this.improvementService = improvementService;
@@ -64,7 +64,7 @@ namespace RealEstateApp.Controllers
         {
             UserAccount? userSession = await userManager.GetUserAsync(User);
 
-            var userDto = await baseAccountService.GetUserById<AgentDto>(userSession.Id);
+            var userDto = await userAccountServiceForWebApp.GetUserById<AgentDto>(userSession.Id);
 
             var vm = mapper.Map<AgentProfileViewModel>(userDto);
             return View(vm);
@@ -79,7 +79,7 @@ namespace RealEstateApp.Controllers
                 return View(vm);
             }
 
-            var currentAgent = await baseAccountService.GetUserById<AgentDto>(vm.Id);
+            var currentAgent = await userAccountServiceForWebApp.GetUserById<AgentDto>(vm.Id);
 
             var editAgentDto = new EditAgentDto
             {
@@ -96,7 +96,7 @@ namespace RealEstateApp.Controllers
 
             var saveUserDto = mapper.Map<SaveUserDto>(editAgentDto);
 
-            var result = await baseAccountService.EditUser(saveUserDto, origin: "AgentProfile");
+            var result = await userAccountServiceForWebApp.EditUser(saveUserDto, origin: "AgentProfile");
 
             if (result != null)
             {
@@ -233,7 +233,14 @@ namespace RealEstateApp.Controllers
             ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name", vm.SaleTypeId);
 
             var improvements = await improvementService.GetAllList();
-            ViewBag.Improvements = new SelectList(improvements, "Id", "Name", vm.Improvements);
+            ViewBag.Improvements = improvements
+                .Select(i => new SelectListItem
+                {
+                    Value = i.Id.ToString(),
+                    Text = i.Name,
+                    Selected = vm.Improvements.Contains(i.Id) 
+                })
+                .ToList();
 
             return View("MaintenanceProperties/EditProperty", vm);
         }
@@ -271,13 +278,21 @@ namespace RealEstateApp.Controllers
                 Code = vm.Code,
                 PropertyTypeId = currentDto.PropertyTypeId,
                 SaleTypeId = currentDto.SaleTypeId,
+                AgentId = currentDto.AgentId,
                 Price = vm.Price,
                 Description = vm.Description,
                 SizeInMeters = vm.SizeInMeters,
+                Status = currentDto.Status,
                 Bedrooms = vm.Bedrooms,
                 Bathrooms = vm.Bathrooms,
-                Improvements = currentDto.Improvements,
+                Improvements = vm.Improvements
+                    .Select(id => new PropertyImprovementDto
+                    {
+                        PropertyId = vm.Id,
+                        ImprovementId = id
+                    }).ToList(),
                 Images = currentDto.Images
+
             };
 
             if (vm.NewImages != null && vm.NewImages.Any())
@@ -289,6 +304,7 @@ namespace RealEstateApp.Controllers
                     editDto.Images.Add(new PropertyImageDto { Id = 0, PropertyId = 0, ImageUrl = url });
                 }
             }
+
 
             var propertyDto = mapper.Map<PropertyDto>(editDto);
             await propertyService.UpdatePropertyAsync(vm.Id, propertyDto);

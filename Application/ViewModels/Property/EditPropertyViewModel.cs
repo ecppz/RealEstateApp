@@ -1,5 +1,4 @@
 ﻿using Application.ViewModels.PropertyImage;
-using Application.ViewModels.PropertyImprovement;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +6,6 @@ namespace Application.ViewModels.Property
 {
     public class EditPropertyViewModel
     {
-        [Required]
         public int Id { get; set; } 
         [Required]
         [RegularExpression(@"^\d{6}$", ErrorMessage = "El código debe contener exactamente 6 dígitos numéricos")]

@@ -1,0 +1,16 @@
+﻿@model MessageViewModel
+
+<div class="mb-2">
+    <div class="@(Model.IsFromAgent ? "text-end" : "text-start")">
+        <span class="badge @(Model.IsFromAgent ? "bg-primary" : "bg-secondary")">
+            @(Model.IsFromAgent ? "Agente" : Model.Property?.Code ?? "Cliente")
+        </span>
+        <p class="d-inline-block p-2 rounded @(Model.IsFromAgent ? "bg-light" : "bg-white")"
+           style="max-width:70%;">
+            @Model.Content
+        </p>
+        <small class="text-muted d-block">
+            @Model.SentAt.ToString("dd/MM/yyyy HH:mm")
+        </small>
+    </div>
+</div>
