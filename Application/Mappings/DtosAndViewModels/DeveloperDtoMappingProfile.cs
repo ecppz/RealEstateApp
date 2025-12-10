@@ -37,6 +37,10 @@ namespace Application.Mappings.DtosAndViewModels
                 .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
 
+            CreateMap<CreateDeveloperForApiDto, SaveUserDto>()
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
+                .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
+
             CreateMap<EditDeveloperDto, SaveUserDto>()
                 .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());

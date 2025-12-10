@@ -15,7 +15,7 @@ namespace RealEstateApi.Extensions
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1.0",
-                    Title = "Investment API",
+                    Title = "RealEstate API",
                     Description = "This Api will be responsible for overall data distribution",
                     Contact = new OpenApiContact
                     {
@@ -26,7 +26,7 @@ namespace RealEstateApi.Extensions
                 options.SwaggerDoc("v2", new OpenApiInfo
                 {
                     Version = "v2.0",
-                    Title = "Investment API",
+                    Title = "RealEstate API",
                     Description = "This Api will be responsible for overall data distribution",
                     Contact = new OpenApiContact
                     {

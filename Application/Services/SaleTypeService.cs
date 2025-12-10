@@ -9,17 +9,13 @@ namespace Application.Services
     public class SaleTypeService : GenericService<SaleType, SaleTypeDto>, ISaleTypeService
     {
         private readonly ISaleTypeRepository saleTypeRepository;
-       // private readonly IPropertyRepository propertyRepository;
         private readonly IMapper mapper;
-        private readonly IBaseAccountService accountService;
 
         public SaleTypeService(ISaleTypeRepository saleTypeRepository, IMapper mapper, IBaseAccountService accountService)
             : base(saleTypeRepository, mapper)
         {
             this.saleTypeRepository = saleTypeRepository;
             this.mapper = mapper;
-      //      this.propertyRepository = propertyRepository;
-            this.accountService = accountService;
         }
 
         public async Task<SaleTypeDto?> AddAsync(SaleTypeCreateDto dto)

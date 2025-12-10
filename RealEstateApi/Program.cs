@@ -1,34 +1,60 @@
+using Application;
+using Infrastructure.Identity;
+using Infrastructure.Persistence;
+using Infrastructure.Shared;
+using Microsoft.AspNetCore.Mvc;
+using RealEstateApi.Extensions;
+using RealEstateApi.Handlers;
+using System.Text.Json.Serialization;
 
-namespace RealEstateApi
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers(opt =>
 {
-    public class Program 
-    { 
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+    opt.Filters.Add(new ProducesAttribute("application/json"));
+}).ConfigureApiBehaviorOptions(opt =>
+{
+    opt.SuppressInferBindingSourcesForParameters = true;
+    opt.SuppressMapClientErrors = true;
+}).AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
-            // Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddPersistenceLayerIoc(builder.Configuration);
+builder.Services.AddApplicationLayerIoc();
+builder.Services.AddSharedLayerIoc(builder.Configuration);
+builder.Services.AddIdentityLayerIocForWebApi(builder.Configuration);
+builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHealthChecks();
+builder.Services.AddAppiVersioningExtension();
+builder.Services.AddSwaggerExtension();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+var app = builder.Build();
+await app.Services.RunIdentitySeedAsync();
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerExtension(app);
+    app.MapOpenApi();
 }
+
+app.UseHttpsRedirection();
+app.UseExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseHealthChecks("/health");
+
+app.MapControllers();
+
+await app.RunAsync();

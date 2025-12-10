@@ -1,5 +1,4 @@
 ﻿using Application.Dtos.Property;
-using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -9,11 +8,9 @@ namespace Application.Services
     {
         private readonly IMapper mapper;
         private readonly IPropertyRepository propertyRepository;
-        private readonly IBaseAccountService accountService;
-        public PropertyService(IPropertyRepository propertyRepository, IBaseAccountService accountService, IMapper mapper) : base(propertyRepository, mapper)
+        public PropertyService(IPropertyRepository propertyRepository, IMapper mapper) : base(propertyRepository, mapper)
         {
             this.propertyRepository = propertyRepository;
-            this.accountService = accountService;
             this.mapper = mapper;
         }
 

@@ -14,7 +14,7 @@
                     foreach (var apiVersion in versionDescriptions)
                     {
                         var url = $"/swagger/{apiVersion.GroupName}/swagger.json";
-                        var name = $"Investment API - {apiVersion.GroupName.ToUpperInvariant()}";
+                        var name = $"RealEstate API - {apiVersion.GroupName.ToUpperInvariant()}";
                         opt.SwaggerEndpoint(url, name);
                     }
                 }

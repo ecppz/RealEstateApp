@@ -14,16 +14,14 @@ namespace Application.Services
         private readonly IMapper mapper;
         private readonly IMessageRepository messageRepository;
         private readonly IPropertyRepository propertyRepository;
-        private readonly IBaseAccountService usuarioService;
 
-        public OfferService(IOfferRepository offerRepository,IBaseAccountService baseAccountService ,IMapper mapper, IMessageRepository messageRepository,IPropertyRepository propertyRepository )
+        public OfferService(IOfferRepository offerRepository,IMapper mapper, IMessageRepository messageRepository,IPropertyRepository propertyRepository)
             : base(offerRepository, mapper)
         {
             this.offerRepository = offerRepository;
             this.mapper = mapper;
             this.propertyRepository = propertyRepository;
             this.messageRepository = messageRepository;
-            this.usuarioService = baseAccountService;
         }
 
         // Crear una nueva oferta (cliente)
