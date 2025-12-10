@@ -3,7 +3,9 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Settings;
 using Infrastructure.Identity.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -79,6 +81,7 @@ namespace Infrastructure.Identity.Services
             return response;
         }
 
+       
         public override async Task<RegisterResponseDto> RegisterUser(SaveUserDto saveDto, string? origin, string? documentNumber = null, bool? isApi = false)
         {
             return await base.RegisterUser(saveDto, null, documentNumber = null, isApi);

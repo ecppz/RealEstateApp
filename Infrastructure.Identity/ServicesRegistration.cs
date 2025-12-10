@@ -177,6 +177,7 @@ namespace Infrastructure.Identity
 
             await DefaultRoles.SeedAsync(roleManager);
             await DefaultAdminUser.SeedAsync(userManager);
+            await DefaultDeveloperUser.SeedAsync(userManager);
         }
 
         #region Private methods
