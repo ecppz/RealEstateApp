@@ -1,5 +1,4 @@
 ﻿using Application.Dtos.PropertyType;
-using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -10,15 +9,13 @@ namespace Application.Services
     {
         private readonly IPropertyTypeRepository propertyTypeRepository;
         private readonly IMapper mapper;
-        private readonly IBaseAccountService accountService;
 
 
-        public PropertyTypeService(IPropertyTypeRepository propertyTypeRepository, IMapper mapper, IBaseAccountService accountService)
+        public PropertyTypeService(IPropertyTypeRepository propertyTypeRepository, IMapper mapper)
             : base(propertyTypeRepository, mapper)
         {
             this.propertyTypeRepository = propertyTypeRepository;
             this.mapper = mapper;
-            this.accountService = accountService;
         }
 
         public async Task<PropertyTypeDto?> AddPropertyAsync(PropertyTypeCreateDto dto)

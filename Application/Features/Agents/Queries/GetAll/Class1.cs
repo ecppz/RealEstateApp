@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presentation.WebApi
+namespace Application.Features.Agents.Queries.GetAll
 {
     internal class Class1
     {

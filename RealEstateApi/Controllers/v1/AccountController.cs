@@ -4,6 +4,7 @@ using Application.Dtos.User;
 using Application.Interfaces;
 using Asp.Versioning;
 using AutoMapper;
+using Domain.Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApi.Controllers;
@@ -44,7 +45,7 @@ namespace InvestmentApi.Controllers.v1
             Summary = "Register a new admin",
             Description = "Creates a new admin account (only accessible by logged-in Admins)"
         )]
-        public async Task<IActionResult> RegisterAdmin([FromForm] CreateAdminDto dto, [FromServices] IMapper mapper)
+        public async Task<IActionResult> RegisterAdmin([FromForm] CreateAdminForApiDto dto, [FromServices] IMapper mapper)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -59,7 +60,7 @@ namespace InvestmentApi.Controllers.v1
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [Authorize(Roles = "Admin,Developer")]
+        [Authorize(Roles = "Admin, Developer")]
         [HttpPost("register-developer")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -68,10 +69,13 @@ namespace InvestmentApi.Controllers.v1
             Summary = "Register a new developer",
             Description = "Creates a new developer account (accessible by Admins and Developers)"
         )]
-        public async Task<IActionResult> RegisterDeveloper([FromForm] CreateDeveloperDto dto, [FromServices] IMapper mapper)
+        public async Task<IActionResult> RegisterDeveloper([FromForm] CreateDeveloperForApiDto dto, [FromServices] IMapper mapper)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
+
+            if (dto.Role != RolesForApi.Developer)
+                return BadRequest("Solo se permite crear Developers");
 
             var save = mapper.Map<SaveUserDto>(dto);
 
@@ -79,6 +83,7 @@ namespace InvestmentApi.Controllers.v1
 
             if (result == null || result.HasError)
                 return BadRequest(result?.Errors);
+
 
             return StatusCode(StatusCodes.Status201Created);
         }
