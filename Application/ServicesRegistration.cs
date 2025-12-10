@@ -15,6 +15,7 @@ namespace Application
             services.AddMediatR(opt=> opt.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
             #endregion
+
             #region Services IOC
             services.AddScoped<IFavoriteService, FavoriteService>();
             services.AddScoped<IImprovementService, ImprovementService>();
