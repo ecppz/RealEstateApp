@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.PropertyType.Queries.GetById
 {
-    public class GetPropertyTypeByIdQuery : IRequest<PropertyTypeDto>
+    public class GetPropertyTypeByIdQuery : IRequest<PropertyTypeListDto?>
     {
         public int Id { get; set; }
     }
 
-    public class GetPropertyTypeByIdQueryHandler : IRequestHandler<GetPropertyTypeByIdQuery, PropertyTypeDto>
+    public class GetPropertyTypeByIdQueryHandler : IRequestHandler<GetPropertyTypeByIdQuery, PropertyTypeListDto?>
     {
         private readonly IPropertyTypeRepository _propertyTypeRepository;
 
@@ -26,49 +26,26 @@ namespace Application.Features.PropertyType.Queries.GetById
             _propertyTypeRepository = propertyTypeRepository;
         }
 
-        public async Task<PropertyTypeDto> Handle(GetPropertyTypeByIdQuery query, CancellationToken cancellationToken)
+        public async Task<PropertyTypeListDto?> Handle(GetPropertyTypeByIdQuery query, CancellationToken cancellationToken)
         {
             var propertyType = await _propertyTypeRepository.GetPropertyById(query.Id);
 
             if (propertyType == null)
             {
-                return null; // El controller luego traduce esto a 204 NoContent
+                return null; // El controlador luego traduce esto a 204 NoContent
             }
 
-            var dto = new PropertyTypeDto
+            return new PropertyTypeListDto
             {
                 Id = propertyType.Id,
                 Name = propertyType.Name,
                 Description = propertyType.Description,
-                Properties = propertyType.Properties?.Select(p => new PropertyDto
-                {
-                    Id = p.Id,
-                    Code = p.Code,
-                    PropertyTypeId = p.PropertyTypeId,
-                    AgentId = p.AgentId,
-                    SaleTypeId = p.SaleTypeId,
-                    Price = p.Price,
-                    Description = p.Description,
-                    SizeInMeters = p.SizeInMeters,
-                    Bedrooms = p.Bedrooms,
-                    Bathrooms = p.Bathrooms,
-                    Status = p.Status,
-                    CreatedAt = p.CreatedAt,
-                    Improvements = p.Improvements?.Select(i => new PropertyImprovementDto
-                    {
-                        PropertyId = i.PropertyId,
-                        ImprovementId = i.ImprovementId,
-                        Improvement = new ImprovementDto
-                        {
-                            Id = i.Improvement.Id,
-                            Name = i.Improvement.Name,
-                            Description = i.Improvement.Description
-                        }
-                    }).ToList() ?? new List<PropertyImprovementDto>()
-                }).ToList()
+                PropertyCount = propertyType.Properties?.Count ?? 0 
             };
-
-            return dto;
         }
     }
+
+
+
+
 }

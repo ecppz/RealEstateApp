@@ -35,7 +35,9 @@ namespace Infrastructure.Persistence.Repositories
             var entry = await context.PropertyTypes.FindAsync(id);
             if (entry != null)
             {
-                context.Entry(entry).CurrentValues.SetValues(entity);
+                entry.Name = entity.Name;
+                entry.Description = entity.Description;
+
                 await context.SaveChangesAsync();
                 return entry;
             }

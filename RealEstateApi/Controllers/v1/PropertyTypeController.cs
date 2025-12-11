@@ -38,7 +38,7 @@ namespace RealEstateApi.Controllers.v1
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Developer")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyTypeDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyTypeListDto))] 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
@@ -84,12 +84,12 @@ namespace RealEstateApi.Controllers.v1
         )]
         public async Task<IActionResult> Update(int id, [FromBody] UpdatePropertyTypeCommand command)
         {
-            if (id != command.Id)
+            var updatedId = await Mediator.Send(new UpdatePropertyTypeCommandWrapper
             {
-                return BadRequest("The ID in the URL does not match the request body.");
-            }
-
-            var updatedId = await Mediator.Send(command);
+                Id = id,
+                Name = command.Name,
+                Description = command.Description
+            });
 
             if (updatedId <= 0)
             {

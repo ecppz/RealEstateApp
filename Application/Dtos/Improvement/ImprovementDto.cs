@@ -4,7 +4,7 @@ namespace Application.Dtos.Improvement
 {
     public class ImprovementDto
     {
-        public required int Id { get; set; }
+        public  int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
         public ICollection<PropertyImprovementDto>? PropertyImprovements { get; set; }

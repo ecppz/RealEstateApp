@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.PropertyType.Commands.Update
+namespace Application.Features.SaleType.Commands.Create
 {
-    public class UpdatePropertyTypeCommandValidator : AbstractValidator<UpdatePropertyTypeCommand>
+    public class CreateSaleTypeCommandValidator : AbstractValidator<CreateSaleTypeCommand>
     {
-        public UpdatePropertyTypeCommandValidator()
+        public CreateSaleTypeCommandValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.")
@@ -20,5 +20,4 @@ namespace Application.Features.PropertyType.Commands.Update
                 .MaximumLength(250).WithMessage("Description must not exceed 250 characters.");
         }
     }
-
 }

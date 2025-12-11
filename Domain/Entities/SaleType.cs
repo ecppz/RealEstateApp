@@ -2,7 +2,7 @@
 {
     public class SaleType
     {
-        public required int Id { get; set; }
+        public  int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
 

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dtos.SaleType
+namespace Application.Dtos.Improvement
 {
-    public class SaleTypeUpdateDto
+    public class ImprovementSimpleDto
     {
+        public int Id { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
     }

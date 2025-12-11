@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.PropertyType.Commands.Delete
 {
-    public class DeletePropertyTypeCommand : IRequest<int>
+    public class DeletePropertyTypeCommand : IRequest<int?>
     {
         public int Id { get; set; }
     }
 
-    public class DeletePropertyTypeCommandHandler : IRequestHandler<DeletePropertyTypeCommand, int>
+    public class DeletePropertyTypeCommandHandler : IRequestHandler<DeletePropertyTypeCommand, int?>
     {
         private readonly IPropertyTypeRepository _propertyTypeRepository;
 
@@ -22,17 +22,16 @@ namespace Application.Features.PropertyType.Commands.Delete
             _propertyTypeRepository = propertyTypeRepository;
         }
 
-        public async Task<int> Handle(DeletePropertyTypeCommand command, CancellationToken cancellationToken)
+        public async Task<int?> Handle(DeletePropertyTypeCommand command, CancellationToken cancellationToken)
         {
             var propertyType = await _propertyTypeRepository.GetPropertyById(command.Id);
 
             if (propertyType == null)
             {
-                throw new Exception("Property type not found");
+                return null; 
             }
 
             await _propertyTypeRepository.DeletePropertyAsync(command.Id);
-
             return command.Id;
         }
     }
