@@ -25,6 +25,7 @@ namespace Application
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
             services.AddScoped<ISaleTypeService, SaleTypeService>();
             services.AddScoped<IPropertyImprovement, PropertyImprovementService>();
+
             #endregion
         }
     }

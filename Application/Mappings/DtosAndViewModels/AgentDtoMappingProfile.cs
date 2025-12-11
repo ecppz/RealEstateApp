@@ -31,12 +31,11 @@ namespace Application.Mappings.DtosAndViewModels
             CreateMap<AgentDto, AgentProfileViewModel>()
                 .ReverseMap();
 
-            CreateMap<CreateAgentDto, SaveUserDto>()
-                .ReverseMap();
-
             CreateMap<AgentDto, SaveUserDto>()
                 .ForMember(dest => dest.Password, opt => opt.Ignore())
-                .ForMember(dest => dest.ProfileImage, opt => opt.Ignore());
+                .ForMember(dest => dest.ProfileImage, opt => opt.MapFrom(src => src.ProfileImage)) 
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
 
 
             CreateMap<EditAgentDto, SaveUserDto>()

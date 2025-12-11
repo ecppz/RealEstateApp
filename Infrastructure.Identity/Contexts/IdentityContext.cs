@@ -18,7 +18,7 @@ namespace Infrastructure.Identity.Contexts
             builder.Entity<UserAccount>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles"); 
-            builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
+            builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins"); // ya?
         }
     }
 }

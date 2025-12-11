@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Agents.Queries.GetAgentProperty
+namespace RealEstateApp.Integration.Tests.Persistence.Repositories
 {
     internal class Class1
     {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using ValidationException = Application.Exceptions.ValidationException;
 
 namespace RealEstateApi.Handlers
 {

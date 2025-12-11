@@ -14,17 +14,16 @@ namespace RealEstateApp.Controllers
 
         private readonly IImprovementService improvementService;
         private readonly IPropertyImprovement propertyImprovement;
-     //   private readonly IPropertyService propertyService;
         private readonly IMapper mapper;
         private readonly UserManager<UserAccount> userManager;
         private readonly IUserAccountServiceForWebApp userAccountServiceForWebApp;
 
-        public MaintenanceOfImprovementsController(IImprovementService improvementService, IPropertyImprovement propertyImprovement, 
+        public MaintenanceOfImprovementsController(IImprovementService improvementService, IPropertyImprovement propertyImprovement,
             IMapper mapper, UserManager<UserAccount> userManager, IUserAccountServiceForWebApp userAccountServiceForWebApp)
         {
             this.improvementService = improvementService;
             this.propertyImprovement = propertyImprovement;
-          //  this.propertyService = propertyService;
+            //  this.propertyService = propertyService;
             this.mapper = mapper;
             this.userManager = userManager;
             this.userAccountServiceForWebApp = userAccountServiceForWebApp;

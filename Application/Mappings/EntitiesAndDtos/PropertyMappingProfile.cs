@@ -9,9 +9,12 @@ namespace Application.Mappings.EntitiesAndDtos
         public PropertyMappingProfile()
         {
             CreateMap<Property, PropertyDto>()
+                .ForMember(dest => dest.PropertyTypeId, opt => opt.MapFrom(src => src.PropertyTypeId))
+                .ForMember(dest => dest.PropertyType, opt => opt.MapFrom(src => src.PropertyType))
+                .ForMember(dest => dest.SaleType, opt => opt.MapFrom(src => src.SaleType))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
-                .ForMember(dest => dest.Improvements, opt => opt.MapFrom(src => src.Improvements))
-                .ReverseMap();
+                .ForMember(dest => dest.Improvements, opt => opt.MapFrom(src => src.Improvements));
+
 
             CreateMap<Property, CreatePropertyDto>().ReverseMap();
 

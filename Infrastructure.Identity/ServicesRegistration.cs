@@ -71,6 +71,7 @@ namespace Infrastructure.Identity
 
             #region Services
             services.AddScoped<IUserAccountServiceForWebApp, UserAccountServiceForWebApp>();
+            services.AddScoped<IUserAccountServiceForWebApi, UserAccountServiceForWebApi>();
             services.AddScoped<IBaseAccountService, BaseAccountService>();
             #endregion
         }
@@ -131,29 +132,41 @@ namespace Infrastructure.Identity
                     ValidAudience = config["JwtSettings:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:SecretKey"] ?? ""))
                 };
-                opt.Events = new JwtBearerEvents()
+                opt.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = af =>
+                    OnAuthenticationFailed = context =>
                     {
-                        af.NoResult();
-                        af.Response.StatusCode = 500;
-                        af.Response.ContentType = "text/plain";
-                        return af.Response.WriteAsync(af.Exception.Message.ToString());
+                        // Solo loguea, no intentes cambiar el StatusCode aquí
+                        var errorMessage = context.Exception?.Message ?? "Authentication failed";
+                        context.Response.OnStarting(async () =>
+                        {
+                            context.Response.ContentType = "text/plain";
+                            await context.Response.WriteAsync(errorMessage);
+                        });
+                        return Task.CompletedTask;
                     },
-                    OnChallenge = c =>
+                    OnChallenge = context =>
                     {
-                        c.HandleResponse();
-                        c.Response.StatusCode = 401;
-                        c.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject(new JwtResponseDto { HasError = true, Error = "You are not Authorized" });
-                        return c.Response.WriteAsync(result);
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+                        var result = JsonConvert.SerializeObject(new JwtResponseDto
+                        {
+                            HasError = true,
+                            Error = "You are not Authorized"
+                        });
+                        return context.Response.WriteAsync(result);
                     },
-                    OnForbidden = c =>
+                    OnForbidden = context =>
                     {
-                        c.Response.StatusCode = 403;
-                        c.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject(new JwtResponseDto { HasError = true, Error = "You are not Authorized to access this resource" });
-                        return c.Response.WriteAsync(result);
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+                        var result = JsonConvert.SerializeObject(new JwtResponseDto
+                        {
+                            HasError = true,
+                            Error = "You are not Authorized to access this resource"
+                        });
+                        return context.Response.WriteAsync(result);
                     }
                 };
             }).AddCookie(IdentityConstants.ApplicationScheme, opt =>
@@ -164,6 +177,7 @@ namespace Infrastructure.Identity
 
             #region Services
             services.AddScoped<IUserAccountServiceForWebApi, UserAccountServiceForWebApi>();
+            services.AddScoped<IUserAccountServiceForWebApp, UserAccountServiceForWebApp>();
             services.AddScoped<IBaseAccountService, BaseAccountService>();
             #endregion
         }

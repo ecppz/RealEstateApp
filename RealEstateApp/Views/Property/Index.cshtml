@@ -11,50 +11,145 @@
         <span>Listado de Propiedades</span>
     </div>
     <div class="card-body">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th><i class="bi bi-upc-scan me-1"></i> Código</th>
-                    <th><i class="bi bi-cash-stack me-1"></i> Precio</th>
-                    <th><i class="bi bi-info-circle me-1"></i> Estado</th>
-                    <th><i class="bi bi-eye me-1"></i> Ver Más</th>
-                </tr>
-            </thead>
-            <tbody>
+        @if (Model != null && Model.Any())
+        {
+            <div class="row mt-4">
                 @foreach (var property in Model)
                 {
-                    <tr>
-                        <td>@property.Code</td>
-                        <td>@property.Price.ToString("C")</td>
-                        <td>
-                            @if (property.Status == PropertyStatus.Available)
-                            {
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle"></i> Disponible
-                                </span>
-                            }
-                            else if (property.Status == PropertyStatus.Sold)
-                            {
-                                <span class="badge bg-danger">
-                                    <i class="bi bi-x-circle"></i> Vendida
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-hourglass-split"></i> Pendiente
-                                </span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-controller="Offer" asp-action="PropertyDetailAgent" asp-route-propertyId="@property.Id"
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-house-door"></i> Detalle
-                            </a>
-                        </td>
-                    </tr>
+                    <div class="col-md-4 mb-4">
+                        <div class="app-card property-card shadow-sm">
+                            <div class="position-relative">
+                                @if (property.Images != null && property.Images.Any())
+                                {
+                                    <div id="carousel-@property.Id" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            @{
+                                                int index = 0;
+                                            }
+                                            @foreach (var img in property.Images)
+                                            {
+                                                <div class="carousel-item @(index == 0 ? "active" : "")">
+                                                    <img src="@Url.Content("~/" + img.ImageUrl)"
+                                                         alt="Imagen de la propiedad"
+                                                         class="d-block w-100 app-card-image" />
+                                                </div>
+                                                index++;
+                                            }
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@property.Id" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Anterior</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-@property.Id" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Siguiente</span>
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
+                                }
+
+                                @if (property.Status == PropertyStatus.Sold)
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                                        Vendida
+                                    </span>
+                                }
+                                else if (property.Status == PropertyStatus.Available)
+                                {
+                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                                        Disponible
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary position-absolute top-0 start-0 m-2">
+                                        Pendiente
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="app-card-body">
+                                <div class="app-card-title mb-2">
+                                    <i class="bi bi-hash"></i> Código: @property.Code
+                                </div>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-building"></i> <strong>Descripción:</strong> @property.Description
+                                </p>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-geo-alt"></i> <strong>Tipo:</strong> @property.PropertyType?.Name
+                                </p>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-currency-dollar"></i> <strong>Venta:</strong> @property.SaleType?.Name
+                                </p>
+
+                                <p class="text-danger fw-bold">
+                                    <i class="bi bi-tag"></i> @property.Price.ToString("C")
+                                </p>
+
+                                <hr />
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-stars"></i> <strong>Mejoras:</strong>
+                                    @if (property.Improvements != null && property.Improvements.Any())
+                                    {
+                                        @string.Join(", ", property.Improvements.Select(i => i.Improvement?.Name))
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin mejoras</span>
+                                    }
+                                </p>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-aspect-ratio"></i> <strong>Tamaño:</strong> @property.SizeInMeters m²
+                                </p>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-door-open"></i> <strong>Habitaciones:</strong> @property.Bedrooms
+                                </p>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-badge-wc"></i> <strong>Baños:</strong> @property.Bathrooms
+                                </p>
+
+                                <p class="app-card-text">
+                                    <i class="bi bi-check-circle"></i> <strong>Estado:</strong>
+                                    @if (property.Status == PropertyStatus.Available)
+                                    {
+                                        <span class="badge bg-success">Disponible</span>
+                                    }
+                                    else if (property.Status == PropertyStatus.Sold)
+                                    {
+                                        <span class="badge bg-danger">Vendida</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactiva</span>
+                                    }
+                                </p>
+                            </div>
+
+                            <div class="app-card-footer">
+                                <a asp-controller="Offer" asp-action="PropertyDetailAgent" asp-route-propertyId="@property.Id"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-house-door"></i> Ver Detalle
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
                 }
-            </tbody>
-        </table>
+            </div>
+        }
+        else
+        {
+            <h2 class="text-center text-muted mt-4">No hay propiedades creadas</h2>
+        }
     </div>
 </div>
