@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Application.Features.PropertyType.Commands.Update
 {
-    // Command base: solo los campos editables
+
     public class UpdatePropertyTypeCommand
     {
         public string Name { get; set; }
         public string Description { get; set; }
     }
 
-    // Wrapper: incluye el Id para que el handler lo reciba
+
     public class UpdatePropertyTypeCommandWrapper : IRequest<int>
     {
         public int Id { get; set; }
@@ -23,7 +23,7 @@ namespace Application.Features.PropertyType.Commands.Update
         public string Description { get; set; }
     }
 
-    // Handler trabaja con el wrapper
+
     public class UpdatePropertyTypeCommandHandler : IRequestHandler<UpdatePropertyTypeCommandWrapper, int>
     {
         private readonly IPropertyTypeRepository _propertyTypeRepository;

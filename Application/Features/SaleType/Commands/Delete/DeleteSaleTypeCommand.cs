@@ -28,7 +28,7 @@ namespace Application.Features.SaleType.Commands.Delete
 
             if (saleType == null)
             {
-                return null; // ✅ no lanzamos excepción, controlador devuelve 204
+                return null; 
             }
 
             await _saleTypeRepository.DeleteAsync(command.Id);
