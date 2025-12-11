@@ -17,8 +17,10 @@ namespace Application.Services
         // Actualizar un tipo de venta existente
         Task<SaleTypeDto?> UpdateAsync(SaleTypeUpdateDto dto, int id);
 
+        Task<bool> DeleteSaleTypeAsync(int id);
+
         // Eliminar un tipo de venta y sus propiedades asociadas
-       // Task DeleteAsync(int id);
+        // Task DeleteAsync(int id);
 
     }
 }

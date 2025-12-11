@@ -1,16 +1,25 @@
 ﻿using Domain.Interfaces;
 using MediatR;
-using Domain.Entities;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace Application.Features.PropertyType.Commands.Create
-{
-    public class CreatePropertyTypeCommand : IRequest<int>
+/// <summary>
+/// Parameters required to create a new property type record
+/// </summary>
+    public class CreatePropertyTypeCommand : IRequest<int?>
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        /// <example>Apartamento</example>
+        [SwaggerParameter(Description = "The name of the property type")]
+        public required string Name { get; set; }
+
+        /// <example>Apartamento muy bonito</example>
+        [SwaggerParameter(Description = "The description of the property type")]
+        public required string Description { get; set; }
     }
 
-    public class CreatePropertyTypeCommandHandler : IRequestHandler<CreatePropertyTypeCommand, int>
+    /// <summary>
+    /// Handles the creation of a new property type record
+    /// </summary>
+    public class CreatePropertyTypeCommandHandler : IRequestHandler<CreatePropertyTypeCommand, int?>
     {
         private readonly IPropertyTypeRepository _propertyTypeRepository;
 
@@ -19,24 +28,18 @@ namespace Application.Features.PropertyType.Commands.Create
             _propertyTypeRepository = propertyTypeRepository;
         }
 
-        public async Task<int> Handle(CreatePropertyTypeCommand command, CancellationToken cancellationToken)
+        public async Task<int?> Handle(CreatePropertyTypeCommand request, CancellationToken cancellationToken)
         {
-            Domain.Entities.PropertyType entity = new()
+            var propertyType = new Domain.Entities.PropertyType
             {
                 Id = 0,
-                Name = command.Name,
-                Description = command.Description
+                Name = request.Name,
+                Description = request.Description
             };
 
-            var result = await _propertyTypeRepository.AddPropertyAsync(entity);
+            var result = await _propertyTypeRepository.AddAsync(propertyType);
 
-            if (result == null)
-            {
-                throw new Exception("Error creating property type");
-            }
-
-            return result.Id;
+            return result?.Id;
         }
-    }
 
-}
+    }

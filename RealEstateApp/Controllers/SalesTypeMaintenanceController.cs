@@ -100,7 +100,7 @@ namespace RealEstateApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await saleTypeService.DeleteAsync(id);
+            await saleTypeService.DeleteSaleTypeAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

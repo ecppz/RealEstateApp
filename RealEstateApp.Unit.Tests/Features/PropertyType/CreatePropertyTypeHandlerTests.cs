@@ -1,13 +1,9 @@
-﻿using Application.Features.PropertyType.Commands.Create;
+﻿
 using FluentAssertions;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RealEstateApp.Unit.Tests.Features.PropertyType
 {

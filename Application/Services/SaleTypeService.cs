@@ -53,22 +53,34 @@ namespace Application.Services
             return mapper.Map<SaleTypeDto>(updated);
         }
 
-      //  public async Task DeleteAsync(int id)
-      //  {
-      //      //Eliminar propiedades asociadas antes de borrar el tipo de venta
-      ////      var properties = await propertyRepository.GetAllList();
-      //  //    var toDelete = properties.Where(p => p.SaleTypeId == id).ToList();
+        public async Task<bool> DeleteSaleTypeAsync(int id)
+        {
+            var existing = await saleTypeRepository.GetById(id);
+            if (existing == null)
+                return false;
 
-      //      if (toDelete.Any())
-      //      {
-      //          foreach (var property in toDelete)
-      //          {
-      //     //         await propertyRepository.DeleteAsync(property.Id);
-      //          }
-      //      }
+            await saleTypeRepository.DeleteAsync(id);
+            return true;
+        }
 
-      //      await saleTypeRepository.DeleteAsync(id);
-      //  }
+
+
+        //  public async Task DeleteAsync(int id)
+        //  {
+        //      //Eliminar propiedades asociadas antes de borrar el tipo de venta
+        ////      var properties = await propertyRepository.GetAllList();
+        //  //    var toDelete = properties.Where(p => p.SaleTypeId == id).ToList();
+
+        //      if (toDelete.Any())
+        //      {
+        //          foreach (var property in toDelete)
+        //          {
+        //     //         await propertyRepository.DeleteAsync(property.Id);
+        //          }
+        //      }
+
+        //      await saleTypeRepository.DeleteAsync(id);
+        //  }
 
 
     }
