@@ -101,7 +101,7 @@ namespace RealEstateApp.Controllers
             if (result != null)
             {
                 TempData["SuccessMessage"] = "Perfil actualizado correctamente";
-                return RedirectToAction("Index");
+                return RedirectToAction("Profile");
             }
             else
             {

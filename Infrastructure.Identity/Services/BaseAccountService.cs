@@ -526,12 +526,16 @@ namespace Infrastructure.Identity.Services
 
         protected async Task<string> GetVerificationEmailUri(UserAccount user, string origin)
         {
+            if (string.IsNullOrWhiteSpace(origin))
+                throw new ArgumentException("Origin no puede ser nulo o vacío", nameof(origin));
+
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var route = "Login/ConfirmEmail";
-            var completeUrl = new Uri(string.Concat(origin, "/", route));// origin = https://localhost:58296 route=Login/ConfirmEmail
+
+            var completeUrl = new Uri(new Uri(origin), "Login/ConfirmEmail");
+
             var verificationUri = QueryHelpers.AddQueryString(completeUrl.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri.ToString(), "token", token);
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", token);
 
             return verificationUri;
         }

@@ -60,7 +60,17 @@ namespace Application.Mappings.DtosAndViewModels
                 .ForMember(dest => dest.PropertyType, opt => opt.MapFrom(src => src.PropertyType))
                 .ForMember(dest => dest.SaleType, opt => opt.MapFrom(src => src.SaleType))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
-                .ForMember(dest => dest.Improvements, opt => opt.MapFrom(src => src.Improvements))
+                .ForMember(dest => dest.Improvements, opt => opt.MapFrom(src =>
+                    src.Improvements.Select(i => new PropertyImprovementViewModel
+                    {
+                        ImprovementId = i.ImprovementId,
+                        Improvement = i.Improvement == null ? null : new ImprovementViewModel
+                        {
+                            Id = i.Improvement.Id,
+                            Name = i.Improvement.Name,
+                            Description = i.Improvement.Description
+                        }
+                    }).ToList()))
                 .ForMember(dest => dest.IsFavorite, opt => opt.Ignore());
 
 

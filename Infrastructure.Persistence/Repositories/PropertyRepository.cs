@@ -20,7 +20,6 @@ namespace Infrastructure.Persistence.Repositories
                     .ThenInclude(pi => pi.Improvement)
                 .AsQueryable();
 
-            // 🔹 Solo filtrar por agente si viene un Id válido
             if (!string.IsNullOrEmpty(agentId))
                 query = query.Where(p => p.AgentId == agentId);
 
@@ -40,6 +39,18 @@ namespace Infrastructure.Persistence.Repositories
                     .ThenInclude(pi => pi.Improvement) 
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<Property?> GetPropertyByCodeAsync(string code)
+        {
+            return await context.Properties
+                .Include(p => p.PropertyType)
+                .Include(p => p.SaleType)
+                .Include(p => p.Images)
+                .Include(p => p.Improvements)
+                    .ThenInclude(pi => pi.Improvement)
+                .FirstOrDefaultAsync(p => p.Code == code);
+        }
+
         public async Task<List<Property>> GetAllProperties(bool onlyAvailable)
         {
             var query = context.Properties
@@ -47,13 +58,14 @@ namespace Infrastructure.Persistence.Repositories
                 .Include(p => p.SaleType)
                 .Include(p => p.Images)
                 .Include(p => p.Improvements)
+                    .ThenInclude(pi => pi.Improvement)
                 .AsQueryable();
 
             if (onlyAvailable)
                 query = query.Where(p => p.Status == PropertyStatus.Available);
 
             return await query
-                .OrderByDescending(p => p.CreatedAt) 
+                .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Agents.Commands.UpdateAgent
+namespace RealEstateApp.Unit.Tests.Services
 {
     internal class Class1
     {

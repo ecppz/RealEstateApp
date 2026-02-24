@@ -6,75 +6,72 @@
     <title>@ViewData["Title"] - RealEstateApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout-admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
 <body>
-    <div class="page-wrapper">
+    <div class="d-flex">
+        <!-- Sidebar -->
         <nav class="sidebar d-flex flex-column">
-            <a class="navbar-brand d-block mb-4 text-center fw-bold fs-4" asp-area="" asp-controller="Admin" asp-action="Index">RealEstateApp</a>
+            <div class="sidebar-header p-3 border-bottom text-center">
+                <h4 class="text-primary fw-bold">RealEstateApp</h4>
+            </div>
             <ul class="nav flex-column flex-grow-1">
                 <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="Admin" asp-action="Index">
-                        <i class="bi bi-house-door me-2"></i> Home
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="Admin" asp-action="Index">
+                        <i class="bi bi-house-door me-2"></i> <span>Home</span>
                     </a>
                 </li>
-                <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="Admin" asp-action="Agents">
-                        <i class="bi bi-people me-2"></i> Lista de Agentes
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="Admin" asp-action="Agents">
+                        <i class="bi bi-people me-2"></i> <span>Lista de Agentes</span>
                     </a>
                 </li>
-                <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="Admin" asp-action="Admins">
-                        <i class="bi bi-shield-lock me-2"></i> Mantenimiento de admins
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="Admin" asp-action="Admins">
+                        <i class="bi bi-shield-lock me-2"></i> <span>Admins</span>
                     </a>
                 </li>
-                <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="Admin" asp-action="Developers">
-                        <i class="bi bi-code-slash me-2"></i> Mantenimiento de desarrolladores
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="Admin" asp-action="Developers">
+                        <i class="bi bi-code-slash me-2"></i> <span>Desarrolladores</span>
                     </a>
                 </li>
-                <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="PropertyTypeMaintenance" asp-action="Index">
-                        <i class="bi bi-building me-2"></i> Mantenimiento de tipos de propiedades
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="PropertyTypeMaintenance" asp-action="Index">
+                        <i class="bi bi-building me-2"></i> <span>Tipos de Propiedades</span>
                     </a>
                 </li>
-                <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="SalesTypeMaintenance" asp-action="Index">
-                        <i class="bi bi-tags me-2"></i> Mantenimiento de tipos de ventas
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="SalesTypeMaintenance" asp-action="Index">
+                        <i class="bi bi-tags me-2"></i> <span>Tipos de Ventas</span>
                     </a>
                 </li>
-                <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-dark py-2 px-3 rounded hover-bg" asp-area="" asp-controller="MaintenanceOfImprovements" asp-action="Index">
-                        <i class="bi bi-tools me-2"></i> Mantenimiento de mejoras
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-dark" asp-controller="MaintenanceOfImprovements" asp-action="Index">
+                        <i class="bi bi-tools me-2"></i> <span>Mejoras</span>
                     </a>
                 </li>
                 <li class="nav-item mt-auto">
-                    <a class="nav-link d-flex align-items-center text-danger py-2 px-3 rounded hover-bg"
-                       asp-area="" asp-controller="Login" asp-action="Logout">
-                        <i class="bi bi-box-arrow-right me-2"></i> Log out (@User.Identity?.Name)
+                    <a class="nav-link d-flex align-items-center text-danger" asp-controller="Login" asp-action="Logout">
+                        <i class="bi bi-box-arrow-right me-2"></i> <span>Log out (@User.Identity?.Name)</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <div class="content-wrapper flex-grow-1 d-flex flex-column">
-            <main class="main-content">
-                <div class="container">
+        <!-- Contenido principal -->
+        <div class="flex-grow-1 d-flex flex-column">
+            <main class="main-content p-4">
+                <div class="container-fluid">
                     @RenderBody()
                 </div>
             </main>
-            <footer class="footer-custom">
-                <div class="container">
-                    &copy; @DateTime.Now.Year - Eric Pineda | Yohansel Mieses - ITLA RealEstateApp
-                </div>
+            <footer class="footer-custom bg-light border-top text-center p-3">
+                &copy; @DateTime.Now.Year - Eric Pineda | Yohansel Mieses - ITLA RealEstateApp
             </footer>
         </div>
-  </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    </div>
 </body>
+</html>
