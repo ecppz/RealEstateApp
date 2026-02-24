@@ -5,13 +5,13 @@
 }
 
 <h2 class="mb-4">Detalle de la Propiedad</h2>
-<div class="text-center mt-4">
+<div class="text-left mt-8">
     <a asp-action="AgentProperties" asp-route-id="@Model.AgentId"
-       class="btn btn-outline-secondary btn-sm me-2">
+       class="btn btn-outline-secondary justify-content-lg-end">
         <i class="bi bi-arrow-left"></i> Volver a Propiedades del Agente
     </a>
 </div>
-<div class="card shadow-sm">
+<div class="card shadow-sm row mt-4">
     <div class="position-relative">
         @if (Model.Images != null && Model.Images.Any())
         {
