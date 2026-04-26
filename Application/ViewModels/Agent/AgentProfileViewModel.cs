@@ -20,6 +20,8 @@ namespace Application.ViewModels.Agent
         public required string PhoneNumber { get; set; }
 
         [DataType(DataType.Upload)]
+        public string? ProfileImage { get; set; }
+
         public IFormFile? ProfileImageFile { get; set; }
     }
 }

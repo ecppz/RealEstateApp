@@ -4,6 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RollForward>LatestMinor</RollForward>
+    <RuntimeFrameworkVersion>9.0.7</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

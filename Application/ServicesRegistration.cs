@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
+using Application.Recommendation;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -25,6 +26,12 @@ namespace Application
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
             services.AddScoped<ISaleTypeService, SaleTypeService>();
             services.AddScoped<IPropertyImprovement, PropertyImprovementService>();
+
+            services.AddSingleton<ScoringFunction>();
+            services.AddSingleton<ExplanationGenerator>();
+            services.AddSingleton<ChatResponseGenerator>();
+            services.AddSingleton<IRecommendationService, RecommendationService>();
+            services.AddSingleton<IChatService, ChatService>();
 
             #endregion
         }

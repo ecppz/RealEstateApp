@@ -13,7 +13,11 @@ namespace Infrastructure.Identity.Mappings.EntitiesAndDtos
         {
             CreateMap<UserAccount, UserDto>();
             CreateMap<UserAccount, AdminDto>();
-            CreateMap<UserAccount, AgentDto>();
+            // Este mapa permite que GetAllUsers y GetUserById recuperen la foto
+            CreateMap<UserAccount, AgentDto>()
+                .ForMember(dest => dest.ProfileImage, opt => opt.MapFrom(src => src.ProfileImage))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ReverseMap();
             CreateMap<UserAccount, DeveloperDto>();
         }
     }

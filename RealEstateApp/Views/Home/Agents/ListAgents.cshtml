@@ -3,30 +3,67 @@
     ViewData["Title"] = "Listado de Agentes";
 }
 
-<h2 class="mb-4">Agentes</h2>
+<div class="container py-4">
+    <h2 class="mb-4 fw-bold text-primary">Agentes</h2>
 
-<form method="get" asp-action="ListAgents" class="mb-3">
-    <input type="text" name="search" class="form-control" placeholder="Buscar agente por nombre..." />
-</form>
-
-<div class="row">
-    @foreach (var agent in Model)
-    {
-        <div class="col-md-3 mb-4">
-            <div class="card h-100 shadow-sm text-center">
-                <img src="@Url.Content("~/" + agent.ProfileImage)"
-                     alt="@agent.Name"
-                     class="card-img-top property-image">
-                <div class="card-body">
-                    <h5 class="card-title">@agent.Name</h5>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" asp-action="ListAgents">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar agente por nombre..." aria-label="Buscar agente">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
                 </div>
-                <div class="card-footer">
-                    <a asp-action="AgentProperties" asp-route-id="@agent.Id"
-                       class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-house-door"></i> Ver Propiedades
-                    </a>
-                </div>
-            </div>
+            </form>
         </div>
-    }
+    </div>
+
+    <div class="row">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <h4 class="text-muted">No se encontraron agentes disponibles.</h4>
+            </div>
+        }
+        else
+        {
+            @foreach (var agent in Model)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 shadow-sm border-0 transition-hover">
+                        <img src="@(string.IsNullOrWhiteSpace(agent.ProfileImage)
+                                                                 ? "/images/default-user.png"
+                                                                 : "/" + agent.ProfileImage.Replace("\\", "/"))"
+                     alt="Agente @agent.Name"
+                     class="card-img-top"
+                     style="height: 250px; object-fit: cover;"
+                     onerror="this.onerror=null; this.src='/images/default-user.png';">
+
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold mb-0">@agent.Name @agent.LastName</h5>
+                            <p class="text-muted small">Agente Inmobiliario</p>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <div class="d-grid">
+                                <a asp-action="AgentProperties" asp-route-id="@agent.Id"
+                                   class="btn btn-outline-primary btn-sm rounded-pill">
+                                    <i class="bi bi-house-door me-1"></i> Ver Propiedades
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+        }
+    </div>
 </div>
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
