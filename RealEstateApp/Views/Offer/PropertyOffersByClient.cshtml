@@ -4,17 +4,19 @@
     Layout = "_LayoutAgent";
 }
 
-<div class="container mt-4">
+<div class="container mt-8">
     <h2><i class="bi bi-cash-stack me-2"></i> Ofertas del Cliente</h2>
     <hr />
 
     <!-- Botón para volver atrás -->
-    <div class="mt-3 text-center">
+    <div class="mt-3 text-left">
         <a asp-controller="Offer" asp-action="PropertyDetailAgent" asp-route-propertyId="@Model.FirstOrDefault()?.PropertyId"
            class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left-circle"></i> Volver al detalle de la propiedad
         </a>
     </div>
+
+    <hr />
 
     @if (TempData["SuccessMessage"] != null)
     {

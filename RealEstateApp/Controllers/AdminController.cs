@@ -122,7 +122,12 @@ namespace RealEstateApp.Controllers
                 return RedirectToAction("Agents");
             }
 
+            var properties = await propertyService.GetProperties(id, onlyAvailable: false);
+            var propertyCount = properties?.Count ?? 0;
+
+
             var vm = mapper.Map<DeactivateAgentViewModel>(dto);
+            vm.PropertyCount = propertyCount;
             return View("MaintenanceAgents/DeactivateAgent", vm);
         }
 
@@ -160,7 +165,11 @@ namespace RealEstateApp.Controllers
                 return RedirectToAction("Agents");
             }
 
+            var properties = await propertyService.GetProperties(id, onlyAvailable: false);
+            var propertyCount = properties?.Count ?? 0;
+
             var vm = mapper.Map<DeleteAgentViewModel>(dto);
+            vm.PropertyCount = propertyCount;
             return View("MaintenanceAgents/DeleteAgent", vm);
         }
 
@@ -250,7 +259,8 @@ namespace RealEstateApp.Controllers
             var editAdminDto = mapper.Map<EditAdminDto>(vm);
             var saveDto = mapper.Map<SaveUserDto>(editAdminDto);
 
-            var result = await userAccountServiceForWebApp.EditUser(saveDto, origin: null, documentNumber: vm.DocumentNumber, isCreated: false);
+            var origin = $"{Request.Scheme}://{Request.Host.Value}";
+            var result = await userAccountServiceForWebApp.EditUser(saveDto, origin, documentNumber: vm.DocumentNumber, isCreated: false);
             if (result.HasError)
             {
                 TempData["ErrorMessage"] = result.Errors.FirstOrDefault() ?? "Error al editar administrador.";
@@ -287,7 +297,8 @@ namespace RealEstateApp.Controllers
             dto.Status = UserStatus.Active;
 
             var saveDto = mapper.Map<SaveUserDto>(dto);
-            var result = await userAccountServiceForWebApp.EditUser(saveDto, origin: null, isCreated: false);
+            var origin = $"{Request.Scheme}://{Request.Host.Value}";
+            var result = await userAccountServiceForWebApp.EditUser(saveDto, origin, isCreated: false);
 
             if (result.HasError)
             {
@@ -324,7 +335,8 @@ namespace RealEstateApp.Controllers
             dto.Status = UserStatus.Inactive;
 
             var saveDto = mapper.Map<SaveUserDto>(dto);
-            var result = await userAccountServiceForWebApp.EditUser(saveDto, origin: null, isCreated: false);
+            var origin = $"{Request.Scheme}://{Request.Host.Value}";
+            var result = await userAccountServiceForWebApp.EditUser(saveDto, origin, isCreated: false);
 
             if (result.HasError)
             {

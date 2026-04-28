@@ -37,7 +37,7 @@ namespace Infrastructure.Identity.Services
                 HasError = false,
                 Errors = []
             };
-
+    
             var user = await _userManager.FindByNameAsync(loginDto.UserName);
 
             if (user == null)

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using RealEstateApi.Extensions;
 using RealEstateApi.Handlers;
 using System.Text.Json.Serialization;
-
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -39,6 +39,14 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var identityContext = scope.ServiceProvider.GetRequiredService<Infrastructure.Identity.Contexts.IdentityContext>();
+    identityContext.Database.Migrate();
+    
+    var appContext = scope.ServiceProvider.GetRequiredService<Infrastructure.Persistence.Contexts.RealEstateAppContext>();
+    appContext.Database.Migrate();
+}
 await app.Services.RunIdentitySeedAsync();
 
 // Configure the HTTP request pipeline.

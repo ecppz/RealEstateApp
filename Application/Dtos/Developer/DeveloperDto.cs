@@ -11,6 +11,6 @@ namespace Application.Dtos.Developer
         public required string DocumentNumber { get; set; }
         public required string Email { get; set; }
         public UserStatus Status { get; set; }
-        public Roles Role { get; set; }
+        public Roles Role { get; set; } 
     }
 }

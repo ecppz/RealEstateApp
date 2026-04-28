@@ -2,6 +2,18 @@
 @{
     Layout = "_LayoutCustomer";
     ViewData["Title"] = "Propiedades disponibles";
+
+    var chatProperties = Model.Select(property => new
+    {
+        id = property.Id,
+        code = property.Code,
+        price = property.Price,
+        rooms = property.Bedrooms,
+        size = property.SizeInMeters,
+        type = property.PropertyType?.Name ?? string.Empty
+    });
+
+    var serializedChatProperties = System.Text.Json.JsonSerializer.Serialize(chatProperties);
 }
 
 <div class="container mt-4">
@@ -34,4 +46,178 @@
             }
         </tbody>
     </table>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-robot me-2"></i> Asistente IA de Propiedades</span>
+            <small class="text-light">IA simulada con scoring interno</small>
+        </div>
+
+        <div class="card-body">
+            <div class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Presupuesto</label>
+                    <input id="chatBudget" type="number" min="0" class="form-control" placeholder="Ej. 180000" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Habitaciones</label>
+                    <input id="chatRooms" type="number" min="0" class="form-control" placeholder="Ej. 2" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo</label>
+                    <input id="chatType" type="text" class="form-control" placeholder="Ej. Apartamento" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tamaño (m²)</label>
+                    <input id="chatSize" type="number" min="0" class="form-control" placeholder="Ej. 90" />
+                </div>
+            </div>
+
+            <div id="chatMessages" class="ai-chat-messages border rounded p-3 mb-3">
+                <div class="ai-msg ai-msg-bot">
+                    Hola, soy tu asistente IA de PropTech DR. Cuéntame qué buscas y te recomendaré una propiedad.
+                </div>
+            </div>
+
+            <div id="typingIndicator" class="text-muted small mb-2 d-none">
+                IA está escribiendo...
+            </div>
+
+            <div class="input-group">
+                <input id="chatInput" type="text" class="form-control" placeholder="Ej. Recomiéndame algo económico con 2 habitaciones" />
+                <button id="chatSend" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Enviar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .ai-chat-messages {
+        max-height: 360px;
+        overflow-y: auto;
+        background: #fafafa;
+    }
+
+    .ai-msg {
+        max-width: 75%;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+    }
+
+    .ai-msg-user {
+        margin-left: auto;
+        background: #0d6efd;
+        color: #fff;
+        border-top-right-radius: 4px;
+    }
+
+    .ai-msg-bot {
+        margin-right: auto;
+        background: #f1f3f5;
+        color: #212529;
+        border-top-left-radius: 4px;
+    }
+
+    .ai-recommended-card {
+        margin-top: 8px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        background: #fff;
+    }
+</style>
+
+<script>
+    (() => {
+        const properties = @Html.Raw(serializedChatProperties);
+        const chatMessages = document.getElementById("chatMessages");
+        const chatInput = document.getElementById("chatInput");
+        const chatSend = document.getElementById("chatSend");
+        const typingIndicator = document.getElementById("typingIndicator");
+
+        const getPreferences = () => ({
+            budget: Number(document.getElementById("chatBudget").value) || 0,
+            rooms: Number(document.getElementById("chatRooms").value) || 0,
+            type: (document.getElementById("chatType").value || "").trim(),
+            size: Number(document.getElementById("chatSize").value) || 0
+        });
+
+        const escapeHtml = (value) => {
+            const div = document.createElement("div");
+            div.innerText = value ?? "";
+            return div.innerHTML;
+        };
+
+        const renderPropertyCard = (property) => {
+            if (!property) return "";
+
+            return `
+                <div class="ai-recommended-card">
+                    <div><strong>Propiedad recomendada:</strong> ${escapeHtml(property.code || "Sin código")}</div>
+                    <div><strong>Precio:</strong> US$ ${Number(property.price || 0).toLocaleString()}</div>
+                    <div><strong>Habitaciones:</strong> ${property.rooms ?? 0}</div>
+                    <div><strong>Tamaño:</strong> ${property.size ?? 0} m²</div>
+                    <div><strong>Tipo:</strong> ${escapeHtml(property.type || "N/A")}</div>
+                </div>
+            `;
+        };
+
+        const appendMessage = (content, fromUser, recommendedProperty) => {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `ai-msg ${fromUser ? "ai-msg-user" : "ai-msg-bot"}`;
+            messageDiv.innerHTML = `${escapeHtml(content)}${fromUser ? "" : renderPropertyCard(recommendedProperty)}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        const sendMessage = async () => {
+            const message = (chatInput.value || "").trim();
+            if (!message) return;
+
+            appendMessage(message, true);
+            chatInput.value = "";
+            typingIndicator.classList.remove("d-none");
+            chatSend.disabled = true;
+
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message,
+                        preferences: getPreferences(),
+                        properties
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    const errorText = data?.message || "No se pudo procesar el mensaje.";
+                    appendMessage(errorText, false);
+                    return;
+                }
+
+                appendMessage(data.reply || "No tengo respuesta en este momento.", false, data.recommendedProperty);
+            } catch {
+                appendMessage("Ocurrió un error al conectar con el chat de IA.", false);
+            } finally {
+                typingIndicator.classList.add("d-none");
+                chatSend.disabled = false;
+                chatInput.focus();
+            }
+        };
+
+        chatSend.addEventListener("click", sendMessage);
+        chatInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    })();
+</script>

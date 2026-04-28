@@ -54,12 +54,30 @@ namespace Infrastructure.Identity.Services
                     return response;
                 }
             }
+            else if (role == Roles.Customer.ToString())
+            {
+                if (user.Status != UserStatus.Active)
+                {
+                    response.HasError = true;
+                    response.Errors.Add($"'{loginDto.UserName}' el admin te desactivo por obvias razones comunicate con el");
+                    return response;
+                }
+            }
             else if (role == Roles.Agent.ToString())
             {
                 if (user.Status != UserStatus.Active)
                 {
                     response.HasError = true;
                     response.Errors.Add($"Este cuenta de agente '{loginDto.UserName}' no está activa, por favor contacta con un admin.");
+                    return response;
+                }
+            }
+            else if (role == Roles.Admin.ToString())
+            {
+                if (user.Status != UserStatus.Active)
+                {
+                    response.HasError = true;
+                    response.Errors.Add($"Este cuenta de administrador '{loginDto.UserName}' no está activa, por favor contacta con el admin principal.");
                     return response;
                 }
             }

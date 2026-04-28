@@ -29,34 +29,44 @@ namespace RealEstateApp.Controllers
         }
 
 
-        // ORGANIZARLO MEJORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 
         #region home
-        public async Task<IActionResult> Index(string code, int? propertyTypeId, decimal? minPrice, decimal? maxPrice, int? bedrooms, int? bathrooms)
+
+        public async Task<IActionResult> Index( string code,int? propertyTypeId,decimal? minPrice,decimal? maxPrice,int? bedrooms,
+            int? bathrooms)
         {
+
             var propertiesDto = await propertyService.GetAllProperties(true);
 
+
+            var query = propertiesDto.AsQueryable();
+
+
             if (!string.IsNullOrEmpty(code))
-                propertiesDto = propertiesDto.Where(p => p.Code.Contains(code)).ToList();
+                query = query.Where(p => p.Code.Contains(code));
+
 
             if (propertyTypeId.HasValue)
-                propertiesDto = propertiesDto.Where(p => p.PropertyTypeId == propertyTypeId.Value).ToList();
+                query = query.Where(p => p.PropertyTypeId == propertyTypeId.Value);
+
 
             if (minPrice.HasValue)
-                propertiesDto = propertiesDto.Where(p => p.Price >= minPrice.Value).ToList();
+                query = query.Where(p => p.Price >= minPrice.Value);
 
             if (maxPrice.HasValue)
-                propertiesDto = propertiesDto.Where(p => p.Price <= maxPrice.Value).ToList();
+                query = query.Where(p => p.Price <= maxPrice.Value);
 
             if (bedrooms.HasValue)
-                propertiesDto = propertiesDto.Where(p => p.Bedrooms == bedrooms.Value).ToList();
+                query = query.Where(p => p.Bedrooms == bedrooms.Value);
 
             if (bathrooms.HasValue)
-                propertiesDto = propertiesDto.Where(p => p.Bathrooms == bathrooms.Value).ToList();
+                query = query.Where(p => p.Bathrooms == bathrooms.Value);
 
-            propertiesDto = propertiesDto.OrderByDescending(p => p.CreatedAt).ToList();
+            var filteredProperties = query
+                .OrderByDescending(p => p.CreatedAt)
+                .ToList();
 
-            var propertiesVm = mapper.Map<List<PropertyViewModel>>(propertiesDto);
+            var propertiesVm = mapper.Map<List<PropertyViewModel>>(filteredProperties);
 
             ViewData["Code"] = code;
             ViewData["MinPrice"] = minPrice;
@@ -67,8 +77,10 @@ namespace RealEstateApp.Controllers
 
             return View(propertiesVm);
         }
+
+
         #endregion
-        
+
         public async Task<IActionResult> ListAgents(string search)
         {
   

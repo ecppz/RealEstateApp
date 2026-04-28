@@ -23,7 +23,6 @@
             <option value="">Tipo de propiedad</option>
             <option value="1" selected="@(ViewData["PropertyTypeId"]?.ToString() == "1")">Casa</option>
             <option value="2" selected="@(ViewData["PropertyTypeId"]?.ToString() == "2")">Apartamento</option>
-
         </select>
     </div>
     <div class="col-md-2">
@@ -71,6 +70,20 @@
                         <p><strong>Habitaciones:</strong> @property.Bedrooms</p>
                         <p><strong>Baños:</strong> @property.Bathrooms</p>
                         <p><strong>Tamaño:</strong> @property.SizeInMeters m²</p>
+
+                        <hr />
+
+                        <p class="app-card-text">
+                            <i class="bi bi-stars"></i> <strong>Mejoras:</strong>
+                            @if (property.Improvements != null && property.Improvements.Any())
+                            {
+                                @string.Join(", ", property.Improvements.Select(i => i.Improvement?.Name))
+                            }
+                            else
+                            {
+                                <span class="text-muted">Sin mejoras</span>
+                            }
+                        </p>
                     </div>
 
                     <div class="card-footer text-center">
