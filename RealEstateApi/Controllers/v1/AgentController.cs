@@ -6,8 +6,10 @@ using Application.Features.Properties.Queries.GetAll;
 using Application.Features.Properties.Queries.GetByCode;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace RealEstateApi.Controllers.v1
 {
@@ -62,7 +64,6 @@ namespace RealEstateApi.Controllers.v1
             Summary = "Retrieve properties by agent",
             Description = "Returns a list of properties assigned to a specific agent, including type, sale details, images, and improvements"
         )]
-
         public async Task<IActionResult> GetAgentProperties(string agentId, [FromQuery] bool onlyAvailable = false)
         {
             var properties = await Mediator.Send(new GetAgentPropertiesQuery { AgentId = agentId, OnlyAvailable = onlyAvailable });
@@ -86,16 +87,16 @@ namespace RealEstateApi.Controllers.v1
         )]
         public async Task<IActionResult> UpdateStatus(string id, [FromBody] bool isActive)
         {
-            await Mediator.Send(new UpdateAgentStatusCommand
+            var result = await Mediator.Send(new UpdateAgentStatusCommand
             {
                 AgentId = id,
                 IsActive = isActive
             });
 
-            return NoContent(); 
+            if (!result)
+                return NotFound(new { message = $"Agent with id {id} not found" });
+
+            return NoContent();
         }
-
-
-
     }
 }

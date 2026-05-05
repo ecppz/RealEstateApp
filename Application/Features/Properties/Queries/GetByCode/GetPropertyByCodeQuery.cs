@@ -30,7 +30,7 @@ namespace Application.Features.Properties.Queries.GetByCode
         {
             var entity = await propertyRepository.GetPropertyByCodeAsync(query.Code);
 
-            if (entity == null) throw new ApiException("Property not found with this code", (int)HttpStatusCode.NotFound);
+            if (entity == null) return null!;
 
             var dto = new PropertyResponseDto
             {

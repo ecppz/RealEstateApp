@@ -5,7 +5,6 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace RealEstateApi.Controllers.v1
 {
@@ -45,7 +44,6 @@ namespace RealEstateApi.Controllers.v1
         public async Task<IActionResult> GetById(int id)
         {
             var property = await Mediator.Send(new GetPropertyByIdQuery { Id = id });
-
 
             if (property == null)
             {

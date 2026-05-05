@@ -1,7 +1,6 @@
 ﻿using Application.Dtos.Agent;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Interfaces;
 using MediatR;
 
 namespace Application.Features.Properties.Queries.GetByCode
@@ -23,14 +22,11 @@ namespace Application.Features.Properties.Queries.GetByCode
 
         public async Task<AgentDto> Handle(GetAgentByIdQuery query, CancellationToken cancellationToken)
         {
-       //     var entity = await userAccountServiceForWebApi.GetUserById<AgentDto>(query.Id);
+            var entity = await userAccountServiceForWebApi.GetUserById<AgentDto>(query.Id);
 
-          //  if (entity == null)
-            {
-                throw new KeyNotFoundException($"Este agente con este id {query.Id} no se encuentra");
-            }
+            if (entity == null) return null!;
 
-            //return entity;
+            return entity;
         }
 
     }

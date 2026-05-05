@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
+using Application.Mappings.EntitiesAndDtos;
+using Application.Recommendation;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -11,7 +13,9 @@ namespace Application
         public static void AddApplicationLayerIoc(this IServiceCollection services)
         {
             #region Configurations
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(cfg => { },
+                typeof(ServicesRegistration).Assembly);
+
             services.AddMediatR(opt=> opt.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
             #endregion
@@ -25,6 +29,12 @@ namespace Application
             services.AddScoped<IPropertyTypeService, PropertyTypeService>();
             services.AddScoped<ISaleTypeService, SaleTypeService>();
             services.AddScoped<IPropertyImprovement, PropertyImprovementService>();
+
+            services.AddSingleton<ScoringFunction>();
+            services.AddSingleton<ExplanationGenerator>();
+            services.AddSingleton<ChatResponseGenerator>();
+            services.AddSingleton<IRecommendationService, RecommendationService>();
+            services.AddSingleton<IChatService, ChatService>();
 
             #endregion
         }

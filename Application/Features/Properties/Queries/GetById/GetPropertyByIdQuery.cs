@@ -3,12 +3,9 @@ using Application.Dtos.PropertyImage;
 using Application.Dtos.PropertyImprovement;
 using Application.Dtos.PropertyType;
 using Application.Dtos.SaleType;
-using Application.Exceptions;
 using AutoMapper;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Application.Features.Properties.Queries.GetByCode
 {
@@ -31,8 +28,7 @@ namespace Application.Features.Properties.Queries.GetByCode
         {
             var entity = await propertyRepository.GetPropertyByIdAsync(query.Id);
 
-            if (entity == null)
-                throw new ApiException("Property not found with this id", (int)HttpStatusCode.NotFound);
+            if (entity == null) return null!;
 
             var dto = new PropertyResponseDto
             {

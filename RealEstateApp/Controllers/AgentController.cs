@@ -73,41 +73,44 @@ namespace RealEstateApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Profile(AgentProfileViewModel vm)
         {
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMessage"] = "Perfil no se pudo actualizar";
-                return View(vm);
-            }
+            if (!ModelState.IsValid) return View(vm);
 
             var currentAgent = await userAccountServiceForWebApp.GetUserById<AgentDto>(vm.Id);
 
+            // Usamos tu FileManager
+            string? imagePath = FileManager.Upload(
+                vm.ProfileImageFile,
+                vm.Id,
+                "Agents",
+                isEditMode: true,
+                imagePath: currentAgent.ProfileImage
+            );
+
+            // Actualizamos el DTO con la nueva ruta (o la vieja si no subió nada)
             var editAgentDto = new EditAgentDto
             {
                 Id = vm.Id,
                 Name = vm.Name,
                 LastName = vm.LastName,
                 PhoneNumber = vm.PhoneNumber,
+                ProfileImage = imagePath, // <--- La ruta nueva
                 UserName = currentAgent.UserName,
-                ProfileImage = currentAgent.ProfileImage,
                 Email = currentAgent.Email,
                 Status = currentAgent.Status,
                 Role = currentAgent.Role
             };
 
             var saveUserDto = mapper.Map<SaveUserDto>(editAgentDto);
-
             var result = await userAccountServiceForWebApp.EditUser(saveUserDto, origin: "AgentProfile");
 
-            if (result != null)
+            if (result != null && !result.HasError)
             {
-                TempData["SuccessMessage"] = "Perfil actualizado correctamente";
+                TempData["SuccessMessage"] = "Perfil actualizado";
                 return RedirectToAction("Profile");
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Perfil no se pudo actualizar";
-                return View(vm);
-            }
+
+            TempData["ErrorMessage"] = "Error al actualizar";
+            return View(vm);
         }
         #endregion
 
