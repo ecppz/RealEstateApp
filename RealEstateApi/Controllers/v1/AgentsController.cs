@@ -15,8 +15,9 @@ namespace RealEstateApi.Controllers.v1
 {
     [ApiVersion("1.0")]
     [Authorize(Roles = "Admin, Developer")]
-    [SwaggerTag("Provides updates and queries for managing agents")]
-    public class AgentController : BaseApiController
+    [Route("api/v1/agents")]
+    [SwaggerTag("Agent")]
+    public class AgentsController : BaseApiController
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AgentDto>))]

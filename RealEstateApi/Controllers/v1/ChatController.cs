@@ -9,8 +9,8 @@ namespace RealEstateApi.Controllers
 {
     [ApiVersion("1.0")]
     [Authorize(Roles = "Customer")]
-    [SwaggerTag("Provides chat functionality")]
-    [Route("api/v{version:ApiVersion}/[controller]")]
+    [SwaggerTag("Chat ")]
+    [Route("api/v{version:ApiVersion}/chat")]
     [ApiController]
     public class ChatController : BaseApiController
     {
@@ -25,7 +25,7 @@ namespace RealEstateApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ChatResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerOperation(
-            Summary = "Asistente conversacional de propiedades",
+            Summary = "Conversational property assistant",
             Description = "Simula un chat IA para recomendar propiedades con base en el sistema de scoring existente.")]
         public ActionResult<ChatResponseDto> Chat([FromBody] ChatRequestDto request)
         {

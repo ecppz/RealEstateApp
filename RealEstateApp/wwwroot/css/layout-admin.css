@@ -1,87 +1,220 @@
-/* ==================== ADMIN LAYOUT ==================== */
+/* ==================== ADMIN LIGHT-GLASS DASHBOARD ==================== */
 
-/* Contenedor principal */
-.page-wrapper {
-    display: flex;
-    width: 100%;
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    /* 0.05 es casi transparente. El 0.15 al final da un toque sutil azulado 
+       en la parte inferior para que no se pierda el estilo */
+    background: linear-gradient(rgba(255, 255, 255, 0.10), rgba(200, 250, 252, 0.20)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: #1e293b;
     min-height: 100vh;
-    background: #f5f7fa;
 }
 
-/* Sidebar */
+/* IMPORTANTE: Como el fondo ahora es muy nítido, 
+   necesitas que las tarjetas sean más sólidas para poder leer los datos */
+.admin-card {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Estilo Glass Claro */
 .sidebar {
-    width: 240px;
+    width: 260px;
     min-height: 100vh;
-    background: #fff;
-    border-right: 1px solid #dee2e6;
-    transition: width 0.3s;
-    display: flex;
-    flex-direction: column;
+    /* Efecto de cristal esmerilado claro */
+    background: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 100;
 }
-
 
 .sidebar-header {
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
-    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
+
+    .sidebar-header h4 {
+        color: #0d6efd !important; /* Logo azul */
+    }
 
 .sidebar .nav-link {
-    padding: 10px 15px;
-    color: #333;
-    font-weight: 500;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
+    color: #64748b !important; /* Texto gris oscuro */
+    margin: 5px 15px;
+    border-radius: 10px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
 }
-
-
-    .sidebar .nav-link:hover {
-        background: #f1f3f5;
-        border-radius: 8px;
-    }
-
 
     .sidebar .nav-link i {
-        margin-right: 8px;
+        color: #0d6efd !important; /* Iconos azules */
     }
 
-/* Sidebar colapsado */
-.sidebar.collapsed {
-    width: 70px;
+    .sidebar .nav-link:hover {
+        background: rgba(13, 110, 253, 0.08) !important; /* Fondo suave azul */
+        color: #0d6efd !important;
+    }
+
+    .sidebar .nav-link.active {
+        background: #1e293b !important; /* Fondo oscuro */
+        color: #fff !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        .sidebar .nav-link.active i {
+            color: #fff !important; /* Icono blanco en activo */
+        }
+
+/* Enlaces de Logout (text-danger) */
+.sidebar .nav-item.mt-auto .nav-link {
+    color: #dc3545 !important;
 }
 
-    .sidebar.collapsed .sidebar-header h4,
-    .sidebar.collapsed .nav-link span {
-        display: none;
+    .sidebar .nav-item.mt-auto .nav-link:hover {
+        background: rgba(220, 53, 69, 0.08) !important;
     }
 
-    .sidebar.collapsed .nav-link {
-        justify-content: center;
+/* Tarjetas de Estadísticas (Glassmorphism Claro) */
+.admin-card {
+    background: rgba(255, 255, 255, 0.6); /* Fondo blanco semitransparente */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .admin-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.8);
     }
 
-/* Contenido principal */
-.content-wrapper {
-    flex-grow: 1;
+.display-6 {
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #1e293b; /* Número oscuro */
+}
+
+/* Textos de ayuda de Bootstrap (text-muted/text-secondary) */
+.card-body .text-muted, .card-body .text-secondary {
+    color: #94a3b8 !important; /* Gris suave */
+}
+
+/* Iconos de las tarjetas */
+.stat-icon {
+    width: 55px;
+    height: 55px;
+    background: rgba(13, 110, 253, 0.06); /* Fondo azul muy suave */
+    border-radius: 14px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
 }
 
-.main-content {
-    flex-grow: 1;
-    padding: 2rem;
+/* Títulos principales y de tarjetas */
+.text-dark-blue {
+    color: #1e293b;
 }
 
+.card-title {
+    color: #64748b; /* Título de tarjeta gris oscuro */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
 
+/* Footer Claro */
 .footer-custom {
-    margin-top: auto;
+    background: rgba(255, 255, 255, 0.80) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.10) !important;
+    color: #94a3b8;
 }
 
+/* ==================== ADMIN LUXURY DASHBOARD ==================== */
 
-.content-wrapper,
-.main-content {
-    flex-grow: 1;
+/* Ajuste general de las tarjetas del Admin */
+.admin-stat-card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 24px !important;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
 }
 
+    .admin-stat-card:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 255, 255, 0.95) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
 
+/* Iconos de las estadísticas con degradados */
+.stat-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
 
+/* Colores temáticos para los iconos */
+.bg-gradient-blue {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+}
+
+.bg-gradient-green {
+    background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
+    color: white;
+}
+
+.bg-gradient-orange {
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    color: white;
+}
+
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    color: white;
+}
+
+/* Tipografía de números */
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #64748b;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* Mini badges para los estados inactivos */
+.inactive-badge {
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #94a3b8;
+}

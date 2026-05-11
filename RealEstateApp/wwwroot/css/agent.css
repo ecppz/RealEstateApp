@@ -1,78 +1,120 @@
-/* ==================== AGENT LAYOUT ==================== */
+/* ==================== AGENT LAYOUT LUXURY ==================== */
 
-/* Contenedor principal */
+:root {
+    --primary-dark: #1e293b;
+    --gold-accent: #b89130;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --sidebar-width: 260px;
+}
+
+/* Contenedor principal con imagen de fondo */
 .page-wrapper {
     display: flex;
     width: 100%;
     min-height: 100vh;
-    background: #f5f7fa;
+    position: relative;
+    /* Imagen de fondo inmobiliaria */
+    background: url('https://i.pinimg.com/1200x/05/d7/f2/05d7f2e17a89558d82dfc25e26df88f0.jpg') no-repeat center center fixed;
+    background-size: cover;
 }
 
-/* Sidebar */
+    /* Capa para bajarle el brillo/blanco a la imagen de fondo */
+    .page-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* MODIFICA ESTA LÍNEA PARA CONTROLAR LA OPACIDAD: 
+       0.1 = Muy claro, 0.9 = Muy oscuro */
+        background: rgba(245, 247, 250, 0.70);
+        z-index: 0;
+    }
+
+/* Sidebar Estilo Glassmorphism */
 .sidebar {
-    width: 240px;
+    width: var(--sidebar-width);
     min-height: 100vh;
-    background: #fff;
-    border-right: 1px solid #dee2e6;
-    transition: width 0.3s;
+    background: white;
+    border-right: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
+    z-index: 10;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.03);
 }
 
-.sidebar-header {
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
-    text-align: center;
+.navbar-brand {
+    padding: 2rem 1rem;
+    color: var(--primary-dark) !important;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
+/* Links del Sidebar */
 .sidebar .nav-link {
-    padding: 10px 15px;
-    color: #333;
+    margin: 4px 15px;
+    padding: 12px 15px;
+    color: #64748b !important;
     font-weight: 500;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
+    border-radius: 12px;
+    transition: all 0.2s ease;
 }
-
-    .sidebar .nav-link:hover {
-        background: #f1f3f5;
-        border-radius: 8px;
-    }
 
     .sidebar .nav-link i {
-        margin-right: 8px;
+        font-size: 1.2rem;
+        transition: transform 0.2s ease;
     }
 
-/* Sidebar colapsado */
-.sidebar.collapsed {
-    width: 70px;
+    .sidebar .nav-link:hover {
+        background: #f8fafc;
+        color: var(--primary-dark) !important;
+        transform: translateX(5px);
+    }
+
+        .sidebar .nav-link:hover i {
+            color: var(--gold-accent);
+        }
+
+    /* Link Activo */
+    .sidebar .nav-link.active {
+        background: var(--primary-dark) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+    }
+
+/* Logout con estilo */
+.text-danger.nav-link:hover {
+    background: #fef2f2 !important;
 }
 
-    .sidebar.collapsed .sidebar-header h4,
-    .sidebar.collapsed .nav-link span {
-        display: none;
-    }
-
-    .sidebar.collapsed .nav-link {
-        justify-content: center;
-    }
-
-/* Contenido principal */
+/* Contenido Principal */
 .content-wrapper {
+    position: relative;
+    z-index: 1; /* Para que esté por encima del overlay del background */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
 .main-content {
+    padding: 2.5rem;
     flex-grow: 1;
-    padding: 2rem;
 }
 
+/* Footer Luxury */
 .footer-custom {
-    margin-top: auto;
-    background: #fff;
-    border-top: 1px solid #dee2e6;
-    text-align: center;
-    padding: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Ajustes para el contenedor de la vista */
+.container {
+    max-width: 1200px;
 }

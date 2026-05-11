@@ -12,8 +12,9 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RealEstateApi.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [SwaggerTag("Provides CRUD operations and queries for managing property types")]
-    public class PropertyTypeController : BaseApiController
+    [SwaggerTag("PropetyType")]
+    [Route("api/v1/property-types")]
+    public class PropertyTypesController : BaseApiController
     {
         [HttpGet]
         [Authorize(Roles = "Admin,Developer")]

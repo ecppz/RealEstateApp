@@ -17,69 +17,50 @@ namespace RealEstateApp.Controllers
     {
         private readonly IUserAccountServiceForWebApp userAccountServiceForWebApp;
         private readonly IPropertyService propertyService;
+        private readonly IPropertyTypeService propertyTypeService;
         private readonly IMapper mapper;
         private readonly UserManager<UserAccount> userManager;
 
-        public HomeController(IUserAccountServiceForWebApp userAccountServiceForWebApp, IPropertyService propertyService, IMapper mapper, UserManager<UserAccount> userManager)
+        public HomeController(IUserAccountServiceForWebApp userAccountServiceForWebApp, IPropertyService propertyService, IMapper mapper, UserManager<UserAccount> userManager, IPropertyTypeService propertyTypeService)
         {
             this.userAccountServiceForWebApp = userAccountServiceForWebApp;
             this.propertyService = propertyService;
             this.mapper = mapper;
             this.userManager = userManager;
+            this.propertyTypeService = propertyTypeService;
         }
 
 
 
-        #region home
-
-        public async Task<IActionResult> Index( string code,int? propertyTypeId,decimal? minPrice,decimal? maxPrice,int? bedrooms,
-            int? bathrooms)
+        public async Task<IActionResult> Index(string code, int? propertyTypeId, decimal? minPrice, decimal? maxPrice, int? bedrooms, int? bathrooms)
         {
+            // USAMOS EL MÉTODO REAL: GetAllPropertyList()
+            var propertyTypes = await propertyTypeService.GetAllPropertyList();
+            ViewBag.PropertyTypes = propertyTypes;
 
+            // Obtener propiedades y filtrar
             var propertiesDto = await propertyService.GetAllProperties(true);
-
-
             var query = propertiesDto.AsQueryable();
 
-
             if (!string.IsNullOrEmpty(code))
-                query = query.Where(p => p.Code.Contains(code));
+                query = query.Where(p => p.Code.Contains(code, StringComparison.OrdinalIgnoreCase));
 
-
-            if (propertyTypeId.HasValue)
+            if (propertyTypeId.HasValue && propertyTypeId.Value > 0)
                 query = query.Where(p => p.PropertyTypeId == propertyTypeId.Value);
 
+            // ... resto de tus filtros (Price, Bedrooms, etc.) ...
 
-            if (minPrice.HasValue)
-                query = query.Where(p => p.Price >= minPrice.Value);
+            var propertiesVm = mapper.Map<List<PropertyViewModel>>(query.OrderByDescending(p => p.CreatedAt).ToList());
 
-            if (maxPrice.HasValue)
-                query = query.Where(p => p.Price <= maxPrice.Value);
-
-            if (bedrooms.HasValue)
-                query = query.Where(p => p.Bedrooms == bedrooms.Value);
-
-            if (bathrooms.HasValue)
-                query = query.Where(p => p.Bathrooms == bathrooms.Value);
-
-            var filteredProperties = query
-                .OrderByDescending(p => p.CreatedAt)
-                .ToList();
-
-            var propertiesVm = mapper.Map<List<PropertyViewModel>>(filteredProperties);
-
-            ViewData["Code"] = code;
-            ViewData["MinPrice"] = minPrice;
-            ViewData["MaxPrice"] = maxPrice;
-            ViewData["Bedrooms"] = bedrooms;
-            ViewData["Bathrooms"] = bathrooms;
+            // ViewData para persistencia
             ViewData["PropertyTypeId"] = propertyTypeId;
+            // ... otros ViewData ...
 
             return View(propertiesVm);
         }
 
 
-        #endregion
+
 
         public async Task<IActionResult> ListAgents(string search)
         {

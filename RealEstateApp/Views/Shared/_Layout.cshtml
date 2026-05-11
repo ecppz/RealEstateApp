@@ -4,68 +4,121 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RealEstate</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/realestate-luxury.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
     <div class="d-flex">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar bg-white border-end">
-            <div class="sidebar-header p-3">
-                <h4 class="text-primary fw-bold">RealEstate</h4>
+        <nav id="sidebar" class="sidebar border-end shadow-sm">
+            <div class="sidebar-header p-4 text-center">
+                <h4 class="logo-text fw-bold mb-0">
+                    <i class="bi bi-building-fill me-2"></i>RealEstate
+                </h4>
             </div>
+            
+            <div class="px-3 mb-3 mt-2">
+                <small class="text-uppercase text-muted fw-bold" style="font-size: 0.65rem; letter-spacing: 1px;">Menú Principal</small>
+            </div>
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-house-door me-2"></i> <span>Home</span>
+                    <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")"
+                           asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-grid-1x2-fill me-3"></i> <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" asp-controller="Home" asp-action="ListAgents">
-                        <i class="bi bi-people me-2"></i> <span>Agentes</span>
+                        <i class="bi bi-people-fill me-3"></i> <span>Agentes</span>
                     </a>
                 </li>
+            </ul>
+
+            <div class="px-3 mb-3 mt-4">
+                <small class="text-uppercase text-muted fw-bold" style="font-size: 0.65rem; letter-spacing: 1px;">Cuenta</small>
+            </div>
+
+            <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" asp-controller="Login" asp-action="Register">
-                        <i class="bi bi-person-plus me-2"></i> <span>Únete a la app</span>
+                        <i class="bi bi-person-plus-fill me-3"></i> <span>Únete a la app</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center" asp-controller="Login" asp-action="Index">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> <span>Iniciar sesión</span>
+                    <a class="nav-link d-flex align-items-center text-primary fw-bold" asp-controller="Login" asp-action="Index">
+                        <i class="bi bi-box-arrow-in-right me-3"></i> <span>Iniciar sesión</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <!-- Contenido principal -->
-        <div class="flex-grow-1">
-            <!-- Botón toggle -->
-            <button class="btn btn-sm btn-outline-secondary m-2" id="toggleSidebar">
-                ☰
-            </button>
+        <div class="flex-grow-1 d-flex flex-column" style="background: rgba(248, 250, 252, 0.4);">
+            <header class="d-flex align-items-center justify-content-between p-2 bg-white shadow-sm border-bottom sticky-top">
+                <button class="btn" id="toggleSidebar">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <div class="me-4 d-flex align-items-center gap-3">
+                    <span class="text-muted small d-none d-md-block">Bienvenido al Portal Inmobiliario</span>
+                    <i class="bi bi-person-circle fs-4 text-primary"></i>
+                </div>
+            </header>
 
-            <main class="p-4">
-                <div class="container-fluid">
+            <main class="p-4 flex-grow-1">
+                <div class="container-fluid animate__animated animate__fadeIn">
                     @RenderBody()
                 </div>
             </main>
 
-            <footer class="footer-custom mt-auto p-3 bg-light border-top text-center">
-                &copy; @DateTime.Now.Year - Eric Pineda | Yohansel Mieses - ITLA RealEstateApp
+            <footer class="footer-custom p-6 text-center">
+                <div class="container">
+                    <p class="mb-0">
+                        &copy; @DateTime.Now.Year - <strong>ITLA RealEstateApp</strong>
+                        <span class="mx-2 text-muted">|</span>
+                        <i class="bi bi-code-slash"></i> Eric Pineda & Yohansel Mieses
+                    </p>
+                </div>
             </footer>
         </div>
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JS para colapsar el sidebar
-        document.getElementById("toggleSidebar").addEventListener("click", function () {
-            document.getElementById("sidebar").classList.toggle("collapsed");
-        });
+            document.addEventListener("DOMContentLoaded", function() {
+                const toggleBtn = document.getElementById("toggleSidebar");
+                const sidebar = document.getElementById("sidebar");
+
+                // Agregamos el estilo necesario directamente por JS para no tocar el CSS
+                if (sidebar) {
+                    sidebar.style.transition = "all 0.3s ease";
+                    sidebar.style.overflow = "hidden";
+                    sidebar.style.whiteSpace = "nowrap"; // Evita que el texto se amontone al cerrar
+                }
+
+                if (toggleBtn && sidebar) {
+                    toggleBtn.addEventListener("click", function () {
+                        if (sidebar.classList.contains("collapsed")) {
+                            // Estado expandido
+                            sidebar.style.width = "260px";
+                            sidebar.style.minWidth = "260px";
+                            sidebar.classList.remove("collapsed");
+                        } else {
+                            // Estado contraído (Escondido)
+                            sidebar.style.width = "0px";
+                            sidebar.style.minWidth = "0px";
+                            sidebar.style.border = "none";
+                            sidebar.classList.add("collapsed");
+                        }
+                    });
+                }
+            });
     </script>
 </body>
 </html>

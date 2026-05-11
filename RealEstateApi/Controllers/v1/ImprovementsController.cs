@@ -13,7 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RealEstateApi.Controllers.v1
 {
     [ApiVersion("1.0")]
-    public class ImprovementController : BaseApiController
+    [Route("api/v1/improvements")]
+    [SwaggerTag("Improvements")]
+    public class ImprovementsController : BaseApiController
     {
         /// <summary>
         /// Creates a new improvement.

@@ -10,7 +10,7 @@ namespace RealEstateApi.Controllers
     [ApiVersion("1.0")]
     [Authorize(Roles = "Customer")]
     [SwaggerTag("Provides queries for recommending properties")]
-    [Route("api/v{version:ApiVersion}/[controller]")]
+    [Route("api/v{version:ApiVersion}/property/recommendation")]
     [ApiController]
     public class RecommendationController : BaseApiController
     {

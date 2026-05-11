@@ -2,101 +2,157 @@
 @model List<PropertyViewModel>
 
 @{
-    ViewData["Title"] = "Home";
-    Layout = "_Layout";
+    ViewData["Title"] = "Explorar Propiedades";
 }
 
-<h2 class="mb-4">Propiedades Disponibles</h2>
+<link rel="stylesheet" href="~/css/realestate-luxury.css" asp-append-version="true" />
 
-<form method="get" asp-action="Index" class="mb-3 row">
-    <div class="col-md-4">
-        <input type="text" name="code" value="@ViewData["Code"]" class="form-control" placeholder="Buscar por código..." />
+<div class="container-fluid py-4">
+    @* --- HEADER --- *@
+    <div class="row mb-5 animate__animated animate__fadeIn">
+        <div class="col-12 text-center text-md-start">
+            <h1 class="display-5 fw-bold text-dark mb-0">Descubre tu lugar ideal</h1>
+            <p class="text-secondary fs-5">Las mejores propiedades en el corazón de la República Dominicana.</p>
+        </div>
     </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">Buscar</button>
-    </div>
-</form>
 
-<form method="get" asp-action="Index" class="row mb-4">
-    <div class="col-md-3">
-        <select name="propertyTypeId" class="form-select">
-            <option value="">Tipo de propiedad</option>
-            <option value="1" selected="@(ViewData["PropertyTypeId"]?.ToString() == "1")">Casa</option>
-            <option value="2" selected="@(ViewData["PropertyTypeId"]?.ToString() == "2")">Apartamento</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="minPrice" value="@ViewData["MinPrice"]" class="form-control" placeholder="Precio mínimo" />
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="maxPrice" value="@ViewData["MaxPrice"]" class="form-control" placeholder="Precio máximo" />
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="bedrooms" value="@ViewData["Bedrooms"]" class="form-control" placeholder="Habitaciones" />
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="bathrooms" value="@ViewData["Bathrooms"]" class="form-control" placeholder="Baños" />
-    </div>
-    <div class="col-md-1">
-        <button type="submit" class="btn btn-success w-100">Filtrar</button>
-    </div>
-</form>
+    @* --- FILTROS --- *@
+    <div class="filter-bar-luxury p-4 mb-5 animate__animated animate__fadeInDown">
+        <form method="get" asp-action="Index" class="row g-3 align-items-end">
+    
+            @* 1. Búsqueda por Código *@
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing:1px; font-size:0.7rem;">Código</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 luxury-input text-muted"><i class="bi bi-upc-scan"></i></span>
+                    <input type="text" name="code" value="@ViewData["Code"]" class="form-control border-start-0 luxury-input" placeholder="Ej: PR-001" />
+                </div>
+            </div>
 
-@if (Model != null && Model.Any())
-{
-    <div class="row">
-        @foreach (var property in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="position-relative">
-                        @if (property.Images != null && property.Images.Any())
+            @* 2. Tipo de Propiedad (AHORA DINÁMICO) *@
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">Tipo</label>
+                <select name="propertyTypeId" class="form-select luxury-input">
+                    <option value="">Todos los tipos</option>
+                    @if (ViewBag.PropertyTypes != null)
+                    {
+                        @* Usar var aquí evita errores de namespace si la ruta cambió *@
+                        foreach (var type in ViewBag.PropertyTypes)
                         {
-                            <img src="@Url.Content("~/" + property.Images.First().ImageUrl)"
-                                 alt="Imagen de la propiedad"
-                                 class="card-img-top" />
-                        }
-                        else
-                        {
-                            <div class="bg-light text-center py-5 text-muted">Sin imagen</div>
-                        }
-                    </div>
-
-                    <div class="card-body">
-                        <h5>@property.PropertyType?.Name</h5>
-                        <p><strong>Código:</strong> @property.Code</p>
-                        <p><strong>Venta:</strong> @property.SaleType?.Name</p>
-                        <p class="text-danger fw-bold">@property.Price.ToString("C")</p>
-                        <p><strong>Habitaciones:</strong> @property.Bedrooms</p>
-                        <p><strong>Baños:</strong> @property.Bathrooms</p>
-                        <p><strong>Tamaño:</strong> @property.SizeInMeters m²</p>
-
-                        <hr />
-
-                        <p class="app-card-text">
-                            <i class="bi bi-stars"></i> <strong>Mejoras:</strong>
-                            @if (property.Improvements != null && property.Improvements.Any())
+                            bool isSelected = ViewData["PropertyTypeId"]?.ToString() == type.Id.ToString();
+                
+                            if (isSelected)
                             {
-                                @string.Join(", ", property.Improvements.Select(i => i.Improvement?.Name))
+                                <option value="@type.Id" selected>@type.Name</option>
                             }
                             else
                             {
-                                <span class="text-muted">Sin mejoras</span>
+                                <option value="@type.Id">@type.Name</option>
                             }
-                        </p>
-                    </div>
+                        }
+                    }
+                </select>
+            </div>
 
-                    <div class="card-footer text-center">
-                        <a asp-action="PropertyDetail" asp-route-id="@property.Id" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-eye"></i> Ver Detalle
-                        </a>
-                    </div>
+            @* 3. Presupuesto Máximo *@
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing:1px; font-size:0.7rem;">Presupuesto Máximo</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 luxury-input text-success"><i class="bi bi-cash-stack"></i></span>
+                    <input type="number" name="maxPrice" value="@ViewData["MaxPrice"]" class="form-control border-start-0 luxury-input" placeholder="Precio hasta..." />
                 </div>
             </div>
-        }
+
+            @* 4. Ambientes (Habitaciones y Baños) *@
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing:1px; font-size:0.7rem;">Ambientes</label>
+                <div class="d-flex gap-2">
+                    <input type="number" name="bedrooms" value="@ViewData["Bedrooms"]" class="form-control luxury-input" placeholder="Hab." />
+                    <input type="number" name="bathrooms" value="@ViewData["Bathrooms"]" class="form-control luxury-input" placeholder="Baños" />
+                </div>
+            </div>
+
+            @* 5. Botón de Buscar *@
+            <div class="col-lg-2 col-md-12">
+                <button type="submit" class="btn btn-luxury w-100 shadow-sm d-flex align-items-center justify-content-center gap-2" style="height: 46px;">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
+                </button>
+            </div>
+        </form>
     </div>
-}
-else
-{
-    <h4 class="text-center text-muted">No hay propiedades disponibles</h4>
-}
+
+    @* --- LISTADO DE PROPIEDADES --- *@
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var property in Model)
+            {
+                <div class="col-xl-4 col-md-6 animate__animated animate__zoomIn">
+                    <article class="property-card-luxury shadow-sm">
+                        <div class="img-wrapper">
+                            @if (property.Images != null && property.Images.Any())
+                            {
+                                <img src="@Url.Content("~/" + property.Images.First().ImageUrl)" class="w-100 h-100" style="object-fit:cover;" alt="Propiedad" />
+                            }
+                            else
+                            {
+                                <div class="bg-light d-flex align-items-center justify-content-center h-100 text-muted">
+                                    <i class="bi bi-house-fill display-4"></i>
+                                </div>
+                            }
+                            <span class="badge bg-primary position-absolute top-0 start-0 m-3 py-2 px-3 shadow" style="border-radius:10px;">
+                                @property.SaleType?.Name
+                            </span>
+                            <div class="luxury-price-tag shadow">
+                                @property.Price.ToString("C0")
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-1" style="color:#1e293b;">@property.PropertyType?.Name</h4>
+                            <p class="text-muted small mb-3"><i class="bi bi-geo-alt-fill me-1"></i> República Dominicana</p>
+
+                            <div class="property-specs-container d-flex justify-content-around p-3 mb-4">
+                                <div class="spec-item">
+                                    <div class="spec-icon-circle bg-primary-soft">
+                                        <i class="bi bi-door-open text-primary"></i>
+                                    </div>
+                                    <span class="small fw-bold">@property.Bedrooms Hab.</span>
+                                </div>
+
+                                <div class="spec-item">
+                                    <div class="spec-icon-circle bg-info-soft">
+                                        <i class="bi bi-droplet text-info"></i>
+                                    </div>
+                                    <span class="small fw-bold">@property.Bathrooms Baños</span>
+                                </div>
+
+                                <div class="spec-item">
+                                    <div class="spec-icon-circle bg-success-soft">
+                                        <i class="bi bi-fullscreen text-success"></i>
+                                    </div>
+                                    <span class="small fw-bold">@property.SizeInMeters m²</span>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <a asp-action="PropertyDetail" asp-route-id="@property.Id" class="btn btn-luxury">
+                                    Ver Detalles
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 animate__animated animate__fadeIn">
+            <i class="bi bi-house-exclamation display-1 text-muted"></i>
+            <h4 class="mt-4 fw-bold">Sin resultados</h4>
+            <p class="text-muted">No encontramos lo que buscas con esos criterios.</p>
+            <a asp-action="Index" class="btn btn-dark rounded-pill px-4">Ver todo</a>
+        </div>
+    }
+</div> @* <--- ESTE es el cierre que faltaba al final *@

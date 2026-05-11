@@ -13,8 +13,9 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace InvestmentApi.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [SwaggerTag("Endpoints for user authentication, registration, and account recovery")]
-    public class AccountController(IUserAccountServiceForWebApi userAccountServiceForWebApi) : BaseApiController
+    [Route("api/v1/auth")]
+    [SwaggerTag("Auth")]
+    public class AuthController(IUserAccountServiceForWebApi userAccountServiceForWebApi) : BaseApiController
     {
         private readonly IUserAccountServiceForWebApi _userAccountServiceForWebApi = userAccountServiceForWebApi;
 
@@ -24,7 +25,7 @@ namespace InvestmentApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
             Summary = "Authenticate user",
-            Description = "Validates user credentials and returns an authentication token with user information"
+            Description = "Validates user credentials and returns an authentication token"
         )]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
@@ -34,16 +35,14 @@ namespace InvestmentApi.Controllers.v1
             return Ok(await _userAccountServiceForWebApi.AuthenticateAsync(dto));
         }
 
-
-
         [Authorize(Roles = "Admin")]
-        [HttpPost("register-admin")]
+        [HttpPost("register/admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
             Summary = "Register a new admin",
-            Description = "Creates a new admin account (only accessible by logged-in Admins)"
+            Description = "Creates a new admin account"
         )]
         public async Task<IActionResult> RegisterAdmin([FromForm] CreateAdminForApiDto dto, [FromServices] IMapper mapper)
         {
@@ -51,8 +50,7 @@ namespace InvestmentApi.Controllers.v1
                 return BadRequest();
 
             var save = mapper.Map<SaveUserDto>(dto);
-
-                var result = await _userAccountServiceForWebApi.RegisterUser(save, null, dto.DocumentNumber ,true);
+            var result = await _userAccountServiceForWebApi.RegisterUser(save, null, dto.DocumentNumber, true);
 
             if (result == null || result.HasError)
                 return BadRequest(result?.Errors);
@@ -61,13 +59,13 @@ namespace InvestmentApi.Controllers.v1
         }
 
         [Authorize(Roles = "Admin, Developer")]
-        [HttpPost("register-developer")]
+        [HttpPost("register/developer")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
             Summary = "Register a new developer",
-            Description = "Creates a new developer account (accessible by Admins and Developers)"
+            Description = "Creates a new developer account"
         )]
         public async Task<IActionResult> RegisterDeveloper([FromForm] CreateDeveloperForApiDto dto, [FromServices] IMapper mapper)
         {
@@ -78,18 +76,12 @@ namespace InvestmentApi.Controllers.v1
                 return BadRequest("Solo se permite crear Developers");
 
             var save = mapper.Map<SaveUserDto>(dto);
-
             var result = await _userAccountServiceForWebApi.RegisterUser(save, null, dto.DocumentNumber, true);
 
             if (result == null || result.HasError)
                 return BadRequest(result?.Errors);
 
-
             return StatusCode(StatusCodes.Status201Created);
         }
-
-
-
     }
-
 }

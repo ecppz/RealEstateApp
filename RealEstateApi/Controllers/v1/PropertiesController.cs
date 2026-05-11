@@ -10,10 +10,10 @@ namespace RealEstateApi.Controllers.v1
 {
     [ApiVersion("1.0")]
     [Authorize(Roles = "Admin, Developer")]
-    [SwaggerTag("Provides queries for managing properties")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [SwaggerTag("Properties")]
+    [Route("api/v{version:apiVersion}/properties")]
     [ApiController]
-    public class PropertyController : BaseApiController 
+    public class PropertiesController : BaseApiController 
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PropertyDto>))]
@@ -33,7 +33,7 @@ namespace RealEstateApi.Controllers.v1
             return Ok(properties);
         }
 
-        [HttpGet("by-id/{id:int}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyResponseDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -53,7 +53,7 @@ namespace RealEstateApi.Controllers.v1
             return Ok(property);
         }
 
-        [HttpGet("by-code/{code}")]
+        [HttpGet("code/{code}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyResponseDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

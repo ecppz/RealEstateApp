@@ -15,7 +15,9 @@ namespace RealEstateApi.Controllers.v1
     namespace RealEstateApi.Controllers
     {
         [ApiVersion("1.0")]
-        public class SaleTypeController : BaseApiController
+        [Route("api/v1/sale-types")]
+        [SwaggerTag("SaleTypes")]
+        public class SaleTypesController : BaseApiController
         {
             /// <summary>
             /// Creates a new sale type.

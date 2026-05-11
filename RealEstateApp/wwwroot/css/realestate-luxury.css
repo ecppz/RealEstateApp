@@ -1,0 +1,153 @@
+﻿/* Paleta de colores Luxury */
+:root {
+    --primary-dark: #1e293b;
+    --gold-accent: #b89130;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* Contenedor de la barra de filtros con Glassmorphism */
+.filter-bar-luxury {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+/* Inputs con estilo moderno */
+.luxury-input {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 10px 15px !important;
+    background-color: white !important;
+    font-size: 0.9rem !important;
+}
+
+    .luxury-input:focus {
+        border-color: var(--gold-accent) !important;
+        box-shadow: 0 0 0 3px rgba(184, 145, 48, 0.1) !important;
+    }
+
+/* Card Inmobiliaria Estilo "Airbnb Plus" */
+.property-card-luxury {
+    border: none;
+    border-radius: 24px;
+    background: white;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+    .property-card-luxury:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+
+/* Badge de precio flotante */
+.luxury-price-tag {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: var(--primary-dark);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 10;
+}
+
+/* Efecto Zoom en Imagen */
+.img-wrapper {
+    overflow: hidden;
+    position: relative;
+    height: 240px;
+}
+
+    .img-wrapper img {
+        transition: transform 0.6s ease;
+    }
+
+.property-card-luxury:hover .img-wrapper img {
+    transform: scale(1.1);
+}
+
+/* Botón Ver Propiedad */
+.btn-luxury {
+    background: var(--primary-dark);
+    color: white;
+    border-radius: 14px;
+    padding: 10px;
+    border: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+    .btn-luxury:hover {
+        background: var(--gold-accent);
+        color: white;
+    }
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+    .info-item i {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+
+/* Contenedor principal de especificaciones */
+.property-specs-container {
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #edf2f7;
+}
+
+/* Item individual */
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Forzar visibilidad y tamaño de los iconos de Bootstrap */
+.spec-icon-circle i::before {
+    display: inline-block !important;
+    font-family: "bootstrap-icons" !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+}
+
+.spec-icon-circle i {
+    font-size: 1.2rem !important; /* Ajusta el tamaño aquí */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Colores de fondo por si acaso */
+.bg-primary-soft {
+    background-color: #e7f1ff !important;
+}
+/* Azul clarito */
+.bg-info-soft {
+    background-color: #e0f7fa !important;
+}
+/* Cyan clarito */
+.bg-success-soft {
+    background-color: #e8f5e9 !important;
+}
+/* Verde clarito */
