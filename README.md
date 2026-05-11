@@ -70,6 +70,6 @@ Swagger EndPoints
 
 
 ## 👨‍💻 Equipo de Desarrollo
-* Eric Pineda – eccpineda@gmail.com
 * Yohansel Mieses – miesesyohansel@gmail.com
+* Eric Pineda – eccpineda@gmail.com
 
