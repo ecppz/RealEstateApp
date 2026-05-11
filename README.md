@@ -55,9 +55,9 @@ En esta sección se presentan las capturas de pantalla que demuestran la funcion
   <img src="screenshots/Login.png">
 * Home Principal
   <img src="screenshots/PanelGeneral.png">
-* Home - Admin
+* Dashboard - Admin
   <img src="screenshots/Panel-Admin.png">
-* Creacion de Propiedades de - Agente
+* Creacion de Propiedades - Agente
   <img src="screenshots/CreacionAgente.png">
 * ChatBot - Cliente
   <img src="screenshots/ChatBot.png">
