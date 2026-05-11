@@ -35,7 +35,8 @@ La estabilidad del software está respaldada por una estrategia de pruebas y con
 
 * Backend: .NET 9 (C#)
 * Base de Datos: SQL Server / EF Core
-* Patrones: CQRS, Mediator, Unit of Work, Repository Pattern.
+* Patrones: CQRS, Mediator,Repository Pattern.
+* QA: Pruebas Unitarias(Testing)
 * Frontend: ASP.NET MVC, CSS, Bootstrap Icons, SweetAlert2.
 * Seguridad: Identity \& JWT.
 
